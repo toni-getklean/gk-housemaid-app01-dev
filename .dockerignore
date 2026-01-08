@@ -1,0 +1,28 @@
+# Dependencies
+node_modules
+npm-debug.log*
+
+# Next.js
+.next
+out
+dist
+
+# Development files
+.git
+.gitignore
+README.md
+.env*.local
+.vscode
+.idea
+
+# Build artifacts
+*.tar.gz
+.DS_Store
+
+# Testing
+coverage
+.nyc_output
+
+# Misc
+*.log
+.cache

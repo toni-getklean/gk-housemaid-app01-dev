@@ -1,0 +1,166 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* LIGHT MODE */
+:root {
+  --button-outline: rgba(0,0,0, .10);
+  --badge-outline: rgba(0,0,0, .05);
+
+  /* Automatic computation of border around primary / danger buttons */
+  --opaque-button-border-intensity: -8; /* In terms of percentages */
+
+  /* Backgrounds applied on top of other backgrounds when hovered/active */
+  --elevate-1: rgba(0,0,0, .03);
+  --elevate-2: rgba(0,0,0, .08);
+
+  --background: 0 0% 100%;
+
+  --foreground: 222 47% 11%;
+
+  --border: 220 13% 91%;
+
+  --card: 0 0% 100%;
+
+  --card-foreground: 222 47% 11%;
+
+  --card-border: 214 20% 93%;
+
+  --sidebar: 210 17% 96%;
+
+  --sidebar-foreground: 222 47% 11%;
+
+  --sidebar-border: 214 20% 90%;
+
+  --sidebar-primary: 207 70% 42%;
+
+  --sidebar-primary-foreground: 0 0% 100%;
+
+  --sidebar-accent: 210 20% 92%;
+
+  --sidebar-accent-foreground: 222 47% 11%;
+
+  --sidebar-ring: 207 70% 42%;
+
+  --popover: 210 20% 94%;
+
+  --popover-foreground: 222 47% 11%;
+
+  --popover-border: 214 20% 88%;
+
+  --primary: 207 70% 42%;
+
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 210 20% 90%;
+
+  --secondary-foreground: 222 47% 11%;
+
+  --muted: 210 20% 93%;
+
+  --muted-foreground: 215 16% 47%;
+
+  --accent: 210 17% 88%;
+
+  --accent-foreground: 222 47% 11%;
+
+  --destructive: 0 84% 60%;
+
+  --destructive-foreground: 0 0% 100%;
+
+  --input: 214 32% 85%;
+  --ring: 207 70% 42%;
+
+  --chart-1: 207 70% 42%;
+  --chart-2: 45 93% 58%;
+  --chart-3: 207 90% 54%;
+  --chart-4: 142 71% 45%;
+  --chart-5: 262 83% 58%;
+
+  --radius: .5rem; /* 8px */
+}
+
+/* DARK MODE */
+.dark {
+  --button-outline: rgba(255,255,255, .10);
+  --badge-outline: rgba(255,255,255, .05);
+
+  /* Automatic computation of border around primary / danger buttons */
+  --opaque-button-border-intensity: 8; /* In terms of percentages */
+
+  /* Backgrounds applied on top of other backgrounds when hovered/active */
+  --elevate-1: rgba(255,255,255, .03);
+  --elevate-2: rgba(255,255,255, .08);
+
+  --background: 222 47% 11%;
+
+  --foreground: 210 20% 98%;
+
+  --border: 217 19% 27%;
+
+  --card: 224 45% 15%;
+
+  --card-foreground: 210 20% 98%;
+
+  --card-border: 215 20% 18%;
+
+  --sidebar: 224 45% 13%;
+
+  --sidebar-foreground: 210 20% 98%;
+
+  --sidebar-border: 215 20% 16%;
+
+  --sidebar-primary: 207 70% 58%;
+
+  --sidebar-primary-foreground: 0 0% 100%;
+
+  --sidebar-accent: 217 28% 24%;
+
+  --sidebar-accent-foreground: 210 20% 98%;
+
+  --sidebar-ring: 207 70% 58%;
+
+  --popover: 224 45% 16%;
+
+  --popover-foreground: 210 20% 98%;
+
+  --popover-border: 215 20% 20%;
+
+  --primary: 207 70% 58%;
+
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 217 19% 27%;
+
+  --secondary-foreground: 210 20% 98%;
+
+  --muted: 215 20% 20%;
+
+  --muted-foreground: 217 19% 60%;
+
+  --accent: 217 28% 24%;
+
+  --accent-foreground: 210 20% 98%;
+
+  --destructive: 0 84% 60%;
+
+  --destructive-foreground: 0 0% 100%;
+
+  --input: 215 28% 30%;
+  --ring: 207 70% 58%;
+
+  --chart-1: 207 70% 58%;
+  --chart-2: 45 93% 68%;
+  --chart-3: 207 90% 64%;
+  --chart-4: 142 71% 55%;
+  --chart-5: 262 83% 68%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

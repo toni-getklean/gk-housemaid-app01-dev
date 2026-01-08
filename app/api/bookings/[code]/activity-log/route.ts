@@ -1,0 +1,29 @@
+import { NextRequest, NextResponse } from "next/server";
+import { databaseService } from "@/lib/database";
+
+export async function GET(
+    request: NextRequest,
+    { params }: { params: Promise<{ code: string }> }
+) {
+    try {
+        const { code } = await params;
+        const booking = await databaseService.getBookingByCode(code);
+
+        if (!booking) {
+            return NextResponse.json(
+                { error: "Booking not found" },
+                { status: 404 }
+            );
+        }
+
+        const activityLog = await databaseService.getBookingActivityLog(booking.bookingId);
+
+        return NextResponse.json(activityLog);
+    } catch (error) {
+        console.error("Error fetching activity log:", error);
+        return NextResponse.json(
+            { error: "Failed to fetch activity log" },
+            { status: 500 }
+        );
+    }
+}
