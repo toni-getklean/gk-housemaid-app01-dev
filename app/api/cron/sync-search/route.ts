@@ -4,6 +4,8 @@ import { db } from "@/server/db";
 import { bookings, customerProfiles, addresses, customerAddresses } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
     try {
         // 1. Fetch all bookings from DB with joins
