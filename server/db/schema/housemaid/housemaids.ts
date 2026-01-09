@@ -3,6 +3,7 @@ import { pgTable, text, date, integer, timestamp, bigint } from "drizzle-orm/pg-
 
 
 
+// Table definition for housemaids
 export const housemaids = pgTable("housemaids", {
     housemaidId: bigint("housemaid_id", { mode: "number" })
         .primaryKey()

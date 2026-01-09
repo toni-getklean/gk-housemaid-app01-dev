@@ -41,7 +41,7 @@ export function StatusBadge({ status }: StatusBadgeProps) {
       case "rescheduled":
         return { label: "Rescheduled", variant: "secondary" as const };
       default:
-        return { label: status?.replace(/_/g, " ") || "Unknown", variant: "secondary" as const };
+        return { label: (status as string)?.replace(/_/g, " ") || "Unknown", variant: "secondary" as const };
     }
   };
 

@@ -229,7 +229,7 @@ async function main() {
             createdAt: seed.createdAt ? new Date(seed.createdAt) : null,
             updatedAt: seed.createdAt ? new Date(seed.createdAt) : null,
             lastLogin: seed.lastLogin ? new Date(seed.lastLogin) : null,
-        });
+        } as any);
 
         console.log(`✅ Inserted housemaid → ${seed.name} (${housemaidCode})`);
     }

@@ -147,7 +147,7 @@ export default function BookingDetails() {
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
       <Header
-        title={booking.bookingCode}
+        title={booking.bookingCode || undefined}
         showBack={true}
         onBackClick={() => router.push("/bookings")}
         showNotifications={false}

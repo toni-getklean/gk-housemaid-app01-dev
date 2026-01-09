@@ -55,6 +55,10 @@ export async function POST(
             return NextResponse.json({ error: "Bookings can only be rated when completed" }, { status: 400 });
         }
 
+        if (!booking.housemaidId) {
+            return NextResponse.json({ error: "Booking does not have an assigned housemaid" }, { status: 400 });
+        }
+
         // 3. Submit Rating
         const newRating = await databaseService.submitClientRating({
             bookingId: booking.bookingId,
