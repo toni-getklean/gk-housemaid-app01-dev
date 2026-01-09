@@ -65,5 +65,7 @@ jobs:
           NEXT_PUBLIC_FACEBOOK_APP_ID: ${{ secrets.NEXT_PUBLIC_FACEBOOK_APP_ID }}
           UPLOADTHING_TOKEN: ${{ secrets.UPLOADTHING_TOKEN }}
 
-      - name: Deploy to Fly.io
+      - name: Deploy to Fly.io gk-housemaid-app01
         run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
