@@ -20,7 +20,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "18"
+          node-version: "20.9"
           cache: "npm"
 
   deploy:
@@ -54,12 +54,6 @@ jobs:
           key: nextjs-build-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             nextjs-build-${{ runner.os }}-
-
-      - name: Build Next.js app
-        run: |
-          echo "🚀 Starting Next.js build..."
-          npm run build
-          echo "✅ Build completed successfully!"
 
       - name: Install Flyctl
         uses: superfly/flyctl-actions/setup-flyctl@master
