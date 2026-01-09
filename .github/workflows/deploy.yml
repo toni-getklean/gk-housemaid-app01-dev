@@ -27,14 +27,19 @@ jobs:
 
       - name: Ensure Fly.io app exists
         run: |
-          flyctl apps show gk-housemaid-app01 >/dev/null 2>&1 || \
-          flyctl apps create gk-housemaid-app01 --org get-klean-philippines
+          if ! flyctl apps show gk-housemaid-app01 > /dev/null 2>&1; then
+            echo "App 'gk-housemaid-app01' does not exist. Creating it..."
+            flyctl apps create gk-housemaid-app01 --org get-klean-philippines
+          else
+            echo "App 'gk-housemaid-app01' already exists."
+          fi
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       - name: Sync secrets to Fly.io
         run: |
           flyctl secrets set \
+            FLY_API_TOKEN="$FLY_API_TOKEN" \
             CYN_API_ID="$CYN_API_ID" \
             CYN_API_PASSWORD="$CYN_API_PASSWORD" \
             CYN_API_URL="$CYN_API_URL" \
