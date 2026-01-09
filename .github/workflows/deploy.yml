@@ -55,8 +55,7 @@ jobs:
             FACEBOOK_REDIRECT_URI="$FACEBOOK_REDIRECT_URI" \
             JWT_SECRET="$JWT_SECRET" \
             NEXT_PUBLIC_FACEBOOK_APP_ID="$NEXT_PUBLIC_FACEBOOK_APP_ID" \
-            UPLOADTHING_TOKEN="$UPLOADTHING_TOKEN" \
-            -a gk-housemaid-app01
+            UPLOADTHING_TOKEN="$UPLOADTHING_TOKEN" 
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
           CYN_API_ID: ${{ secrets.CYN_API_ID }}
