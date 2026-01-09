@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { databaseService } from "@/lib/database";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(
     request: NextRequest,
     { params }: { params: Promise<{ code: string }> }

@@ -3,6 +3,8 @@ import { databaseService } from "@/lib/database";
 import { cynSMS } from "@/lib/sms";
 import { otpService } from "@/lib/otp";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { databaseService, Booking } from "@/lib/database";
 import { isAfter, isBefore, parseISO, startOfDay, endOfDay } from "date-fns";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   // Secure Session Check
