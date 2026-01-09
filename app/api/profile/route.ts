@@ -5,6 +5,8 @@ import { db } from "@/server/db/client";
 import { housemaids } from "@/server/db/schema/housemaid/housemaids";
 import { eq } from "drizzle-orm";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
     try {
         // Secure Session Check

@@ -3,6 +3,8 @@ import axios from "axios";
 import { databaseService } from "@/lib/database";
 import { FacebookProfile, FacebookTokenResponse } from "@/lib/types/database";
 
+export const dynamic = "force-dynamic";
+
 const FACEBOOK_APP_ID = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID || "";
 const FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET || "";
 const FACEBOOK_REDIRECT_URI = process.env.FACEBOOK_REDIRECT_URI || "";
