@@ -5,6 +5,7 @@ app = "gk-housemaid-app01"
 primary_region = "sin"  # Singapore - closest to Philippines
 
 [build]
+  dockerfile = "Dockerfile"
 
 [http_service]
   internal_port = 3000
