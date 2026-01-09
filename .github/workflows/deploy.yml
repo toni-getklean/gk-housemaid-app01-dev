@@ -46,7 +46,6 @@ jobs:
       - name: Sync secrets to Fly.io
         run: |
           flyctl secrets set \
-            FLY_API_TOKEN="$FLY_API_TOKEN" \
             CYN_API_ID="$CYN_API_ID" \
             CYN_API_PASSWORD="$CYN_API_PASSWORD" \
             CYN_API_URL="$CYN_API_URL" \
