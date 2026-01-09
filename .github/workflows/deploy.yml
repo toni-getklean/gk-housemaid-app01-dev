@@ -32,13 +32,9 @@ jobs:
 
       - name: Ensure Fly.io app exists
         run: |
-          set -e
-          if flyctl apps show gk-housemaid-app01 > /dev/null 2>&1; then
-            echo "App already exists."
-          else
-            echo "Creating app..."
-            flyctl apps create gk-housemaid-app01 --org get-klean-philippines
-            flyctl apps show gk-housemaid-app01
+          if ! flyctl apps list | grep -q "gk-housemaid-app01"; then
+            # Create new app if it doesn't exist
+            flyctl apps create gk-housemaid-app01 --org get-klean-philippines --json
           fi
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
