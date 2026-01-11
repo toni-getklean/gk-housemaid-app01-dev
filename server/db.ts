@@ -3,7 +3,8 @@ import { neon } from "@neondatabase/serverless";
 import * as schema from "./db/schema";
 
 if (!process.env.DATABASE_URL) {
-    throw new Error("DATABASE_URL environment variable is required");
+    console.warn("DATABASE_URL not set, using dummy connection for build");
+    process.env.DATABASE_URL = "postgres://dummy:dummy@localhost:5432/dummy";
 }
 
 const sql = neon(process.env.DATABASE_URL);
