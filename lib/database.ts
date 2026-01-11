@@ -1282,4 +1282,15 @@ export class DatabaseService {
   }
 }
 
-export const databaseService = new DatabaseService();
+// lib/database.ts
+let _databaseService: DatabaseService | null = null;
+
+export function getDatabaseService() {
+  if (!_databaseService) {
+    if (!process.env.DATABASE_URL) {
+      throw new Error("DATABASE_URL environment variable is required");
+    }
+    _databaseService = new DatabaseService();
+  }
+  return _databaseService;
+}

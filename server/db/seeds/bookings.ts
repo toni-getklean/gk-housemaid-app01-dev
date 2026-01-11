@@ -6,7 +6,7 @@ import { bookingPayments } from "@/server/db/schema/bookings/bookingPayments";
 import { customerProfiles } from "@/server/db/schema/customer/customerProfiles";
 import { customerAddresses } from "@/server/db/schema/customer/customerAddresses";
 import { housemaids } from "@/server/db/schema/housemaid/housemaids";
-import { databaseService } from "@/lib/database";
+import { getDatabaseService } from "@/lib/database";
 import { userAuthAttempts } from "@/server/db/schema/auth/userAuthAttempts";
 import { bookingActivityLog } from "@/server/db/schema/bookings/bookingActivityLog";
 import { BOOKING_TRACKING_MESSAGES } from "@/lib/bookings";
@@ -194,6 +194,7 @@ async function main() {
             // Generate Booking Code (e.g., HM25-00001)
             const currentYear = new Date().getFullYear();
             const yy = currentYear.toString().slice(-2);
+            const databaseService = getDatabaseService();
             const bookingCode = await databaseService.generateCode(`HM${yy}`);
 
             // Insert into DB

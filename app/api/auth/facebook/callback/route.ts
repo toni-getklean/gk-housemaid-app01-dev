@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
-import { databaseService } from "@/lib/database";
+import { getDatabaseService } from "@/lib/database";
 import { FacebookProfile, FacebookTokenResponse } from "@/lib/types/database";
 
 export const dynamic = "force-dynamic";
@@ -109,6 +109,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
+    const databaseService = getDatabaseService();
     const housemaid = await databaseService.findHousemaidByFacebookId(
       facebookProfile.id
     );

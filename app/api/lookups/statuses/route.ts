@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { databaseService } from "@/lib/database";
+import { getDatabaseService } from "@/lib/database";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
+    const databaseService = getDatabaseService();
     const statuses = await databaseService.getStatuses();
 
     return NextResponse.json({

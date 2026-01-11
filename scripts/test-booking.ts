@@ -1,4 +1,4 @@
-import { databaseService } from "../lib/database";
+import { getDatabaseService } from "../lib/database";
 import "dotenv/config";
 
 async function main() {
@@ -8,6 +8,7 @@ async function main() {
     const bookingCode = "HM25-00001";
 
     try {
+        const databaseService = getDatabaseService();
         const booking = await databaseService.getBookingByCode(bookingCode);
 
         if (booking) {

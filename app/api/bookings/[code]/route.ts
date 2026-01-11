@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { databaseService } from "@/lib/database";
+import { getDatabaseService } from "@/lib/database";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +12,7 @@ export async function GET(
     try {
         const { code } = await params;
         console.log("code", code);
+        const databaseService = getDatabaseService();
         const booking = await databaseService.getBookingByCode(code);
 
         if (!booking) {
@@ -39,6 +40,7 @@ export async function PATCH(
         const { code } = await params;
         const body = await request.json();
         const { status, reason, metadata } = body;
+        const databaseService = getDatabaseService();
 
         if (!status) {
             return NextResponse.json(

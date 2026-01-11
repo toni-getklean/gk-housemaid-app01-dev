@@ -3,7 +3,7 @@ import { db } from "@/server/db/client";
 import { customerProfiles } from "@/server/db/schema/customer/customerProfiles";
 import { addresses } from "@/server/db/schema/customer/addresses";
 import { customerAddresses } from "@/server/db/schema/customer/customerAddresses";
-import { databaseService } from "@/lib/database";
+import { getDatabaseService } from "@/lib/database";
 import { eq } from "drizzle-orm";
 
 // Test customers data
@@ -104,6 +104,7 @@ async function main() {
             // 1. Create customer profile
             const currentYear = new Date().getFullYear();
             const yy = currentYear.toString().slice(-2);
+            const databaseService = getDatabaseService();
             const customerCode = await databaseService.generateCode(`CUST${yy}`);
 
             const insertedCustomer = await db.insert(customerProfiles).values({

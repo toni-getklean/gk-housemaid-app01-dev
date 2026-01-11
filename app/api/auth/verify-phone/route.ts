@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { databaseService } from "@/lib/database";
+import { getDatabaseService } from "@/lib/database";
 import { cynSMS } from "@/lib/sms";
 import { otpService } from "@/lib/otp";
 
@@ -29,6 +29,7 @@ export async function POST(request: NextRequest) {
       `Verifying phone for Facebook name: ${facebookName}, Mobile: ${mobileNumber}`
     );
 
+    const databaseService = getDatabaseService();
     const housemaid = await databaseService.findHousemaidByFacebookNameAndMobile(
       facebookName,
       mobileNumber

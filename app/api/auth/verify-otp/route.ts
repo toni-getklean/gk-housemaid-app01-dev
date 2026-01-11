@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { databaseService } from "@/lib/database";
+import { getDatabaseService } from "@/lib/database";
 
 export const dynamic = "force-dynamic";
 
@@ -29,6 +29,7 @@ export async function POST(request: NextRequest) {
       `Verifying OTP for Facebook ID: ${facebookId}, Mobile: ${mobileNumber}`
     );
 
+    const databaseService = getDatabaseService();
     const result = await databaseService.verifyOTP(facebookId, mobileNumber, otpCode);
 
     if (!result.success) {

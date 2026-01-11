@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { databaseService, Booking } from "@/lib/database";
+import { getDatabaseService, Booking } from "@/lib/database";
 import { isAfter, isBefore, parseISO, startOfDay, endOfDay } from "date-fns";
 
 export const dynamic = "force-dynamic";
@@ -20,6 +20,7 @@ export async function GET(request: NextRequest) {
   const searchTerm = searchParams.get("search") || "";
 
   try {
+    const databaseService = getDatabaseService();
     let bookings = await databaseService.getBookingsByHousemaidId(Number(housemaidId));
 
 

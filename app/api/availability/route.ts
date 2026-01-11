@@ -1,6 +1,6 @@
 
 import { NextResponse } from "next/server";
-import { databaseService } from "@/lib/database";
+import { getDatabaseService } from "@/lib/database";
 
 export const dynamic = "force-dynamic";
 
@@ -22,6 +22,7 @@ export async function GET(request: Request) {
             return NextResponse.json({ error: "Month and Year are required" }, { status: 400 });
         }
 
+        const databaseService = getDatabaseService();
         const data = await databaseService.getAvailability(
             housemaidId,
             parseInt(month),
@@ -64,6 +65,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Time Commitment is required when Available" }, { status: 400 });
         }
 
+        const databaseService = getDatabaseService();
         const result = await databaseService.updateAvailability({
             housemaidId: housemaidId,
             date,

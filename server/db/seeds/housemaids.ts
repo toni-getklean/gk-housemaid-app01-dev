@@ -4,7 +4,7 @@ import { db } from "@/server/db/client";
 import { housemaids } from "@/server/db/schema/housemaid/housemaids";
 import { addresses } from "@/server/db/schema/customer/addresses";
 import { eq } from "drizzle-orm";
-import { databaseService } from "@/lib/database";
+import { getDatabaseService } from "@/lib/database";
 
 type HousemaidSeedRow = {
     legacyId: string;
@@ -189,6 +189,7 @@ async function main() {
         // 2. Create housemaid
         const currentYear = new Date().getFullYear();
         const yy = currentYear.toString().slice(-2);
+        const databaseService = getDatabaseService();
         const housemaidCode = await databaseService.generateCode(`HMAID${yy}`);
 
         await db.insert(housemaids).values({

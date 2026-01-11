@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { databaseService } from "@/lib/database";
+import { getDatabaseService } from "@/lib/database";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +12,7 @@ export async function GET(
         const bookingCode = code;
 
         // 1. Get Booking to resolve ID
+        const databaseService = getDatabaseService();
         const booking = await databaseService.getBookingByCode(bookingCode);
         if (!booking) {
             return NextResponse.json({ error: "Booking not found" }, { status: 404 });
@@ -46,6 +47,7 @@ export async function POST(
         }
 
         // 1. Get Booking
+        const databaseService = getDatabaseService();
         const booking = await databaseService.getBookingByCode(bookingCode);
         if (!booking) {
             return NextResponse.json({ error: "Booking not found" }, { status: 404 });

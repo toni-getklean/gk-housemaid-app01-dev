@@ -1,6 +1,6 @@
 
 import { NextResponse } from "next/server";
-import { databaseService } from "@/lib/database";
+import { getDatabaseService } from "@/lib/database";
 import { db } from "@/server/db/client";
 import { housemaids } from "@/server/db/schema/housemaid/housemaids";
 import { eq } from "drizzle-orm";
@@ -20,6 +20,7 @@ export async function GET() {
         const housemaidId = Number(session.sub);
 
         // 2. Get Profile
+        const databaseService = getDatabaseService();
         const profile = await databaseService.getHousemaidProfile(housemaidId);
 
         if (!profile) {

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { databaseService } from "@/lib/database";
+import { getDatabaseService } from "@/lib/database";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +13,7 @@ export async function POST(
         const { commute_to_client_infos, return_from_client_infos, total_transportation_cost } = body;
 
         // Get booking to retrieve housemaidId
+        const databaseService = getDatabaseService();
         const booking = await databaseService.getBookingByCode(code);
         if (!booking || !booking.housemaidId) {
             return NextResponse.json(
