@@ -283,8 +283,8 @@ export default function ManageAvailability() {
                     {isCurrentMonth && (
                       <div
                         className={`h-2 w-2 rounded-full mt-1 ${status === 'half_day_am' ? '' :
-                            status === 'half_day_pm' ? '' :
-                              statusColor
+                          status === 'half_day_pm' ? '' :
+                            statusColor
                           }`}
                         style={{
                           background: status === 'half_day_am' ? 'linear-gradient(90deg, #F97316 50%, #e0e0e0 50%)' :
@@ -378,8 +378,8 @@ export default function ManageAvailability() {
                     <div className="flex gap-2">
                       <button
                         className={`flex-1 py-2 px-1 text-xs font-medium rounded-full border transition-colors ${workingHoursType === 'full-day'
-                            ? 'bg-blue-100 border-blue-500 text-blue-700'
-                            : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
+                          ? 'bg-blue-100 border-blue-500 text-blue-700'
+                          : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
                           }`}
                         onClick={() => setWorkingHoursType('full-day')}
                       >
@@ -387,8 +387,8 @@ export default function ManageAvailability() {
                       </button>
                       <button
                         className={`flex-1 py-2 px-1 text-xs font-medium rounded-full border transition-colors ${workingHoursType === 'half-day-am'
-                            ? 'bg-orange-100 border-orange-500 text-orange-700'
-                            : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
+                          ? 'bg-orange-100 border-orange-500 text-orange-700'
+                          : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
                           }`}
                         onClick={() => setWorkingHoursType('half-day-am')}
                       >
@@ -396,8 +396,8 @@ export default function ManageAvailability() {
                       </button>
                       <button
                         className={`flex-1 py-2 px-1 text-xs font-medium rounded-full border transition-colors ${workingHoursType === 'half-day-pm'
-                            ? 'bg-orange-100 border-orange-500 text-orange-700'
-                            : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
+                          ? 'bg-orange-100 border-orange-500 text-orange-700'
+                          : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
                           }`}
                         onClick={() => setWorkingHoursType('half-day-pm')}
                       >

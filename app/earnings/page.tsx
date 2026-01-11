@@ -94,8 +94,8 @@ export default function Earnings() {
 
             <TabsContent value="all" className="space-y-3">
               {earnings.map((earning) => (
-                <Card 
-                  key={earning.id} 
+                <Card
+                  key={earning.id}
                   className="p-4 cursor-pointer hover:bg-gray-50 transition-colors"
                   onClick={() => router.push(`/earnings/${earning.id}`)}
                   data-testid={`card-earning-${earning.id}`}
@@ -107,11 +107,10 @@ export default function Earnings() {
                       </p>
                       <p className="font-medium text-gray-900">{earning.client}</p>
                       <p className="text-sm text-gray-600">{earning.date}</p>
-                      <span className={`inline-block px-2 py-1 text-xs rounded-full ${
-                        earning.status === "Completed" 
-                          ? "bg-green-100 text-green-700" 
-                          : "bg-yellow-100 text-yellow-700"
-                      }`}>
+                      <span className={`inline-block px-2 py-1 text-xs rounded-full ${earning.status === "Completed"
+                        ? "bg-green-100 text-green-700"
+                        : "bg-yellow-100 text-yellow-700"
+                        }`}>
                         {earning.status}
                       </span>
                     </div>
@@ -125,8 +124,8 @@ export default function Earnings() {
 
             <TabsContent value="pending" className="space-y-3">
               {earnings.filter(e => e.status === "Pending").map((earning) => (
-                <Card 
-                  key={earning.id} 
+                <Card
+                  key={earning.id}
                   className="p-4 cursor-pointer hover:bg-gray-50 transition-colors"
                   onClick={() => router.push(`/earnings/${earning.id}`)}
                   data-testid={`card-earning-${earning.id}`}

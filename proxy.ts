@@ -5,9 +5,12 @@ import { verifySession } from "@/lib/auth";
 export async function proxy(request: NextRequest) {
     // 1. Define protected routes
     const protectedPaths = [
+        "/dashboard",
         "/bookings",
         "/profile",
         "/manage-availability",
+        "/earnings",
+        "/performance-reports",
         "/api/bookings",
         "/api/profile",
         "/api/availability",
