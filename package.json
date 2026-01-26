@@ -37,6 +37,7 @@
     "db:seed:bookingDeclineReason": "tsx server/db/seeds/bookingDeclineReason.ts",
     "db:seed:rescheduleCause": "tsx server/db/seeds/rescheduleCause.ts",
     "db:seed:rescheduleReason": "tsx server/db/seeds/rescheduleReason.ts",
+    "db:seed:pricing_ncr": "tsx server/db/seeds/pricing_ncr.ts",
     "db:seed:all": "npm-run-all db:seed:idCounters db:seed:marketSegment db:seed:branchCode db:seed:city db:seed:branchOperatingCities db:seed:acquisition db:seed:offered db:seed:paymentMethod db:seed:serviceCategory db:seed:serviceType db:seed:status db:seed:substatus db:seed:paymentStatus db:seed:paymentSource db:seed:sourceInstitution db:seed:destinationWallet db:seed:settlementType db:seed:validationStatus db:seed:housemaids db:seed:customers db:seed:bookingDeclineReason db:seed:rescheduleCause db:seed:rescheduleReason db:seed:bookings"
   },
   "dependencies": {

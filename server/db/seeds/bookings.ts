@@ -29,7 +29,12 @@ const testBookings = [
         categoryCode: "4_hours",
         notes: "Test booking - needs_confirmation status",
         paymentStatus: "PENDING",
-        totalAmount: "1500.00"
+        totalAmount: "1500.00",
+        // Pricing V2
+        location: "NCR",
+        tierCode: "REGULAR",
+        bookingType: "ONE_TIME",
+        dayType: "WEEKDAY"
     },
     // Booking 2: PENDING REVIEW
     {
@@ -224,6 +229,20 @@ async function main() {
                 statusCode: booking.statusCode,
                 substatusCode: booking.statusCode === "pending_review" ? "awaiting_housemaid_response" : null,
                 substatusNotes: null,
+
+                // Pricing & Specs V2 Fields
+                location: (booking as any).location || "NCR",
+                tierCode: (booking as any).tierCode || "REGULAR",
+                bookingTypeCode: (booking as any).bookingType || "ONE_TIME",
+                dayType: (booking as any).dayType || "WEEKDAY",
+
+                asensoPointsAwarded: ['completed'].includes(booking.statusCode) ? 150 : null,
+
+                pricingBreakdown: {
+                    basePrice: parseFloat(booking.totalAmount),
+                    surgeAmount: 0,
+                    currency: "PHP"
+                },
 
                 housemaidId: booking.housemaidId ? housemaid[0].housemaidId : null,
                 housemaidName: booking.housemaidName,

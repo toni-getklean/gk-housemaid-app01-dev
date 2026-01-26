@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, date, integer, timestamp, bigint } from "drizzle-orm/pg-core";
+import { pgTable, text, date, integer, timestamp, bigint, jsonb } from "drizzle-orm/pg-core";
 
 
 
@@ -41,6 +41,19 @@ export const bookings = pgTable("bookings", {
     statusCode: text("status_code").notNull(),
     substatusCode: text("substatus_code"),
     substatusNotes: text("substatus_notes"),
+
+    // Pricing & Specs V2 Fields
+    location: text("location"), // NCR, CEBU, CAVITE
+    tierCode: text("tier_code"), // REGULAR, PLUS, ALL_IN
+    bookingTypeCode: text("booking_type_code"), // TRIAL, ONE_TIME, FLEXI
+    dayType: text("day_type"), // WEEKDAY, WEEKEND_HOLIDAY
+
+    // Stored calculation for audit
+    // Stored calculation for audit
+    pricingBreakdown: jsonb("pricing_breakdown"),
+
+    // Loyalty
+    asensoPointsAwarded: integer("asenso_points_awarded"),
 
     housemaidId: bigint("housemaid_id", { mode: "number" }),
     housemaidName: text("housemaid_name"),

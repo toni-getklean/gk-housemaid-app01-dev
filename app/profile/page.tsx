@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Header } from "@/components/Header";
 import { BottomNav } from "@/components/BottomNav";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -107,7 +108,29 @@ export default function Profile() {
             <span className="font-semibold text-gray-900">{profile.rating}</span>
             <span className="text-gray-600 text-sm ml-1">({profile.completedJobs} jobs)</span>
           </div>
+          {profile.currentTierCode && (
+            <div className="mt-2">
+              <Badge variant="outline" className="text-teal border-teal bg-teal/10">
+                {profile.currentTierCode.replace(/_/g, " ")} Tier
+              </Badge>
+            </div>
+          )}
         </div>
+
+        <Card className="p-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-blue-100 text-sm font-medium mb-1">Total Asenso Points</p>
+              <div className="flex items-baseline gap-1">
+                <h2 className="text-3xl font-bold">{profile.asensoPointsBalance || 0}</h2>
+                <span className="text-blue-200 text-xs">pts</span>
+              </div>
+            </div>
+            <div className="bg-white/20 p-2 rounded-lg">
+              <Star className="h-6 w-6 text-yellow-300 fill-yellow-300" />
+            </div>
+          </div>
+        </Card>
 
         <Card className="p-4 space-y-4">
           <h2 className="font-semibold text-teal text-sm uppercase tracking-wide">Contact Information</h2>

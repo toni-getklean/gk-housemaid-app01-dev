@@ -21,6 +21,7 @@ import {
 } from "../server/db/schema";
 
 import { parseISO } from "date-fns";
+import { AsensoService } from "@/server/services/AsensoService";
 
 // Type aliases for the schema types
 type Housemaid = typeof housemaids.$inferSelect;
@@ -705,6 +706,9 @@ export class DatabaseService {
       if (newStatus === "completed") {
         statusUpdates.housemaidCompletedAt = now;
         statusUpdates.housemaidCheckOutTime = now;
+
+        // Award Asenso Points
+        await AsensoService.awardPointsForBooking(bookingId);
       }
       if (newStatus === "cancelled" || newStatus === "rescheduled") {
         // These might have specific fields handled in additionalUpdates or logic elsewhere

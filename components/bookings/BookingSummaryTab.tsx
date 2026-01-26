@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar as CalendarIcon, Clock, ClipboardList } from "lucide-react";
+import { Calendar as CalendarIcon, Clock, ClipboardList, Star } from "lucide-react";
 import { format } from "date-fns";
 import { Booking } from "@/lib/database";
 import { ProofOfArrivalCard } from "./ProofOfArrivalCard";
@@ -10,6 +10,12 @@ interface BookingSummaryTabProps {
     onUploadSuccess?: () => void;
     onReschedule: () => void;
 }
+
+const POINTS_MAP: Record<string, number> = {
+    "TRIAL": 150,
+    "ONE_TIME": 150,
+    "FLEXI": 300
+};
 
 export function BookingSummaryTab({ booking, onUploadSuccess, onReschedule }: BookingSummaryTabProps) {
     const getStatusLabel = (status: string) => {
@@ -32,6 +38,10 @@ export function BookingSummaryTab({ booking, onUploadSuccess, onReschedule }: Bo
                 return status.replace(/_/g, " ");
         }
     };
+
+    const pointsAwarded = booking.asensoPointsAwarded || 0;
+    const estimatedPoints = POINTS_MAP[booking.bookingTypeCode || "ONE_TIME"] || 150;
+    const isCancelled = booking.statusCode === "cancelled";
 
     return (
         <div className="space-y-4">
@@ -59,6 +69,28 @@ export function BookingSummaryTab({ booking, onUploadSuccess, onReschedule }: Bo
                         </h3>
 
                         <div className="space-y-3">
+                            {pointsAwarded > 0 ? (
+                                <div className="flex items-start gap-3">
+                                    <Star className="h-5 w-5 text-yellow fill-yellow flex-shrink-0 mt-0.5" />
+                                    <div>
+                                        <p className="text-sm text-gray-600">Asenso Points Earned</p>
+                                        <p className="text-sm font-bold text-teal">
+                                            +{pointsAwarded} pts
+                                        </p>
+                                    </div>
+                                </div>
+                            ) : !isCancelled && (
+                                <div className="flex items-start gap-3">
+                                    <Star className="h-5 w-5 text-gray-400 fill-gray-100 flex-shrink-0 mt-0.5" />
+                                    <div>
+                                        <p className="text-sm text-gray-600">Points to be earned</p>
+                                        <p className="text-sm font-bold text-gray-500">
+                                            +{estimatedPoints} pts
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
+
                             <div className="flex items-start gap-3">
                                 <CalendarIcon className="h-5 w-5 text-teal flex-shrink-0 mt-0.5" />
                                 <div>
