@@ -136,12 +136,12 @@ export function BookingSummaryTab({ booking, onUploadSuccess, onReschedule }: Bo
                                 </p>
                             </div>
 
-                            {booking.categoryCode && (
+                            {booking.duration && (
                                 <div>
-                                    <p className="text-sm text-gray-600">Category</p>
+                                    <p className="text-sm text-gray-600">Duration</p>
                                     <div className="flex flex-wrap gap-2 mt-1">
                                         <Badge variant="outline">
-                                            {booking.categoryCode.replace(/_/g, " ")}
+                                            {booking.duration.replace(/_/g, " ")}
                                         </Badge>
                                     </div>
                                 </div>

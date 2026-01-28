@@ -26,10 +26,10 @@ const testBookings = [
         serviceDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         time: "9:00AM - 1:00PM",
         serviceTypeCode: "general_cleaning",
-        categoryCode: "4_hours",
+        duration: "HALF_DAY", // formerly categoryCode: "4_hours"
         notes: "Test booking - needs_confirmation status",
         paymentStatus: "PENDING",
-        totalAmount: "1500.00",
+        totalAmount: "1090.00",
         // Pricing V2
         location: "NCR",
         tierCode: "REGULAR",
@@ -45,10 +45,11 @@ const testBookings = [
         serviceDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
         time: "1:00PM - 5:00PM",
         serviceTypeCode: "deep_cleaning",
-        categoryCode: "4_hours",
+        duration: "HALF_DAY",
         notes: "Test booking - pending_review status",
         paymentStatus: "PENDING",
-        totalAmount: "2500.00"
+        location: "CAVITE",
+        totalAmount: "900.00"
     },
     // Booking 3: ACCEPTED
     {
@@ -59,11 +60,11 @@ const testBookings = [
         serviceDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
         time: "9:00AM - 1:00PM",
         serviceTypeCode: "general_cleaning",
-        categoryCode: "4_hours",
+        duration: "HALF_DAY",
         notes: "Test booking - accepted status",
         housemaidAcceptedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
         paymentStatus: "AWAITING_PAYMENT",
-        totalAmount: "1500.00"
+        totalAmount: "1090.00"
     },
     // Booking 4: DISPATCHED
     {
@@ -74,12 +75,12 @@ const testBookings = [
         serviceDate: new Date(),
         time: "9:00AM - 1:00PM",
         serviceTypeCode: "office_cleaning",
-        categoryCode: "4_hours",
+        duration: "HALF_DAY",
         notes: "Test booking - dispatched status",
         housemaidAcceptedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
         housemaidDispatchedAt: new Date(Date.now() - 1 * 60 * 60 * 1000),
         paymentStatus: "PAYMENT_RECEIVED",
-        totalAmount: "3500.00"
+        totalAmount: "1090.00"
     },
     // 5 New PENDING REVIEW Bookings
     {
@@ -90,10 +91,10 @@ const testBookings = [
         serviceDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
         time: "8:00AM - 12:00PM",
         serviceTypeCode: "general_cleaning",
-        categoryCode: "4_hours",
+        duration: "HALF_DAY",
         notes: "Additional Pending Review 1",
         paymentStatus: "PENDING",
-        totalAmount: "1500.00"
+        totalAmount: "1090.00"
     },
     {
         customerAccount: "ACC-2024-002",
@@ -103,10 +104,11 @@ const testBookings = [
         serviceDate: new Date(Date.now() + 11 * 24 * 60 * 60 * 1000),
         time: "1:00PM - 5:00PM",
         serviceTypeCode: "deep_cleaning",
-        categoryCode: "4_hours",
+        duration: "HALF_DAY",
         notes: "Additional Pending Review 2",
         paymentStatus: "PENDING",
-        totalAmount: "2500.00"
+        location: "CAVITE",
+        totalAmount: "900.00"
     },
     {
         customerAccount: "ACC-2024-003",
@@ -116,10 +118,10 @@ const testBookings = [
         serviceDate: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000),
         time: "9:00AM - 1:00PM",
         serviceTypeCode: "post_construction",
-        categoryCode: "4_hours",
-        notes: "Additional Pending Review 3",
+        duration: "WHOLE_DAY", // Changed to Whole Day for test variety
+        notes: "Additional Pending Review 3 - WHOLE_DAY NCR",
         paymentStatus: "PENDING",
-        totalAmount: "4500.00"
+        totalAmount: "1390.00"
     },
     {
         customerAccount: "ACC-2024-001",
@@ -129,10 +131,11 @@ const testBookings = [
         serviceDate: new Date(Date.now() + 13 * 24 * 60 * 60 * 1000),
         time: "2:00PM - 6:00PM",
         serviceTypeCode: "general_cleaning",
-        categoryCode: "4_hours",
-        notes: "Additional Pending Review 4",
+        duration: "WHOLE_DAY", // Changed to Whole Day Cavite
+        location: "CAVITE",
+        notes: "Additional Pending Review 4 - WHOLE_DAY CAVITE",
         paymentStatus: "PENDING",
-        totalAmount: "1600.00"
+        totalAmount: "1190.00"
     },
     {
         customerAccount: "ACC-2024-002",
@@ -142,10 +145,10 @@ const testBookings = [
         serviceDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
         time: "8:00AM - 12:00PM",
         serviceTypeCode: "general_cleaning",
-        categoryCode: "4_hours",
+        duration: "HALF_DAY",
         notes: "Additional Pending Review 5",
         paymentStatus: "PENDING",
-        totalAmount: "1700.00"
+        totalAmount: "1090.00"
     }
 ];
 
@@ -223,7 +226,7 @@ async function main() {
                 rescheduledCount: 0,
 
                 serviceTypeCode: booking.serviceTypeCode,
-                categoryCode: booking.categoryCode,
+                duration: booking.duration,
                 time: booking.time,
 
                 statusCode: booking.statusCode,

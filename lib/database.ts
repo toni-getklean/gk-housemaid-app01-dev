@@ -36,6 +36,7 @@ type BookingWithParsedFields = Booking & {
   parsedServiceDate?: Date;
   parsedStartTime?: string;
   statusDisplayName?: string;
+  duration?: string | null;
   // Customer data (JOINed from customerProfiles)
   customerName: string | null;
   contactNumber: string | null;
@@ -46,8 +47,11 @@ type BookingWithParsedFields = Booking & {
   addressLink: string | null;
   // Transportation data (JOINed from transportationDetails)
   totalTransportationCost?: string | null;
+  transportPaymentStatus?: string | null;
   transportationLegs?: TransportationLeg[];
   paymentMethod?: string | null;
+  settlementTypeCode?: string | null;
+  paymentStatusCode?: string | null;
   totalAmount?: string | null;
   // Reschedule data
   rescheduleRequestedAt?: Date | null;
@@ -58,6 +62,7 @@ type BookingWithParsedFields = Booking & {
   rescheduleApprovedAt?: Date | null;
   rescheduleCount?: number;
   assignmentAttemptCount?: number;
+  gcashNumber?: string | null;
 };
 
 // Export for use in API routes and frontend
@@ -133,13 +138,17 @@ export class DatabaseService {
       landmark: string | null;
       addressLink: string | null;
       totalTransportationCost?: string | null;
+      transportPaymentStatus?: string | null;
       transportationLegs?: TransportationLeg[];
       paymentMethod?: string | null;
+      settlementTypeCode?: string | null;
+      paymentStatusCode?: string | null;
       totalAmount?: string | null;
+      gcashNumber?: string | null;
     },
     statusList: Status[]
   ): BookingWithParsedFields {
-    const { booking, customerName, contactNumber, address, city, landmark, addressLink, totalTransportationCost, transportationLegs, paymentMethod, totalAmount } = bookingData;
+    const { booking, customerName, contactNumber, address, city, landmark, addressLink, totalTransportationCost, transportPaymentStatus, transportationLegs, paymentMethod, settlementTypeCode, paymentStatusCode, totalAmount, gcashNumber } = bookingData;
 
     const enriched: BookingWithParsedFields = {
       ...booking,
@@ -151,8 +160,11 @@ export class DatabaseService {
       landmark,
       addressLink,
       totalTransportationCost,
+      transportPaymentStatus,
       transportationLegs,
       paymentMethod,
+      settlementTypeCode,
+      paymentStatusCode,
       totalAmount,
       rescheduleRequestedAt: booking.rescheduleRequestedAt,
       rescheduleRequestedBy: booking.rescheduleRequestedBy,
@@ -162,6 +174,7 @@ export class DatabaseService {
       rescheduleApprovedAt: booking.rescheduleApprovedAt,
       rescheduleCount: booking.rescheduleCount,
       assignmentAttemptCount: booking.assignmentAttemptCount,
+      gcashNumber: gcashNumber || null,
     };
 
     if (booking.serviceDate) {
@@ -534,7 +547,10 @@ export class DatabaseService {
             totalTransportationCost: transportationDetails.totalTransportationCost,
             // Select payment info
             paymentMethod: bookingPayments.paymentMethodCode,
+            settlementTypeCode: bookingPayments.settlementTypeCode,
+            paymentStatusCode: bookingPayments.paymentStatusCode,
             totalAmount: bookingPayments.totalAmount,
+            gcashNumber: housemaids.gcashNumber,
           })
           .from(bookings)
           .leftJoin(customerProfiles, eq(bookings.customerId, customerProfiles.customerId))
@@ -542,6 +558,7 @@ export class DatabaseService {
           .leftJoin(addresses, eq(customerAddresses.addressId, addresses.addressId))
           .leftJoin(transportationDetails, eq(bookings.bookingId, transportationDetails.bookingId))
           .leftJoin(bookingPayments, eq(bookings.bookingId, bookingPayments.bookingId))
+          .leftJoin(housemaids, eq(bookings.housemaidId, housemaids.housemaidId))
           .where(eq(bookings.housemaidId, housemaidId)),
         this.getStatuses(),
       ]);
@@ -597,7 +614,10 @@ export class DatabaseService {
             totalTransportationCost: transportationDetails.totalTransportationCost,
             // Select payment info
             paymentMethod: bookingPayments.paymentMethodCode,
+            settlementTypeCode: bookingPayments.settlementTypeCode,
+            paymentStatusCode: bookingPayments.paymentStatusCode,
             totalAmount: bookingPayments.totalAmount,
+            gcashNumber: housemaids.gcashNumber,
           })
           .from(bookings)
           .leftJoin(customerProfiles, eq(bookings.customerId, customerProfiles.customerId))
@@ -605,6 +625,7 @@ export class DatabaseService {
           .leftJoin(addresses, eq(customerAddresses.addressId, addresses.addressId))
           .leftJoin(transportationDetails, eq(bookings.bookingId, transportationDetails.bookingId))
           .leftJoin(bookingPayments, eq(bookings.bookingId, bookingPayments.bookingId))
+          .leftJoin(housemaids, eq(bookings.housemaidId, housemaids.housemaidId))
           .where(eq(bookings.bookingCode, bookingCode))
           .limit(1),
         this.getStatuses(),
@@ -650,7 +671,10 @@ export class DatabaseService {
             totalTransportationCost: transportationDetails.totalTransportationCost,
             // Select payment info
             paymentMethod: bookingPayments.paymentMethodCode,
+            settlementTypeCode: bookingPayments.settlementTypeCode,
+            paymentStatusCode: bookingPayments.paymentStatusCode,
             totalAmount: bookingPayments.totalAmount,
+            gcashNumber: housemaids.gcashNumber,
           })
           .from(bookings)
           .leftJoin(customerProfiles, eq(bookings.customerId, customerProfiles.customerId))
@@ -658,6 +682,7 @@ export class DatabaseService {
           .leftJoin(addresses, eq(customerAddresses.addressId, addresses.addressId))
           .leftJoin(transportationDetails, eq(bookings.bookingId, transportationDetails.bookingId))
           .leftJoin(bookingPayments, eq(bookings.bookingId, bookingPayments.bookingId))
+          .leftJoin(housemaids, eq(bookings.housemaidId, housemaids.housemaidId))
           .where(eq(bookings.bookingId, bookingId))
           .limit(1),
         this.getStatuses(),
@@ -937,8 +962,12 @@ export class DatabaseService {
         landmark: addresses.landmark,
         addressLink: addresses.addressLink,
         transportationId: transportationDetails.transportationId,
+        totalTransportationCost: transportationDetails.totalTransportationCost,
         paymentMethod: bookingPayments.paymentMethodCode,
+        settlementTypeCode: bookingPayments.settlementTypeCode,
+        paymentStatusCode: bookingPayments.paymentStatusCode,
         totalAmount: bookingPayments.totalAmount,
+        transportPaymentStatus: transportationDetails.paymentStatus,
       };
 
       // Base query builder
@@ -1287,10 +1316,89 @@ export class DatabaseService {
       throw error;
     }
   }
+  async updateBookingPaymentStatus(
+    bookingCode: string,
+    status: string,
+    paidAmount?: string
+  ): Promise<boolean> {
+    try {
+      const booking = await this.getBookingByCode(bookingCode);
+      if (!booking) throw new Error("Booking not found");
+
+      await db
+        .update(bookingPayments)
+        .set({
+          paymentStatusCode: status,
+          amountPaid: paidAmount || booking.totalAmount, // Assuming full payment
+          balanceAmount: "0.00",
+          confirmedAt: new Date(),
+          updatedAt: new Date()
+        })
+        .where(eq(bookingPayments.bookingId, booking.bookingId));
+
+      // Log activity
+      await db.insert(bookingActivityLog).values({
+        bookingId: booking.bookingId,
+        actorType: "SYSTEM",
+        actorId: "SYSTEM",
+        audience: "INTERNAL",
+        action: "PAYMENT_COLLECTED",
+        title: "Service Fee Payment Collected",
+        message: `Service Fee Payment collected: ${status}`,
+        createdAt: new Date(),
+      });
+
+      return true;
+    } catch (error) {
+      console.error("Error updating booking payment status:", error);
+      return false;
+    }
+  }
+
+  async updateTransportPaymentStatus(
+    bookingCode: string,
+    status: string
+  ): Promise<boolean> {
+    try {
+      const booking = await this.getBookingByCode(bookingCode);
+      if (!booking) throw new Error("Booking not found");
+
+      // Check if transport details exist
+      const transport = await this.getTransportationDetailsByBookingId(booking.bookingId);
+      if (!transport) throw new Error("Transportation details not found");
+
+      await db
+        .update(transportationDetails)
+        .set({
+          paymentStatus: status,
+          paymentDate: new Date(),
+          updatedAt: new Date()
+        })
+        .where(eq(transportationDetails.transportationId, transport.transportationId));
+
+      // Log activity
+      await db.insert(bookingActivityLog).values({
+        bookingId: booking.bookingId,
+        actorType: "SYSTEM",
+        actorId: "SYSTEM",
+        audience: "INTERNAL",
+        action: "PAYMENT_COLLECTED",
+        title: "Transport Fee Payment Collected",
+        message: `Transport Fee Payment collected: ${status}`,
+        createdAt: new Date(),
+      });
+
+      return true;
+    } catch (error) {
+      console.error("Error updating transport payment status:", error);
+      return false;
+    }
+  }
 }
 
 // lib/database.ts
 let _databaseService: DatabaseService | null = null;
+
 
 export function getDatabaseService(): DatabaseService {
   if (!_databaseService) {

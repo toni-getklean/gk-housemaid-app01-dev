@@ -3,6 +3,7 @@ import { db } from "@/server/db/client";
 import { customerProfiles } from "@/server/db/schema/customer/customerProfiles";
 import { addresses } from "@/server/db/schema/customer/addresses";
 import { customerAddresses } from "@/server/db/schema/customer/customerAddresses";
+import { memberships } from "@/server/db/schema/pricing/memberships";
 import { getDatabaseService } from "@/lib/database";
 import { eq } from "drizzle-orm";
 
@@ -144,6 +145,39 @@ async function main() {
         } catch (error) {
             console.error(`❌ Error seeding ${customer.profile.customerName}:`, error);
         }
+    }
+
+    // Seed Memberships for Flexi Testing
+    console.log("\n🌱 Seeding memberships for testing...");
+
+    // 1. Maria Santos (NCR) - 1 Month Flexi
+    const maria = await db.select().from(customerProfiles).where(eq(customerProfiles.accountNumber, "ACC-2024-001")).limit(1);
+    if (maria.length > 0) {
+        await db.insert(memberships).values({
+            customerId: maria[0].customerId,
+            skuIdSource: "NCR_FLEXI_REGULAR_1M",
+            locationScope: "NCR",
+            tierScope: "REGULAR",
+            startDate: new Date().toISOString().split('T')[0],
+            endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+            status: "ACTIVE"
+        });
+        console.log(`  ✓ Assigned NCR Flexi Membership to Maria Santos`);
+    }
+
+    // 2. Juan Dela Cruz (Cavite) - 1 Month Flexi
+    const juan = await db.select().from(customerProfiles).where(eq(customerProfiles.accountNumber, "ACC-2024-002")).limit(1);
+    if (juan.length > 0) {
+        await db.insert(memberships).values({
+            customerId: juan[0].customerId,
+            skuIdSource: "CAVITE_FLEXI_REGULAR_1M",
+            locationScope: "CAVITE",
+            tierScope: "REGULAR",
+            startDate: new Date().toISOString().split('T')[0],
+            endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+            status: "ACTIVE"
+        });
+        console.log(`  ✓ Assigned Cavite Flexi Membership to Juan Dela Cruz`);
     }
 
     console.log("✅ Customer seed complete!");

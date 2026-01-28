@@ -109,7 +109,7 @@ export function BookingActionFooter({
         } catch (error) {
             toast({
                 title: "Error",
-                description: "Failed to update status. Please try again.",
+                description: error instanceof Error ? error.message : "Failed to update status. Please try again.",
                 variant: "destructive",
             });
         } finally {

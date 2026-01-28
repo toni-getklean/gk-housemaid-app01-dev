@@ -95,6 +95,23 @@ export async function PATCH(
                 updates.housemaidCheckInTime = metaToSave;
                 break;
             case "completed":
+                // 1. Validation: Check if transportation details are entered
+                const completedBooking = await databaseService.getBookingByCode(code);
+                if (!completedBooking) {
+                    return NextResponse.json({ error: "Booking not found" }, { status: 404 });
+                }
+
+                // Check for transportation legs
+                const hasToClient = completedBooking.transportationLegs?.some(leg => leg.direction === 'TO_CLIENT');
+                const hasReturn = completedBooking.transportationLegs?.some(leg => leg.direction === 'RETURN');
+
+                if (!hasToClient || !hasReturn) {
+                    return NextResponse.json(
+                        { error: "Transportation details missing: Please enter both Commute to Client and Return Fare details." },
+                        { status: 400 }
+                    );
+                }
+
                 updates.housemaidCheckOutTime = metaToSave;
                 updates.housemaidCompletedAt = metaToSave;
                 break;
