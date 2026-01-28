@@ -5,7 +5,7 @@ import { Header } from "@/components/Header";
 import { BottomNav } from "@/components/BottomNav";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Clock, Calendar, Wallet, Receipt } from "lucide-react";
+import { MapPin, Clock, Calendar, Wallet, Receipt, Star } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function EarningDetails({ params }: { params: Promise<{ id: string }> }) {
@@ -28,6 +28,7 @@ export default function EarningDetails({ params }: { params: Promise<{ id: strin
     location: string;
     serviceDate: string;
     serviceTime: string;
+    bookingType: string;
   }> = {
     "1": {
       earningId: "ERN_001",
@@ -45,6 +46,7 @@ export default function EarningDetails({ params }: { params: Promise<{ id: strin
       location: "123 Ayala Avenue, Makati City",
       serviceDate: "February 25, 2025",
       serviceTime: "9:00 AM - 12:00 PM",
+      bookingType: "OneTime",
     },
     "2": {
       earningId: "ERN_002",
@@ -62,6 +64,7 @@ export default function EarningDetails({ params }: { params: Promise<{ id: strin
       location: "456 BGC, Taguig City",
       serviceDate: "February 25, 2025",
       serviceTime: "9:00 AM - 11:00 AM",
+      bookingType: "OneTime",
     },
     "3": {
       earningId: "ERN_003",
@@ -79,6 +82,7 @@ export default function EarningDetails({ params }: { params: Promise<{ id: strin
       location: "789 Ortigas Center, Pasig City",
       serviceDate: "February 24, 2025",
       serviceTime: "3:00 PM - 6:00 PM",
+      bookingType: "Flexi",
     },
     "4": {
       earningId: "ERN_004",
@@ -96,6 +100,7 @@ export default function EarningDetails({ params }: { params: Promise<{ id: strin
       location: "321 Quezon City",
       serviceDate: "February 28, 2025",
       serviceTime: "10:00 AM - 1:00 PM",
+      bookingType: "OneTime",
     },
   };
 
@@ -111,7 +116,7 @@ export default function EarningDetails({ params }: { params: Promise<{ id: strin
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
-      <Header 
+      <Header
         title="Earning Details"
         showBack={true}
         onBackClick={() => router.push("/earnings")}
@@ -127,10 +132,10 @@ export default function EarningDetails({ params }: { params: Promise<{ id: strin
             <p className="text-4xl font-bold text-gray-900" data-testid="text-total-amount">
               ₱{earning.totalAmount.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
-            <Badge 
+            <Badge
               variant={earning.paymentValidation === "completed" ? "default" : "secondary"}
-              className={earning.paymentValidation === "completed" 
-                ? "bg-green-100 text-green-700 hover:bg-green-100" 
+              className={earning.paymentValidation === "completed"
+                ? "bg-green-100 text-green-700 hover:bg-green-100"
                 : "bg-yellow-100 text-yellow-700 hover:bg-yellow-100"}
               data-testid="badge-payment-status"
             >
@@ -195,11 +200,25 @@ export default function EarningDetails({ params }: { params: Promise<{ id: strin
               <div className="flex-1">
                 <p className="text-xs text-gray-600">Transaction Date</p>
                 <p className="text-sm font-medium text-gray-900" data-testid="text-transaction-date">
-                  {new Date(earning.transactionDate).toLocaleDateString('en-PH', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
+                  {new Date(earning.transactionDate).toLocaleDateString('en-PH', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
                   })}
+                </p>
+              </div>
+            </div>
+            <div className="border-t border-gray-200" />
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-yellow-50 text-yellow-600 flex items-center justify-center">
+                <Star className="h-5 w-5" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-blue flex items-center gap-2">
+                  {earning.paymentValidation === "completed" ? "Points earned" : "Points to be earned"}
+                </p>
+                <p className="text-lg font-bold text-blue" data-testid="text-points-earned">
+                  +{earning.bookingType === "Flexi" ? 300 : 150} pts
                 </p>
               </div>
             </div>
@@ -215,7 +234,7 @@ export default function EarningDetails({ params }: { params: Promise<{ id: strin
                 {earning.clientName}
               </p>
             </div>
-            
+
             <div className="flex items-start gap-3">
               <MapPin className="h-5 w-5 text-gray-400 mt-0.5" />
               <div className="flex-1">

@@ -30,6 +30,8 @@ export async function POST(request: NextRequest) {
     );
 
     const databaseService = getDatabaseService();
+    console.log("databaseService facebookId", facebookId);
+    console.log("databaseService otpCode", otpCode);
     const result = await databaseService.verifyOTP(facebookId, mobileNumber, otpCode);
 
     if (!result.success) {
@@ -113,6 +115,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    console.log("facebookAccessToken", facebookAccessToken);
+    console.log("tokenExpiresAt", tokenExpiresAt);
+    console.log("facebookId", facebookId);
     // Update housemaid with Facebook access token if provided (from verification flow)
     if (facebookAccessToken && tokenExpiresAt) {
       console.log(

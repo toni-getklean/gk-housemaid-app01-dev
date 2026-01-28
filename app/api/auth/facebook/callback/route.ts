@@ -89,15 +89,20 @@ export async function GET(request: NextRequest) {
 
     const { accessToken, expiresIn } = await getFacebookAccessToken(code);
     const facebookProfile = await getFacebookProfile(accessToken);
+    const tokenExpiresAt = new Date(Date.now() + expiresIn * 1000).toISOString();
     console.log("state:", state);
 
     if (state === "verify") {
       console.log(
         `Verification flow - returning Facebook profile for: ${facebookProfile.id}`
       );
-      const tokenExpiresAt = new Date(
-        Date.now() + expiresIn * 1000
-      ).toISOString();
+      // const tokenExpiresAt = new Date(
+      //   Date.now() + expiresIn * 1000
+      // ).toISOString();
+
+      console.log("facebookProfile.id", facebookProfile.id);
+      console.log("accessToken", accessToken);
+      console.log("tokenExpiresAt", tokenExpiresAt);
 
       return NextResponse.json({
         success: true,
@@ -146,6 +151,8 @@ export async function GET(request: NextRequest) {
             attempts: newCount,
             facebook_name: facebookProfile.name,
             facebook_id: facebookProfile.id,
+            facebook_access_token: accessToken,
+            token_expires_at: tokenExpiresAt,
           },
           { status: 401 }
         );
@@ -176,14 +183,20 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const tokenExpiresAt = new Date(
-      Date.now() + expiresIn * 1000
-    ).toISOString();
+    // const tokenExpiresAt = new Date(
+    //   Date.now() + expiresIn * 1000
+    // ).toISOString();
+
+    console.log("facebookProfile.id", facebookProfile.id);
+    console.log("accessToken", accessToken);
+    console.log("tokenExpiresAt", tokenExpiresAt);
+    console.log("housemaid.housemaidId", housemaid.housemaidId);
 
     const updated = await databaseService.updateHousemaidAccessToken(
       housemaid.housemaidId,
       accessToken,
-      tokenExpiresAt
+      tokenExpiresAt,
+      facebookProfile.id
     );
 
     if (!updated) {

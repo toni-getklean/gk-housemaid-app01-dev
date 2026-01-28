@@ -8,6 +8,8 @@ import { TrendingUp, Calendar } from "lucide-react";
 import { PesoIcon } from "@/components/icons/PesoIcon";
 import { useRouter } from "next/navigation";
 
+import { AsensoLevelCard } from "@/components/AsensoLevelCard";
+
 export default function Earnings() {
   const router = useRouter();
   const summary = {
@@ -24,6 +26,7 @@ export default function Earnings() {
       client: "Maria Santos",
       amount: "₱650",
       status: "Completed",
+      bookingType: "OneTime",
     },
     {
       id: "2",
@@ -32,6 +35,7 @@ export default function Earnings() {
       client: "Jose Reyes",
       amount: "₱550",
       status: "Completed",
+      bookingType: "OneTime",
     },
     {
       id: "3",
@@ -40,6 +44,7 @@ export default function Earnings() {
       client: "Ana Cruz",
       amount: "₱700",
       status: "Completed",
+      bookingType: "Flexi",
     },
     {
       id: "4",
@@ -48,8 +53,13 @@ export default function Earnings() {
       client: "Carlos Mendoza",
       amount: "₱600",
       status: "Pending",
+      bookingType: "OneTime",
     },
   ];
+
+  const getPoints = (type: string) => {
+    return type === "Flexi" ? 300 : 150;
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
@@ -58,7 +68,8 @@ export default function Earnings() {
       <div className="p-4 space-y-6">
         <div>
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Summary</h2>
-          <div className="grid grid-cols-3 gap-3">
+          <AsensoLevelCard variant="compact" />
+          <div className="grid grid-cols-3 gap-3 mt-4">
             <Card className="p-4" data-testid="card-today-earnings">
               <div className="w-10 h-10 rounded-lg bg-yellow-50 text-yellow-600 flex items-center justify-center mb-3">
                 <PesoIcon className="h-5 w-5" />
@@ -100,7 +111,7 @@ export default function Earnings() {
                   onClick={() => router.push(`/earnings/${earning.id}`)}
                   data-testid={`card-earning-${earning.id}`}
                 >
-                  <div className="flex items-start justify-between">
+                  <div className="flex justify-between">
                     <div className="space-y-1">
                       <p className="text-xs font-medium text-blue" data-testid={`text-booking-code-${earning.id}`}>
                         {earning.bookingCode}
@@ -114,8 +125,12 @@ export default function Earnings() {
                         {earning.status}
                       </span>
                     </div>
-                    <div className="text-right">
+                    <div className="text-right flex flex-col justify-between items-end">
                       <p className="text-lg font-bold text-gray-900">{earning.amount}</p>
+                      <div className="flex items-center justify-end gap-1 mt-1 text-teal">
+                        <span className="text-xs font-bold">+{getPoints(earning.bookingType)}</span>
+                        <span className="text-[10px] font-medium uppercase text-teal/70">PTS</span>
+                      </div>
                     </div>
                   </div>
                 </Card>
@@ -130,7 +145,7 @@ export default function Earnings() {
                   onClick={() => router.push(`/earnings/${earning.id}`)}
                   data-testid={`card-earning-${earning.id}`}
                 >
-                  <div className="flex items-start justify-between">
+                  <div className="flex justify-between">
                     <div className="space-y-1">
                       <p className="text-xs font-medium text-blue" data-testid={`text-booking-code-${earning.id}`}>
                         {earning.bookingCode}
@@ -141,8 +156,12 @@ export default function Earnings() {
                         {earning.status}
                       </span>
                     </div>
-                    <div className="text-right">
+                    <div className="text-right flex flex-col justify-between items-end">
                       <p className="text-lg font-bold text-gray-900">{earning.amount}</p>
+                      <div className="flex items-center justify-end gap-1 mt-1 text-teal">
+                        <span className="text-xs font-bold">+{getPoints(earning.bookingType)}</span>
+                        <span className="text-[10px] font-medium uppercase text-teal/70">PTS</span>
+                      </div>
                     </div>
                   </div>
                 </Card>
@@ -151,6 +170,7 @@ export default function Earnings() {
           </Tabs>
         </div>
       </div>
+
 
       <BottomNav />
     </div>

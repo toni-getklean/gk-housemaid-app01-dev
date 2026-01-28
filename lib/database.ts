@@ -224,18 +224,21 @@ export class DatabaseService {
     housemaidId: number,
     accessToken: string,
     expiresAt: string,
-    facebookId?: string
+    facebookId: string
   ): Promise<boolean> {
     try {
+
+      console.log("updateHousemaidAccessToken facebookId", facebookId);
       const updateData: Record<string, any> = {
         facebookAccessToken: accessToken,
         tokenExpiresAt: new Date(expiresAt),
+        facebookId: facebookId,
         lastLogin: new Date(),
       };
 
-      if (facebookId) {
-        updateData.facebookId = facebookId;
-      }
+      // if (facebookId) {
+      //   updateData.facebookId = facebookId;
+      // }
 
       await db
         .update(housemaids)

@@ -44,6 +44,8 @@ function AuthCallbackContent() {
           if (data.facebook_name && data.facebook_id) {
             localStorage.setItem("facebook_name", data.facebook_name);
             localStorage.setItem("facebook_id", data.facebook_id);
+            localStorage.setItem("facebook_access_token", data.facebook_access_token);
+            localStorage.setItem("token_expires_at", data.token_expires_at);
           }
           setError(
             data.message ||
@@ -76,6 +78,13 @@ function AuthCallbackContent() {
         if (data.token_expires_at) {
           localStorage.setItem("token_expires_at", data.token_expires_at);
         }
+
+        console.log("Setting localStorage in auth callback:", {
+          facebook_id: data.facebook_id,
+          facebook_name: data.facebook_name,
+          facebook_access_token: data.facebook_access_token ? "Yes (Hidden)" : "No",
+          token_expires_at: data.token_expires_at
+        });
 
         console.log("Verification successful - routing to phone verification");
         router.push("/phone-verification");

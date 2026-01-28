@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Header } from "@/components/Header";
 import { BottomNav } from "@/components/BottomNav";
 import { Card } from "@/components/ui/card";
-import { Star, CheckCircle, BarChart3, AlertTriangle, Info, Calendar, Settings } from "lucide-react";
+import { Star, CheckCircle, BarChart3, AlertTriangle, Info, Calendar } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 type ViolationType = "minor" | "major";
@@ -16,8 +16,10 @@ interface Violation {
   description: string;
   bookingCode: string;
   date: string;
-  offenseCount: number;
+  pointsImpact: number;
 }
+
+import { AsensoLevelCard } from "@/components/AsensoLevelCard";
 
 export default function PerformanceReports() {
   const router = useRouter();
@@ -41,7 +43,7 @@ export default function PerformanceReports() {
       description: "Rosa Dela Cruz encountered a transportation issue on the way.",
       bookingCode: "HM0225-5496",
       date: "April 24, 2025",
-      offenseCount: 2,
+      pointsImpact: -150,
     },
     {
       id: "2",
@@ -50,7 +52,7 @@ export default function PerformanceReports() {
       description: "Rosa Dela Cruz forgot to notify the team/client that she had already arrived at the location.",
       bookingCode: "HM0225-5497",
       date: "Feb 01, 2025",
-      offenseCount: 1,
+      pointsImpact: -100,
     },
   ];
 
@@ -61,6 +63,7 @@ export default function PerformanceReports() {
     <div className="min-h-screen bg-gray-50 pb-20">
       <Header title="Performance Reports" onBackClick={() => router.push("/profile")} showBack />
       <div className="p-4 space-y-6">
+        <AsensoLevelCard />
         <div className="grid grid-cols-2 gap-3">
           <Card className="p-4">
             <div className="flex flex-col items-center text-center">
@@ -97,8 +100,18 @@ export default function PerformanceReports() {
         </div>
 
         <div className="space-y-4">
-          <h2 className="font-semibold text-teal text-sm uppercase tracking-wide">Violation History</h2>
+          <div className="flex items-center justify-between">
+            <h2 className="font-semibold text-teal text-sm uppercase tracking-wide">Violation History</h2>
+            <button
+              onClick={() => router.push("/performance-reports/penalty-guidelines")}
+              className="flex items-center gap-1 text-xs text-teal hover:underline font-medium"
+            >
+              <Info className="h-4 w-4" />
+              View Guidelines
+            </button>
+          </div>
           {!hasViolations ? (
+
             <Card className="p-4">
               <div className="flex items-center gap-3 text-green-600">
                 <CheckCircle className="h-5 w-5" />
@@ -125,24 +138,24 @@ export default function PerformanceReports() {
                 ) : (
                   filteredViolations.map((violation) => (
                     <Card key={violation.id} className="p-4" data-testid={`card-violation-${violation.id}`}>
-                      <div className="space-y-2">
-                        <div className="flex items-start gap-2">
-                          <Info className="h-5 w-5 text-gray-400 flex-shrink-0 mt-0.5" />
-                          <div className="flex-1">
-                            <div className="font-medium text-gray-900 text-sm">{violation.title}</div>
+                      <div className="flex items-start gap-3">
+                        {/* Left: Violation Details */}
+                        <Info className="h-5 w-5 text-gray-400 flex-shrink-0 mt-0.5" />
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-gray-900 text-sm">{violation.title}</div>
+                          <p className="text-sm text-gray-600 mt-1">{violation.description}</p>
+                          <div className="flex items-center gap-3 text-xs text-gray-500 mt-2">
+                            <span>{violation.bookingCode}</span>
+                            <div className="flex items-center gap-1">
+                              <Calendar className="h-3 w-3" />
+                              <span>{violation.date}</span>
+                            </div>
                           </div>
                         </div>
-                        <p className="text-sm text-gray-600 pl-7">{violation.description}</p>
-                        <div className="text-xs text-gray-500 pl-7">{violation.bookingCode}</div>
-                        <div className="flex items-center gap-4 text-xs text-gray-600 pl-7">
-                          <div className="flex items-center gap-1">
-                            <Calendar className="h-3 w-3" />
-                            <span>{violation.date}</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <Settings className="h-3 w-3" />
-                            <span>Offense count: {violation.offenseCount}</span>
-                          </div>
+                        {/* Right: Points Impact */}
+                        <div className="flex-shrink-0 text-right">
+                          <div className="text-lg font-bold text-orange-500">{violation.pointsImpact} PTS</div>
+                          <div className="text-[10px] uppercase tracking-wide text-gray-400">Deduction</div>
                         </div>
                       </div>
                     </Card>

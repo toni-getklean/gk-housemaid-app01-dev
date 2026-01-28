@@ -67,6 +67,13 @@ export default function OTPVerification() {
       const facebookAccessToken = localStorage.getItem("facebook_access_token");
       const tokenExpiresAt = localStorage.getItem("token_expires_at");
 
+      console.log("Retrieved from localStorage in OTP page:", {
+        facebookAccessToken: facebookAccessToken ? "Yes (Hidden)" : "No",
+        tokenExpiresAt,
+        facebookId,
+        phoneNumber
+      });
+
       const response = await fetch("/api/auth/verify-otp", {
         method: "POST",
         headers: {
