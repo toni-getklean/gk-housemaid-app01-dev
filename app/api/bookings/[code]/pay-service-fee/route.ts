@@ -3,11 +3,12 @@ import { getDatabaseService } from "@/lib/database";
 
 export async function POST(
     request: Request,
-    { params }: { params: { code: string } }
+    { params }: { params: Promise<{ code: string }> }
 ) {
     try {
+        const { code } = await params;
         const db = getDatabaseService();
-        const success = await db.updateBookingPaymentStatus(params.code, "PAYMENT_RECEIVED");
+        const success = await db.updateBookingPaymentStatus(code, "PAYMENT_RECEIVED");
 
         if (success) {
             return NextResponse.json({ success: true });

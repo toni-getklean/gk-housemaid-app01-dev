@@ -23,7 +23,7 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
 
     const isPayToHousemaid = paymentMethod === "CASH" && settlementTypeCode === "DIRECT_TO_HM";
     const isServiceFeePaid = booking.paymentStatusCode === "PAYMENT_RECEIVED";
-    const isTransportFeePaid = transportPaymentStatus === "PAID";
+    const isTransportFeePaid = transportPaymentStatus === "PAYMENT_RECEIVED";
     const isFullyPaid = isServiceFeePaid && isTransportFeePaid;
 
     const handleServiceFeePayment = async () => {
@@ -171,7 +171,7 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
                                 ) : (
                                     <Button
                                         onClick={handleServiceFeePayment}
-                                        disabled={isLoading}
+                                        disabled={isLoading || booking.statusCode !== 'completed'}
                                         className="w-full bg-teal hover:bg-teal/90"
                                     >
                                         Customer Paid the Service Fee
@@ -208,18 +208,20 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
 
                                 <Alert className="bg-green-50 border-green-200">
                                     <p className="text-xs text-green-700">
-                                        This payment goes directly to the housemaid and is not collected by the platform.
+                                        {isTransportFeePaid
+                                            ? "Transportation payment has been received by the housemaid."
+                                            : "This payment goes directly to the housemaid and is not collected by the platform."}
                                     </p>
                                 </Alert>
 
                                 {isTransportFeePaid ? (
-                                    <Button disabled className="w-full bg-green-600 text-white">
-                                        <CheckCircle2 className="mr-2 h-4 w-4" /> Transport Fee Paid
-                                    </Button>
+                                    <div className="w-full bg-green-50 text-green-700 p-2 rounded text-center text-sm font-medium border border-green-200">
+                                        <CheckCircle2 className="inline-block mr-2 h-4 w-4" /> Transport Fee Paid
+                                    </div>
                                 ) : (
                                     <Button
                                         onClick={handleTransportFeePayment}
-                                        disabled={isLoading}
+                                        disabled={isLoading || booking.statusCode !== 'completed'}
                                         className="w-full bg-green-600 hover:bg-green-700"
                                     >
                                         Transport Fee Paid

@@ -10,7 +10,7 @@ export const transportationDetails = pgTable("transportation_details", {
 
     totalTransportationCost: numeric("total_transportation_cost", { precision: 12, scale: 2 }),
 
-    paymentStatus: text("payment_status").default("PENDING"),
+    paymentStatus: text("payment_status").default("AWAITING_PAYMENT"),
     paymentDate: timestamp("payment_date", { withTimezone: true }),
 
     transportationSubmittedAt: timestamp("transportation_submitted_at", { withTimezone: true }),

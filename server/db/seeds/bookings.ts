@@ -28,7 +28,7 @@ const testBookings = [
         serviceTypeCode: "general_cleaning",
         duration: "HALF_DAY", // formerly categoryCode: "4_hours"
         notes: "Test booking - needs_confirmation status",
-        paymentStatus: "PENDING",
+        paymentStatus: "AWAITING_PAYMENT",
         totalAmount: "1090.00",
         // Pricing V2
         location: "NCR",
@@ -47,7 +47,7 @@ const testBookings = [
         serviceTypeCode: "deep_cleaning",
         duration: "HALF_DAY",
         notes: "Test booking - pending_review status",
-        paymentStatus: "PENDING",
+        paymentStatus: "AWAITING_PAYMENT",
         location: "CAVITE",
         totalAmount: "900.00"
     },
@@ -93,7 +93,7 @@ const testBookings = [
         serviceTypeCode: "general_cleaning",
         duration: "HALF_DAY",
         notes: "Additional Pending Review 1",
-        paymentStatus: "PENDING",
+        paymentStatus: "AWAITING_PAYMENT",
         totalAmount: "1090.00"
     },
     {
@@ -106,7 +106,7 @@ const testBookings = [
         serviceTypeCode: "deep_cleaning",
         duration: "HALF_DAY",
         notes: "Additional Pending Review 2",
-        paymentStatus: "PENDING",
+        paymentStatus: "AWAITING_PAYMENT",
         location: "CAVITE",
         totalAmount: "900.00"
     },
@@ -120,7 +120,7 @@ const testBookings = [
         serviceTypeCode: "post_construction",
         duration: "WHOLE_DAY", // Changed to Whole Day for test variety
         notes: "Additional Pending Review 3 - WHOLE_DAY NCR",
-        paymentStatus: "PENDING",
+        paymentStatus: "AWAITING_PAYMENT",
         totalAmount: "1390.00"
     },
     {
@@ -134,7 +134,7 @@ const testBookings = [
         duration: "WHOLE_DAY", // Changed to Whole Day Cavite
         location: "CAVITE",
         notes: "Additional Pending Review 4 - WHOLE_DAY CAVITE",
-        paymentStatus: "PENDING",
+        paymentStatus: "AWAITING_PAYMENT",
         totalAmount: "1190.00"
     },
     {
@@ -147,7 +147,7 @@ const testBookings = [
         serviceTypeCode: "general_cleaning",
         duration: "HALF_DAY",
         notes: "Additional Pending Review 5",
-        paymentStatus: "PENDING",
+        paymentStatus: "AWAITING_PAYMENT",
         totalAmount: "1090.00"
     }
 ];
