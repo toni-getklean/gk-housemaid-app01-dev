@@ -21,9 +21,18 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
     const { toast } = useToast();
     const [isLoading, setIsLoading] = useState(false);
 
+    const [hasTransportFeeBeenPaid, setHasTransportFeeBeenPaid] = useState(transportPaymentStatus === "PAYMENT_RECEIVED");
+
+    // Update local state if prop changes (e.g. after refresh)
+    if (transportPaymentStatus === "PAYMENT_RECEIVED" && !hasTransportFeeBeenPaid) {
+        setHasTransportFeeBeenPaid(true);
+    }
+
+    const [hasServiceFeeBeenPaid, setHasServiceFeeBeenPaid] = useState(booking.paymentStatusCode === "PAYMENT_RECEIVED");
+
     const isPayToHousemaid = paymentMethod === "CASH" && settlementTypeCode === "DIRECT_TO_HM";
-    const isServiceFeePaid = booking.paymentStatusCode === "PAYMENT_RECEIVED";
-    const isTransportFeePaid = transportPaymentStatus === "PAYMENT_RECEIVED";
+    const isServiceFeePaid = booking.paymentStatusCode === "PAYMENT_RECEIVED" || hasServiceFeeBeenPaid;
+    const isTransportFeePaid = transportPaymentStatus === "PAYMENT_RECEIVED" || hasTransportFeeBeenPaid;
     const isFullyPaid = isServiceFeePaid && isTransportFeePaid;
 
     const handleServiceFeePayment = async () => {
@@ -36,6 +45,7 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
             if (!response.ok) throw new Error("Payment failed");
 
             toast({ title: "Success", description: "Service Fee marked as paid." });
+            setHasServiceFeeBeenPaid(true);
             router.refresh();
         } catch (error) {
             toast({
@@ -58,6 +68,7 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
             if (!response.ok) throw new Error("Payment failed");
 
             toast({ title: "Success", description: "Transport Fee marked as paid." });
+            setHasTransportFeeBeenPaid(true);
             router.refresh();
         } catch (error) {
             toast({
@@ -160,14 +171,16 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
 
                                 <Alert className="bg-blue-50 border-blue-200">
                                     <p className="text-xs text-blue-700">
-                                        This payment covers the platform service only. Transport fee is paid separately.
+                                        {isServiceFeePaid
+                                            ? "Service Fee Paid — Confirmation in Progress"
+                                            : "This payment covers the platform service only. Transport fee is paid separately."}
                                     </p>
                                 </Alert>
 
                                 {isServiceFeePaid ? (
-                                    <Button disabled className="w-full bg-green-600 text-white">
-                                        <CheckCircle2 className="mr-2 h-4 w-4" /> Service Fee Paid
-                                    </Button>
+                                    <div className="w-full bg-green-50 text-green-700 p-2 rounded text-center text-sm font-medium border border-green-200">
+                                        <CheckCircle2 className="inline-block mr-2 h-4 w-4" /> Service Fee Paid
+                                    </div>
                                 ) : (
                                     <Button
                                         onClick={handleServiceFeePayment}
@@ -224,7 +237,7 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
                                         disabled={isLoading || booking.statusCode !== 'completed'}
                                         className="w-full bg-green-600 hover:bg-green-700"
                                     >
-                                        Transport Fee Paid
+                                        Mark Transport Fee as Paid
                                     </Button>
                                 )}
                             </TabsContent>
