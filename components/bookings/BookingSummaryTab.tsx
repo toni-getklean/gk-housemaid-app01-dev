@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar as CalendarIcon, Clock, ClipboardList, Star } from "lucide-react";
+import { Calendar as CalendarIcon, Clock, ClipboardList, Star, Wallet } from "lucide-react";
 import { format } from "date-fns";
 import { Booking } from "@/lib/database";
 import { ProofOfArrivalCard } from "./ProofOfArrivalCard";
@@ -16,6 +16,68 @@ const POINTS_MAP: Record<string, number> = {
     "ONE_TIME": 150,
     "FLEXI": 300
 };
+
+// ============================================
+// GetKlean Financial Rules - HM Share Calculation
+// ============================================
+// NCR Pricing Table - Fixed HM Rates (not percentage-based)
+// 
+// ONE-TIME BOOKING:
+// Whole Day: HM gets ₱650 fixed (+₱65 weekend surge = ₱715)
+// Half Day: HM gets ₱510 fixed (+₱51 weekend surge = ₱561)
+//
+// TRIAL BOOKING: 100% goes to Housemaid (₱650 whole / ₱510 half)
+//
+// Note: Transportation is 100% HM (shown separately in transport tab)
+// ============================================
+
+interface HMShareBreakdown {
+    baseRate: number;
+    surgeBonus: number;
+    totalServiceShare: number;
+    isWeekend: boolean;
+    serviceTypeLabel: string;
+}
+
+function calculateHMServiceShare(booking: Booking): HMShareBreakdown {
+    // Determine service type (WHOLE_DAY or HALF_DAY)
+    const isWholeDay = booking.serviceTypeCode === "WHOLE_DAY";
+    const serviceTypeLabel = isWholeDay ? "Whole Day" : "Half Day";
+
+    // Base HM rates (fixed, not percentage)
+    const baseRate = isWholeDay ? 650 : 510;
+
+    // Determine if weekend (Saturday = 6, Sunday = 0)
+    let isWeekend = false;
+    if (booking.serviceDate) {
+        const serviceDate = new Date(booking.serviceDate);
+        const dayOfWeek = serviceDate.getDay();
+        isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+    }
+
+    // Calculate surge (10% for weekend/holiday)
+    const surgeBonus = isWeekend ? Math.round(baseRate * 0.10) : 0;
+
+    // For Trial bookings, HM gets 100% of service amount
+    if (booking.bookingTypeCode === "TRIAL") {
+        const trialRate = isWholeDay ? 650 : 510;
+        return {
+            baseRate: trialRate,
+            surgeBonus: 0,  // No surge for trial
+            totalServiceShare: trialRate,
+            isWeekend: false,
+            serviceTypeLabel,
+        };
+    }
+
+    return {
+        baseRate,
+        surgeBonus,
+        totalServiceShare: baseRate + surgeBonus,
+        isWeekend,
+        serviceTypeLabel,
+    };
+}
 
 export function BookingSummaryTab({ booking, onUploadSuccess, onReschedule }: BookingSummaryTabProps) {
     const getStatusLabel = (status: string) => {
@@ -43,6 +105,9 @@ export function BookingSummaryTab({ booking, onUploadSuccess, onReschedule }: Bo
     const estimatedPoints = POINTS_MAP[booking.bookingTypeCode || "ONE_TIME"] || 150;
     const isCancelled = booking.statusCode === "cancelled";
 
+    // Calculate HM Share from service fee
+    const hmShare = calculateHMServiceShare(booking);
+
     return (
         <div className="space-y-4">
             <Card className="p-4">
@@ -69,6 +134,32 @@ export function BookingSummaryTab({ booking, onUploadSuccess, onReschedule }: Bo
                         </h3>
 
                         <div className="space-y-3">
+                            {/* Your Share (HM) - Service Fee */}
+                            {!isCancelled && (
+                                <div className="flex items-start gap-3">
+                                    <Wallet className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                                    <div>
+                                        <p className="text-sm text-gray-600">Your Share (HM)</p>
+                                        <div className="flex flex-col">
+                                            <div className="flex items-center gap-2">
+                                                <p className="text-sm font-bold text-blue-600">
+                                                    ₱{hmShare.totalServiceShare.toLocaleString('en-PH', { minimumFractionDigits: 2 })}
+                                                </p>
+                                                {hmShare.isWeekend && (
+                                                    <span className="text-[10px] text-orange-600 font-medium bg-orange-50 px-1.5 rounded">
+                                                        +{hmShare.surgeBonus} surge
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <p className="text-xs text-gray-400 mt-0.5">
+                                                Service Fee • {hmShare.serviceTypeLabel}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Points Earned / To Be Earned */}
                             {pointsAwarded > 0 ? (
                                 <div className="flex items-start gap-3">
                                     <Star className="h-5 w-5 text-yellow fill-yellow flex-shrink-0 mt-0.5" />

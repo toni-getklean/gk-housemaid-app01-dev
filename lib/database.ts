@@ -737,6 +737,56 @@ export class DatabaseService {
 
         // Award Asenso Points
         await AsensoService.awardPointsForBooking(bookingId);
+
+        // Update Payment Status to AWAITING_PAYMENT if Cash
+        const paymentRecord = await db
+          .select()
+          .from(bookingPayments)
+          .where(eq(bookingPayments.bookingId, bookingId))
+          .limit(1);
+
+        if (paymentRecord.length > 0) {
+          const pay = paymentRecord[0];
+          // If Cash and currently PENDING/NULL, move to AWAITING_PAYMENT
+          if (
+            pay.paymentMethodCode === "CASH" &&
+            (pay.paymentStatusCode === "PENDING" || !pay.paymentStatusCode)
+          ) {
+            await db
+              .update(bookingPayments)
+              .set({
+                paymentStatusCode: "AWAITING_PAYMENT",
+                updatedAt: new Date(),
+              })
+              .where(eq(bookingPayments.paymentId, pay.paymentId));
+          }
+        }
+
+        // Update Transport Payment Status to AWAITING_PAYMENT
+        // (Assuming similar logic: if it's currently pending/awaiting, ensure it's set to AWAITING_PAYMENT to trigger UI)
+        const transportRecord = await db
+          .select()
+          .from(transportationDetails)
+          .where(eq(transportationDetails.bookingId, bookingId))
+          .limit(1);
+
+        if (transportRecord.length > 0) {
+          const trans = transportRecord[0];
+          // If status is null, PENDING, or the default initial state, set to AWAITING_PAYMENT explicitly if needed
+          // Note: The schema default is already "AWAITING_PAYMENT", but this ensures it's set if it was something else like "PENDING"
+          if (!trans.paymentStatus || trans.paymentStatus === "PENDING" || trans.paymentStatus === "AWAITING_PAYMENT") {
+            // We just ensure it remains or is set to AWAITING_PAYMENT to accept payment.
+            // If you specifically want to TRANSITION it from a "Pre-completion" state to "Ready to Pay", this is where it happens.
+            // Since default is AWAITING_PAYMENT, this is a safety net or a transition from a 'Scheduled' state if that existed.
+            await db
+              .update(transportationDetails)
+              .set({
+                paymentStatus: "AWAITING_PAYMENT",
+                updatedAt: new Date(),
+              })
+              .where(eq(transportationDetails.transportationId, trans.transportationId));
+          }
+        }
       }
       if (newStatus === "cancelled" || newStatus === "rescheduled") {
         // These might have specific fields handled in additionalUpdates or logic elsewhere
@@ -832,7 +882,7 @@ export class DatabaseService {
 
       // Helper to validate mode - throws error if invalid
       const validateAndGetMode = (leg: any): string => {
-        const validModes = ['jeepney', 'bus', 'tricycle', 'mrt_lrt', 'taxi_grab', 'motorcycle', 'walking'];
+        const validModes = ['jeepney', 'bus', 'tricycle', 'mrt_lrt', 'taxi_grab', 'motorcycle'];
         const modeValue = leg?.transport_mode || leg?.mode;
         if (typeof modeValue === 'string' && validModes.includes(modeValue)) {
           return modeValue;

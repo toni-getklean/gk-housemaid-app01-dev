@@ -26,8 +26,26 @@ const paymentStatusData = [
     {
         statusCode: "PAYMENT_RECEIVED",
         displayName: "Payment Received",
+        statusType: "Pending",
+        statusDescription: "Payment has been received but not yet validated.",
+    },
+    {
+        statusCode: "PAYMENT_UNDER_VERIFICATION",
+        displayName: "Payment Under Verification",
+        statusType: "Pending",
+        statusDescription: "Payment is currently being verified.",
+    },
+    {
+        statusCode: "PAYMENT_VERIFIED",
+        displayName: "Payment Verified",
         statusType: "Success",
-        statusDescription: "Full payment received and verified.",
+        statusDescription: "Full payment has been verified.",
+    },
+    {
+        statusCode: "PAYMENT_REFUNDED",
+        displayName: "Payment Refunded",
+        statusType: "Failure", // Or Refund
+        statusDescription: "Full payment was refunded.",
     },
     {
         statusCode: "FAILED",

@@ -33,7 +33,7 @@ interface BookingTransportTabProps {
     onUpdate: (data: any) => Promise<void>;
 }
 
-const VALID_MODES = ['jeepney', 'bus', 'tricycle', 'mrt_lrt', 'taxi_grab', 'motorcycle', 'walking'];
+const VALID_MODES = ['jeepney', 'bus', 'tricycle', 'mrt_lrt', 'taxi_grab', 'motorcycle'];
 
 export function BookingTransportTab({ booking, onUpdate }: BookingTransportTabProps) {
     const { toast } = useToast();
@@ -41,9 +41,9 @@ export function BookingTransportTab({ booking, onUpdate }: BookingTransportTabPr
     const [returnEntries, setReturnEntries] = useState<TransportEntry[]>([]);
     const [isSaving, setIsSaving] = useState(false);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-    const [validationErrors, setValidationErrors] = useState<{type: string, index: number, field: string}[]>([]);
+    const [validationErrors, setValidationErrors] = useState<{ type: string, index: number, field: string }[]>([]);
     const { startUpload, isUploading: isUTUploading } = useUploadThing("transportReceipt");
-    
+
     const lastSaveRef = useRef<string>('');
 
     const sanitizeCost = (value: any): number => {
@@ -52,21 +52,27 @@ export function BookingTransportTab({ booking, onUpdate }: BookingTransportTabPr
         return isNaN(num) ? 0 : num;
     };
 
-    const validateEntries = (commute: TransportEntry[], returnLegs: TransportEntry[]): {type: string, index: number, field: string}[] => {
-        const errors: {type: string, index: number, field: string}[] = [];
-        
+    const validateEntries = (commute: TransportEntry[], returnLegs: TransportEntry[]): { type: string, index: number, field: string }[] => {
+        const errors: { type: string, index: number, field: string }[] = [];
+
         commute.forEach((entry, index) => {
             if (!entry.mode || !VALID_MODES.includes(entry.mode)) {
                 errors.push({ type: 'commute', index, field: 'mode' });
             }
+            if (!entry.receipt_url) {
+                errors.push({ type: 'commute', index, field: 'receipt' });
+            }
         });
-        
+
         returnLegs.forEach((entry, index) => {
             if (!entry.mode || !VALID_MODES.includes(entry.mode)) {
                 errors.push({ type: 'return', index, field: 'mode' });
             }
+            if (!entry.receipt_url) {
+                errors.push({ type: 'return', index, field: 'receipt' });
+            }
         });
-        
+
         return errors;
     };
 
@@ -76,8 +82,8 @@ export function BookingTransportTab({ booking, onUpdate }: BookingTransportTabPr
 
     const checkForChanges = (commute: TransportEntry[], returnLegs: TransportEntry[]) => {
         const totalCost = commute.reduce((sum, e) => sum + sanitizeCost(e.cost), 0) +
-                          returnLegs.reduce((sum, e) => sum + sanitizeCost(e.cost), 0);
-        
+            returnLegs.reduce((sum, e) => sum + sanitizeCost(e.cost), 0);
+
         const dataToCheck = {
             commute_to_client_infos: commute.map(e => ({
                 ...e,
@@ -98,9 +104,19 @@ export function BookingTransportTab({ booking, onUpdate }: BookingTransportTabPr
         const errors = validateEntries(commuteEntries, returnEntries);
         if (errors.length > 0) {
             setValidationErrors(errors);
+            const hasModeError = errors.some(e => e.field === 'mode');
+            const hasReceiptError = errors.some(e => e.field === 'receipt');
+            let errorMessage = "Please fix the following errors: ";
+            if (hasModeError && hasReceiptError) {
+                errorMessage = "Please select a transit type and upload a receipt for all entries.";
+            } else if (hasModeError) {
+                errorMessage = "Please select a transit type for all entries.";
+            } else if (hasReceiptError) {
+                errorMessage = "Please upload a receipt for all entries.";
+            }
             toast({
                 title: "Validation Error",
-                description: "Please select a transit type for all entries before saving.",
+                description: errorMessage,
                 variant: "destructive",
             });
             return;
@@ -111,8 +127,8 @@ export function BookingTransportTab({ booking, onUpdate }: BookingTransportTabPr
 
         try {
             const totalCost = commuteEntries.reduce((sum, e) => sum + sanitizeCost(e.cost), 0) +
-                              returnEntries.reduce((sum, e) => sum + sanitizeCost(e.cost), 0);
-            
+                returnEntries.reduce((sum, e) => sum + sanitizeCost(e.cost), 0);
+
             const dataToSave = {
                 commute_to_client_infos: commuteEntries.map(e => ({
                     ...e,
@@ -128,7 +144,7 @@ export function BookingTransportTab({ booking, onUpdate }: BookingTransportTabPr
             await onUpdate(dataToSave);
             lastSaveRef.current = JSON.stringify(dataToSave);
             setHasUnsavedChanges(false);
-            
+
             toast({
                 title: "Saved",
                 description: "Transportation details saved successfully.",
@@ -233,6 +249,9 @@ export function BookingTransportTab({ booking, onUpdate }: BookingTransportTabPr
             if (field === 'mode' && value) {
                 setValidationErrors(prev => prev.filter(e => !(e.type === 'commute' && e.index === index && e.field === 'mode')));
             }
+            if (field === 'receipt_url' && value) {
+                setValidationErrors(prev => prev.filter(e => !(e.type === 'commute' && e.index === index && e.field === 'receipt')));
+            }
         } else {
             const entries = [...returnEntries];
             if (field === 'cost') {
@@ -244,6 +263,9 @@ export function BookingTransportTab({ booking, onUpdate }: BookingTransportTabPr
             checkForChanges(commuteEntries, entries);
             if (field === 'mode' && value) {
                 setValidationErrors(prev => prev.filter(e => !(e.type === 'return' && e.index === index && e.field === 'mode')));
+            }
+            if (field === 'receipt_url' && value) {
+                setValidationErrors(prev => prev.filter(e => !(e.type === 'return' && e.index === index && e.field === 'receipt')));
             }
         }
     };
@@ -285,7 +307,6 @@ export function BookingTransportTab({ booking, onUpdate }: BookingTransportTabPr
                             <SelectItem value="mrt_lrt">MRT/LRT</SelectItem>
                             <SelectItem value="taxi_grab">Taxi/Grab</SelectItem>
                             <SelectItem value="motorcycle">Motorcycle</SelectItem>
-                            <SelectItem value="walking">Walking</SelectItem>
                         </SelectContent>
                     </Select>
                     {hasValidationError(type, index, 'mode') && (
@@ -318,7 +339,7 @@ export function BookingTransportTab({ booking, onUpdate }: BookingTransportTabPr
             </div>
 
             <div className="space-y-1">
-                <Label className="text-xs">Receipt (Optional)</Label>
+                <Label className="text-xs">Receipt <span className="text-red-500">*</span></Label>
                 <div className="flex items-center gap-2">
                     <Input
                         type="file"
@@ -357,7 +378,7 @@ export function BookingTransportTab({ booking, onUpdate }: BookingTransportTabPr
                         type="button"
                         variant="outline"
                         size="sm"
-                        className="w-full"
+                        className={`w-full ${hasValidationError(type, index, 'receipt') ? 'border-red-500 ring-1 ring-red-500' : ''}`}
                         disabled={isUTUploading || isSaving}
                         onClick={() => document.getElementById(`receipt-${type}-${index}`)?.click()}
                     >
@@ -371,6 +392,9 @@ export function BookingTransportTab({ booking, onUpdate }: BookingTransportTabPr
                         </span>
                     )}
                 </div>
+                {hasValidationError(type, index, 'receipt') && (
+                    <span className="text-xs text-red-500">Please upload a receipt</span>
+                )}
             </div>
         </div>
     );
@@ -455,7 +479,7 @@ export function BookingTransportTab({ booking, onUpdate }: BookingTransportTabPr
                     <span>Grand Total:</span>
                     <span className="text-teal">₱{grandTotal.toFixed(2)}</span>
                 </div>
-                
+
                 <Button
                     onClick={handleSave}
                     disabled={isSaving || (!hasUnsavedChanges && commuteEntries.length === 0 && returnEntries.length === 0)}

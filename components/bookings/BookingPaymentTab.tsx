@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import serviceFeeQr from "@/assets/images/service-fee-qr-ph.png";
+import transportFeeQr from "@/assets/images/housemaid-transport-fee-qr.png";
 
 interface BookingPaymentTabProps {
     booking: Booking;
@@ -21,18 +22,21 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
     const { toast } = useToast();
     const [isLoading, setIsLoading] = useState(false);
 
-    const [hasTransportFeeBeenPaid, setHasTransportFeeBeenPaid] = useState(transportPaymentStatus === "PAYMENT_RECEIVED");
+    const PAID_STATUSES = ["PAYMENT_RECEIVED", "PAYMENT_UNDER_VERIFICATION", "PAYMENT_VERIFIED"];
+    const checkPaid = (status: string | null | undefined) => status ? PAID_STATUSES.includes(status) : false;
+
+    const [hasTransportFeeBeenPaid, setHasTransportFeeBeenPaid] = useState(checkPaid(transportPaymentStatus));
 
     // Update local state if prop changes (e.g. after refresh)
-    if (transportPaymentStatus === "PAYMENT_RECEIVED" && !hasTransportFeeBeenPaid) {
+    if (checkPaid(transportPaymentStatus) && !hasTransportFeeBeenPaid) {
         setHasTransportFeeBeenPaid(true);
     }
 
-    const [hasServiceFeeBeenPaid, setHasServiceFeeBeenPaid] = useState(booking.paymentStatusCode === "PAYMENT_RECEIVED");
+    const [hasServiceFeeBeenPaid, setHasServiceFeeBeenPaid] = useState(checkPaid(booking.paymentStatusCode));
 
     const isPayToHousemaid = paymentMethod === "CASH" && settlementTypeCode === "DIRECT_TO_HM";
-    const isServiceFeePaid = booking.paymentStatusCode === "PAYMENT_RECEIVED" || hasServiceFeeBeenPaid;
-    const isTransportFeePaid = transportPaymentStatus === "PAYMENT_RECEIVED" || hasTransportFeeBeenPaid;
+    const isServiceFeePaid = checkPaid(booking.paymentStatusCode) || hasServiceFeeBeenPaid;
+    const isTransportFeePaid = checkPaid(transportPaymentStatus) || hasTransportFeeBeenPaid;
     const isFullyPaid = isServiceFeePaid && isTransportFeePaid;
 
     const handleServiceFeePayment = async () => {
@@ -169,17 +173,36 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
                                     </div>
                                 </Card>
 
-                                <Alert className="bg-blue-50 border-blue-200">
-                                    <p className="text-xs text-blue-700">
-                                        {isServiceFeePaid
-                                            ? "Service Fee Paid — Confirmation in Progress"
-                                            : "This payment covers the platform service only. Transport fee is paid separately."}
+                                <Alert className={`
+                                    ${booking.paymentStatusCode === 'PAYMENT_VERIFIED' ? 'bg-green-50 border-green-200' : ''}
+                                    ${booking.paymentStatusCode === 'PAYMENT_RECEIVED' ? 'bg-blue-50 border-blue-200' : ''}
+                                    ${booking.paymentStatusCode === 'PAYMENT_UNDER_VERIFICATION' ? 'bg-yellow-50 border-yellow-200' : ''}
+                                    ${!isServiceFeePaid ? 'bg-blue-50 border-blue-200' : ''}
+                                `}>
+                                    <p className={`text-xs ${booking.paymentStatusCode === 'PAYMENT_VERIFIED' ? 'text-green-700' :
+                                            booking.paymentStatusCode === 'PAYMENT_RECEIVED' ? 'text-blue-700' :
+                                                booking.paymentStatusCode === 'PAYMENT_UNDER_VERIFICATION' ? 'text-yellow-700' :
+                                                    'text-blue-700'
+                                        }`}>
+                                        {booking.paymentStatusCode === 'PAYMENT_VERIFIED' && "Service Fee payment verified."}
+                                        {booking.paymentStatusCode === 'PAYMENT_RECEIVED' && "Service Fee Paid — Confirmation in Progress"}
+                                        {booking.paymentStatusCode === 'PAYMENT_UNDER_VERIFICATION' && "Payment is currently under verification."}
+                                        {!isServiceFeePaid && "This payment covers the platform service only. Transport fee is paid separately."}
                                     </p>
                                 </Alert>
 
                                 {isServiceFeePaid ? (
-                                    <div className="w-full bg-green-50 text-green-700 p-2 rounded text-center text-sm font-medium border border-green-200">
-                                        <CheckCircle2 className="inline-block mr-2 h-4 w-4" /> Service Fee Paid
+                                    <div className={`w-full p-2 rounded text-center text-sm font-medium border ${booking.paymentStatusCode === 'PAYMENT_VERIFIED' ? 'bg-green-50 text-green-700 border-green-200' :
+                                            booking.paymentStatusCode === 'PAYMENT_UNDER_VERIFICATION' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' :
+                                                'bg-blue-50 text-blue-700 border-blue-200'
+                                        }`}>
+                                        {booking.paymentStatusCode === 'PAYMENT_VERIFIED' ? (
+                                            <><CheckCircle2 className="inline-block mr-2 h-4 w-4" /> Service Fee Verified</>
+                                        ) : booking.paymentStatusCode === 'PAYMENT_UNDER_VERIFICATION' ? (
+                                            "Verification in Progress"
+                                        ) : (
+                                            "Service Fee Paid"
+                                        )}
                                     </div>
                                 ) : (
                                     <Button
@@ -202,7 +225,7 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
                                 <Card className="p-6 flex flex-col items-center justify-center bg-white border-dashed">
                                     <div className="w-full mb-4">
                                         <Image
-                                            src={serviceFeeQr}
+                                            src={transportFeeQr}
                                             alt="Transport Fee QR Code"
                                             className="w-full h-auto object-contain"
                                         />
@@ -219,17 +242,36 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
                                     </div>
                                 </Card>
 
-                                <Alert className="bg-green-50 border-green-200">
-                                    <p className="text-xs text-green-700">
-                                        {isTransportFeePaid
-                                            ? "Transportation payment has been received by the housemaid."
-                                            : "This payment goes directly to the housemaid and is not collected by the platform."}
+                                <Alert className={`
+                                    ${transportPaymentStatus === 'PAYMENT_VERIFIED' ? 'bg-green-50 border-green-200' : ''}
+                                    ${transportPaymentStatus === 'PAYMENT_RECEIVED' ? 'bg-blue-50 border-blue-200' : ''}
+                                    ${transportPaymentStatus === 'PAYMENT_UNDER_VERIFICATION' ? 'bg-yellow-50 border-yellow-200' : ''}
+                                    ${!isTransportFeePaid ? 'bg-gray-50 border-gray-200' : ''}
+                                `}>
+                                    <p className={`text-xs ${transportPaymentStatus === 'PAYMENT_VERIFIED' ? 'text-green-700' :
+                                        transportPaymentStatus === 'PAYMENT_RECEIVED' ? 'text-blue-700' :
+                                            transportPaymentStatus === 'PAYMENT_UNDER_VERIFICATION' ? 'text-yellow-700' :
+                                                'text-gray-700'
+                                        }`}>
+                                        {transportPaymentStatus === 'PAYMENT_VERIFIED' && "Transportation payment paid & verified."}
+                                        {transportPaymentStatus === 'PAYMENT_RECEIVED' && "Payment received. Pending validation."}
+                                        {transportPaymentStatus === 'PAYMENT_UNDER_VERIFICATION' && "Payment is currently under verification."}
+                                        {!isTransportFeePaid && "This payment goes directly to the housemaid and is not collected by the platform."}
                                     </p>
                                 </Alert>
 
                                 {isTransportFeePaid ? (
-                                    <div className="w-full bg-green-50 text-green-700 p-2 rounded text-center text-sm font-medium border border-green-200">
-                                        <CheckCircle2 className="inline-block mr-2 h-4 w-4" /> Transport Fee Paid
+                                    <div className={`w-full p-2 rounded text-center text-sm font-medium border ${transportPaymentStatus === 'PAYMENT_VERIFIED' ? 'bg-green-50 text-green-700 border-green-200' :
+                                        transportPaymentStatus === 'PAYMENT_UNDER_VERIFICATION' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' :
+                                            'bg-blue-50 text-blue-700 border-blue-200'
+                                        }`}>
+                                        {transportPaymentStatus === 'PAYMENT_VERIFIED' ? (
+                                            <><CheckCircle2 className="inline-block mr-2 h-4 w-4" /> Transport Fee Verified</>
+                                        ) : transportPaymentStatus === 'PAYMENT_UNDER_VERIFICATION' ? (
+                                            "Verification in Progress"
+                                        ) : (
+                                            "Payment Received - Validating"
+                                        )}
                                     </div>
                                 ) : (
                                     <Button

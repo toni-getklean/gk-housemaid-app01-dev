@@ -210,10 +210,23 @@ export function BookingActionFooter({
                 );
             case "on_the_way": // Mark as Arrived logic
                 const canMarkArrived = !!booking.proofOfArrivalImg;
+                const hasCommuteDetails = booking.transportationLegs?.some(
+                    leg => leg.direction === "TO_CLIENT"
+                );
                 return (
                     <Button
                         className="w-full bg-teal hover:bg-teal-hover text-white"
-                        onClick={() => handleAction("arrived")}
+                        onClick={() => {
+                            if (!hasCommuteDetails) {
+                                toast({
+                                    title: "Missing Transport Details",
+                                    description: "Please add your commute to client details before marking as arrived.",
+                                    variant: "destructive",
+                                });
+                                return;
+                            }
+                            handleAction("arrived");
+                        }}
                         disabled={isLoading || !canMarkArrived}
                         title={!canMarkArrived ? "Please upload proof of arrival first" : undefined}
                     >
@@ -234,7 +247,22 @@ export function BookingActionFooter({
                 return (
                     <Button
                         className="w-full bg-green-600 hover:bg-green-700 text-white"
-                        onClick={() => handleAction("completed")}
+                        onClick={() => {
+                            // Check for return details
+                            const hasReturnDetails = booking.transportationLegs?.some(
+                                leg => leg.direction === "RETURN"
+                            );
+
+                            if (!hasReturnDetails) {
+                                toast({
+                                    title: "Missing Transport Details",
+                                    description: "Please add your return fare details before completing the booking.",
+                                    variant: "destructive",
+                                });
+                                return;
+                            }
+                            handleAction("completed");
+                        }}
                         disabled={isLoading}
                     >
                         Mark as Completed

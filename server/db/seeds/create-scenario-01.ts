@@ -13,7 +13,7 @@ import { getDatabaseService } from "@/lib/database";
 const SCENARIO_CONFIG = {
     housemaid: {
         facebookId: "SEED_SCENARIO_HM_01",
-        name: "Scenario Housemaid 01",
+        name: "Marvin Perol",
         code: "HM-SCENARIO-01"
     },
     customer: {
