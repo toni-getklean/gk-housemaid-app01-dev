@@ -180,9 +180,9 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
                                     ${!isServiceFeePaid ? 'bg-blue-50 border-blue-200' : ''}
                                 `}>
                                     <p className={`text-xs ${booking.paymentStatusCode === 'PAYMENT_VERIFIED' ? 'text-green-700' :
-                                            booking.paymentStatusCode === 'PAYMENT_RECEIVED' ? 'text-blue-700' :
-                                                booking.paymentStatusCode === 'PAYMENT_UNDER_VERIFICATION' ? 'text-yellow-700' :
-                                                    'text-blue-700'
+                                        booking.paymentStatusCode === 'PAYMENT_RECEIVED' ? 'text-blue-700' :
+                                            booking.paymentStatusCode === 'PAYMENT_UNDER_VERIFICATION' ? 'text-yellow-700' :
+                                                'text-blue-700'
                                         }`}>
                                         {booking.paymentStatusCode === 'PAYMENT_VERIFIED' && "Service Fee payment verified."}
                                         {booking.paymentStatusCode === 'PAYMENT_RECEIVED' && "Service Fee Paid — Confirmation in Progress"}
@@ -193,8 +193,8 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
 
                                 {isServiceFeePaid ? (
                                     <div className={`w-full p-2 rounded text-center text-sm font-medium border ${booking.paymentStatusCode === 'PAYMENT_VERIFIED' ? 'bg-green-50 text-green-700 border-green-200' :
-                                            booking.paymentStatusCode === 'PAYMENT_UNDER_VERIFICATION' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' :
-                                                'bg-blue-50 text-blue-700 border-blue-200'
+                                        booking.paymentStatusCode === 'PAYMENT_UNDER_VERIFICATION' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' :
+                                            'bg-blue-50 text-blue-700 border-blue-200'
                                         }`}>
                                         {booking.paymentStatusCode === 'PAYMENT_VERIFIED' ? (
                                             <><CheckCircle2 className="inline-block mr-2 h-4 w-4" /> Service Fee Verified</>
@@ -287,28 +287,26 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
                     </Card>
                 </div>
             ) : (
-                /* Fallback / Original View for Non-Split Payment */
-                <>
-                    {!isPayToHousemaid && (
-                        <Alert className="bg-green-50 border-green-200">
-                            <CheckCircle2 className="h-4 w-4 text-green-600" />
-                            <AlertTitle className="text-green-800">PAID ONLINE / OFFICE</AlertTitle>
-                            <AlertDescription className="text-green-700">
-                                Do not collect payment from the client directly.
-                            </AlertDescription>
-                        </Alert>
-                    )}
+                /* View for Non-Split Payment (PAID_TO_GK / Online / Office) */
+                <div className="space-y-4">
+                    <Alert className="bg-green-50 border-green-200">
+                        <CheckCircle2 className="h-4 w-4 text-green-600" />
+                        <AlertTitle className="text-green-800">SERVICE FEE — PAID TO COMPANY</AlertTitle>
+                        <AlertDescription className="text-green-700">
+                            Service fee has been paid to GetKlean. Do not collect the service fee from the customer.
+                        </AlertDescription>
+                    </Alert>
 
                     <Card className="p-4">
                         <h2 className="text-lg font-semibold text-teal mb-4">
-                            Payment Summary
+                            Service Fee Summary
                         </h2>
 
                         <div className="space-y-3">
                             <div className="flex justify-between items-center">
                                 <span className="text-sm text-gray-600">Pay To</span>
                                 <span className="text-sm font-medium text-gray-900">
-                                    {isPayToHousemaid ? "Housemaid" : "Office/Online"}
+                                    Office/Online
                                 </span>
                             </div>
 
@@ -327,7 +325,7 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
                             </div>
 
                             <div className="flex justify-between items-center">
-                                <span className="text-sm text-gray-600">Payment Status </span>
+                                <span className="text-sm text-gray-600">Payment Status</span>
                                 <div className="mt-1">
                                     <Badge variant={booking.paymentStatusCode === 'PAYMENT_RECEIVED' ? 'default' : 'secondary'}>
                                         {booking.paymentStatusCode?.replace(/_/g, " ") || "PENDING"}
@@ -336,29 +334,93 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
                             </div>
 
                             <div className="border-t pt-3 mt-3">
-                                {booking.statusCode === 'completed' && (
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-sm text-gray-600">Total Transport Cost</span>
-                                        <span className="text-sm font-medium text-gray-900">
-                                            ₱{booking.totalTransportationCost || "0.00"}
-                                        </span>
-                                    </div>
-                                )}
-                                <div className="flex justify-between items-center mt-2">
+                                <div className="flex justify-between items-center">
                                     <span className="text-base font-semibold text-gray-900">
-                                        Total Amount Due
+                                        Service Fee
                                     </span>
-                                    <span
-                                        className={`text-lg font-bold ${isPayToHousemaid ? "text-red-600" : "text-teal"
-                                            }`}
-                                    >
+                                    <span className="text-lg font-bold text-teal">
                                         ₱{totalAmount || "0.00"}
                                     </span>
                                 </div>
                             </div>
                         </div>
                     </Card>
-                </>
+
+                    {/* Transport Fee — Always collected by Housemaid */}
+                    <Card className="p-4">
+                        <h2 className="text-lg font-semibold text-teal mb-4">
+                            Transport Fee
+                        </h2>
+
+                        <div className="text-center mb-4">
+                            <p className="text-sm text-gray-500 mb-1">Transport Fee</p>
+                            <h3 className="text-3xl font-bold text-gray-900">₱{booking.totalTransportationCost || "0.00"}</h3>
+                        </div>
+
+                        <Card className="p-6 flex flex-col items-center justify-center bg-white border-dashed">
+                            <div className="w-full mb-4">
+                                <Image
+                                    src={transportFeeQr}
+                                    alt="Transport Fee QR Code"
+                                    className="w-full h-auto object-contain"
+                                />
+                            </div>
+                            <p className="text-xs text-gray-500 text-center mt-1 mb-4">Scan using GCash or Maya</p>
+                            <div className="w-full border-t border-gray-100 pt-3 mt-1 text-center space-y-1">
+                                <p className="text-xs text-gray-400 uppercase tracking-wide">Or Transfer To</p>
+                                <p className="text-sm font-semibold text-gray-900">GCash</p>
+                                <div className="flex items-center justify-center gap-2">
+                                    <p className="text-sm font-mono text-gray-600 bg-gray-50 px-2 py-1 rounded">
+                                        {booking.gcashNumber || "No GCash number registered"}
+                                    </p>
+                                </div>
+                            </div>
+                        </Card>
+
+                        <Alert className={`mt-4
+                            ${transportPaymentStatus === 'PAYMENT_VERIFIED' ? 'bg-green-50 border-green-200' : ''}
+                            ${transportPaymentStatus === 'PAYMENT_RECEIVED' ? 'bg-blue-50 border-blue-200' : ''}
+                            ${transportPaymentStatus === 'PAYMENT_UNDER_VERIFICATION' ? 'bg-yellow-50 border-yellow-200' : ''}
+                            ${!isTransportFeePaid ? 'bg-gray-50 border-gray-200' : ''}
+                        `}>
+                            <p className={`text-xs ${transportPaymentStatus === 'PAYMENT_VERIFIED' ? 'text-green-700' :
+                                transportPaymentStatus === 'PAYMENT_RECEIVED' ? 'text-blue-700' :
+                                    transportPaymentStatus === 'PAYMENT_UNDER_VERIFICATION' ? 'text-yellow-700' :
+                                        'text-gray-700'
+                                }`}>
+                                {transportPaymentStatus === 'PAYMENT_VERIFIED' && "Transportation payment paid & verified."}
+                                {transportPaymentStatus === 'PAYMENT_RECEIVED' && "Payment received. Pending validation."}
+                                {transportPaymentStatus === 'PAYMENT_UNDER_VERIFICATION' && "Payment is currently under verification."}
+                                {!isTransportFeePaid && "This payment goes directly to the housemaid and is not collected by the platform."}
+                            </p>
+                        </Alert>
+
+                        <div className="mt-4">
+                            {isTransportFeePaid ? (
+                                <div className={`w-full p-2 rounded text-center text-sm font-medium border ${transportPaymentStatus === 'PAYMENT_VERIFIED' ? 'bg-green-50 text-green-700 border-green-200' :
+                                    transportPaymentStatus === 'PAYMENT_UNDER_VERIFICATION' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' :
+                                        'bg-blue-50 text-blue-700 border-blue-200'
+                                    }`}>
+                                    {transportPaymentStatus === 'PAYMENT_VERIFIED' ? (
+                                        <><CheckCircle2 className="inline-block mr-2 h-4 w-4" /> Transport Fee Verified</>
+                                    ) : transportPaymentStatus === 'PAYMENT_UNDER_VERIFICATION' ? (
+                                        "Verification in Progress"
+                                    ) : (
+                                        "Payment Received - Validating"
+                                    )}
+                                </div>
+                            ) : (
+                                <Button
+                                    onClick={handleTransportFeePayment}
+                                    disabled={isLoading || booking.statusCode !== 'completed'}
+                                    className="w-full bg-green-600 hover:bg-green-700"
+                                >
+                                    Mark Transport Fee as Paid
+                                </Button>
+                            )}
+                        </div>
+                    </Card>
+                </div>
             )}
 
             <Card className="p-4 bg-gray-50 border-none">

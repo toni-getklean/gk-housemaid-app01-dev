@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 
 const data = [
     { code: "DIRECT_TO_HM", displayName: "Direct to Housemaid" },
+    { code: "PAID_TO_GK", displayName: "Paid to GetKlean" },
     { code: "INTERNAL_CHARGE", displayName: "Internal Charge" },
     { code: "WAIVED", displayName: "Waived" },
 ];

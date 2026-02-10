@@ -149,6 +149,73 @@ const testBookings = [
         notes: "Additional Pending Review 5",
         paymentStatus: "AWAITING_PAYMENT",
         totalAmount: "1090.00"
+    },
+    // ── PAID_TO_GK Bookings (Service fee paid to company via E-Wallet) ──
+    {
+        customerAccount: "ACC-2024-001",
+        statusCode: "pending_review",
+        housemaidId: TARGET_HOUSEMAID_ID,
+        housemaidName: "ROSE PANGANIBAN",
+        serviceDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000),
+        time: "9:00AM - 1:00PM",
+        serviceTypeCode: "general_cleaning",
+        duration: "HALF_DAY",
+        notes: "PAID_TO_GK Test 1 - Pending Review",
+        paymentStatus: "PAYMENT_RECEIVED",
+        paymentMethodOverride: "E_WALLET",
+        settlementTypeOverride: "PAID_TO_GK",
+        totalAmount: "1090.00"
+    },
+    {
+        customerAccount: "ACC-2024-002",
+        statusCode: "accepted",
+        housemaidId: TARGET_HOUSEMAID_ID,
+        housemaidName: "ROSE PANGANIBAN",
+        serviceDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+        time: "1:00PM - 5:00PM",
+        serviceTypeCode: "deep_cleaning",
+        duration: "HALF_DAY",
+        notes: "PAID_TO_GK Test 2 - Accepted",
+        housemaidAcceptedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+        paymentStatus: "PAYMENT_RECEIVED",
+        paymentMethodOverride: "E_WALLET",
+        settlementTypeOverride: "PAID_TO_GK",
+        location: "CAVITE",
+        totalAmount: "900.00"
+    },
+    {
+        customerAccount: "ACC-2024-003",
+        statusCode: "dispatched",
+        housemaidId: TARGET_HOUSEMAID_ID,
+        housemaidName: "ROSE PANGANIBAN",
+        serviceDate: new Date(),
+        time: "9:00AM - 1:00PM",
+        serviceTypeCode: "general_cleaning",
+        duration: "WHOLE_DAY",
+        notes: "PAID_TO_GK Test 3 - Dispatched",
+        housemaidAcceptedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+        housemaidDispatchedAt: new Date(Date.now() - 1 * 60 * 60 * 1000),
+        paymentStatus: "PAYMENT_RECEIVED",
+        paymentMethodOverride: "E_WALLET",
+        settlementTypeOverride: "PAID_TO_GK",
+        totalAmount: "1390.00"
+    },
+    {
+        customerAccount: "ACC-2024-001",
+        statusCode: "in_progress",
+        housemaidId: TARGET_HOUSEMAID_ID,
+        housemaidName: "ROSE PANGANIBAN",
+        serviceDate: new Date(),
+        time: "8:00AM - 12:00PM",
+        serviceTypeCode: "post_construction",
+        duration: "WHOLE_DAY",
+        notes: "PAID_TO_GK Test 4 - In Progress",
+        housemaidAcceptedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+        housemaidDispatchedAt: new Date(Date.now() - 3 * 60 * 60 * 1000),
+        paymentStatus: "PAYMENT_RECEIVED",
+        paymentMethodOverride: "E_WALLET",
+        settlementTypeOverride: "PAID_TO_GK",
+        totalAmount: "1390.00"
     }
 ];
 
@@ -293,11 +360,11 @@ async function main() {
                     bookingId: insertedBooking.bookingId,
 
                     paymentSourceCode: "CUSTOMER_DIRECT",
-                    paymentMethodCode: "CASH",
+                    paymentMethodCode: (booking as any).paymentMethodOverride || "CASH",
                     paymentStatusCode: booking.paymentStatus,
                     validationStatusCode: "PENDING",
 
-                    settlementTypeCode: "DIRECT_TO_HM",
+                    settlementTypeCode: (booking as any).settlementTypeOverride || "DIRECT_TO_HM",
 
                     originalAmount: booking.totalAmount,
                     totalAmount: booking.totalAmount,
