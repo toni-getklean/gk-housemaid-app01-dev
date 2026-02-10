@@ -12,12 +12,16 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { PaymentCollectionDialog } from "./PaymentCollectionDialog";
+import { TransportRequiredDialog } from "./TransportRequiredDialog";
 
 interface BookingActionFooterProps {
     booking: Booking;
     onStatusUpdate: (newStatus: string, reason?: string) => Promise<void>;
     activeTab?: string;
     onReschedule: () => void;
+    onSwitchToPaymentTab?: () => void;
+    onSwitchToTransportTab?: () => void;
 }
 
 export function BookingActionFooter({
@@ -25,6 +29,8 @@ export function BookingActionFooter({
     onStatusUpdate,
     activeTab,
     onReschedule,
+    onSwitchToPaymentTab,
+    onSwitchToTransportTab,
 }: BookingActionFooterProps) {
     if (activeTab === "transport") return null;
 
@@ -38,6 +44,8 @@ export function BookingActionFooter({
     const [showDeclineModal, setShowDeclineModal] = useState(false);
     const [declineReason, setDeclineReason] = useState("");
     const [customDeclineNote, setCustomDeclineNote] = useState("");
+    const [showPaymentCollectionDialog, setShowPaymentCollectionDialog] = useState(false);
+    const [transportDialogVariant, setTransportDialogVariant] = useState<"commute_to_client" | "return_fare" | null>(null);
 
     const DECLINE_REASONS = [
         { code: "NOT_AVAILABLE", label: "Not Available" },
@@ -95,13 +103,25 @@ export function BookingActionFooter({
             await onStatusUpdate(newStatus, finalPayload);
 
             const isDecline = newStatus === "pending_review";
+            const isCompleted = newStatus === "completed";
 
-            toast({
-                title: isDecline ? "Assignment Declined" : "Status Updated",
-                description: isDecline
-                    ? "The booking has been returned for reassignment."
-                    : "Booking status changed successfully.",
-            });
+            if (isCompleted) {
+                toast({
+                    title: "Service Completed! 💰",
+                    description: "Review booking payment and collect payment from customer.",
+                });
+                // Delay dialog so toast can display first without interference
+                setTimeout(() => {
+                    setShowPaymentCollectionDialog(true);
+                }, 1500);
+            } else {
+                toast({
+                    title: isDecline ? "Assignment Declined" : "Status Updated",
+                    description: isDecline
+                        ? "The booking has been returned for reassignment."
+                        : "Booking status changed successfully.",
+                });
+            }
 
             if (isDecline) {
                 router.push("/bookings");
@@ -218,11 +238,7 @@ export function BookingActionFooter({
                         className="w-full bg-teal hover:bg-teal-hover text-white"
                         onClick={() => {
                             if (!hasCommuteDetails) {
-                                toast({
-                                    title: "Missing Transport Details",
-                                    description: "Please add your commute to client details before marking as arrived.",
-                                    variant: "destructive",
-                                });
+                                setTransportDialogVariant("commute_to_client");
                                 return;
                             }
                             handleAction("arrived");
@@ -254,11 +270,7 @@ export function BookingActionFooter({
                             );
 
                             if (!hasReturnDetails) {
-                                toast({
-                                    title: "Missing Transport Details",
-                                    description: "Please add your return fare details before completing the booking.",
-                                    variant: "destructive",
-                                });
+                                setTransportDialogVariant("return_fare");
                                 return;
                             }
                             handleAction("completed");
@@ -274,13 +286,16 @@ export function BookingActionFooter({
     };
 
     const content = renderButtons();
-    if (!content) return null;
+    // Keep component mounted when a dialog is open (even if no action buttons to show)
+    if (!content && !showPaymentCollectionDialog && !transportDialogVariant) return null;
 
     return (
         <>
-            <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 z-10 safe-area-bottom">
-                <div className="max-w-md mx-auto">{content}</div>
-            </div>
+            {content && (
+                <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 z-10 safe-area-bottom">
+                    <div className="max-w-md mx-auto">{content}</div>
+                </div>
+            )}
 
             {/* Cancel/Decline Dialog */}
             <Dialog open={showCancelModal} onOpenChange={setShowCancelModal}>
@@ -372,6 +387,30 @@ export function BookingActionFooter({
             </Dialog>
 
             {/* Reschedule Dialog removed - handled by parent */}
+
+            {/* Payment Collection Dialog - shown after booking completion */}
+            <PaymentCollectionDialog
+                isOpen={showPaymentCollectionDialog}
+                onClose={() => setShowPaymentCollectionDialog(false)}
+                booking={booking}
+                onGoToPaymentTab={() => {
+                    setShowPaymentCollectionDialog(false);
+                    onSwitchToPaymentTab?.();
+                }}
+            />
+
+            {/* Transport Required Dialog - shown when transport details are missing */}
+            {transportDialogVariant && (
+                <TransportRequiredDialog
+                    isOpen={!!transportDialogVariant}
+                    onClose={() => setTransportDialogVariant(null)}
+                    variant={transportDialogVariant}
+                    onGoToTransportTab={() => {
+                        setTransportDialogVariant(null);
+                        onSwitchToTransportTab?.();
+                    }}
+                />
+            )}
         </>
     );
 }

@@ -232,6 +232,8 @@ export default function BookingDetails() {
         onStatusUpdate={handleStatusUpdate}
         activeTab={activeTab}
         onReschedule={() => setShowRescheduleModal(true)}
+        onSwitchToPaymentTab={() => setActiveTab("payment")}
+        onSwitchToTransportTab={() => setActiveTab("transport")}
       />
 
       <RescheduleModal

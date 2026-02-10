@@ -29,7 +29,7 @@ export const BOOKING_TRACKING_MESSAGES: Record<string, { title: string; message:
     },
     completed: {
         title: "Completed",
-        message: "You have successfully completed the service.",
+        message: "Service completed. Please review booking payment and collect payment from customer.",
     },
     rescheduled: {
         title: "Rescheduled",
