@@ -2,38 +2,50 @@ import { FC } from "react";
 import { Card } from "@/components/ui/card";
 import { Award } from "lucide-react";
 
-export const ASENSO_TIERS = [
-    { id: "ENTRY", label: "Entry", minPoints: 10000, color: "text-blue-500", description: "Start your journey" },
-    { id: "BASIC", label: "Basic", minPoints: 15000, color: "text-teal-500", description: "Unlock standard benefits" },
-    { id: "ADVANCED", label: "Advanced", minPoints: 20000, color: "text-purple-500", description: "Higher earnings potential" },
-    { id: "EXPERT", label: "Expert", minPoints: 30000, color: "text-yellow-500", description: "Maximum benefits unlocked" }
+// Default tiers used as fallback when DB data hasn't been passed yet
+const DEFAULT_TIERS = [
+    { id: "ENTRY", label: "Entry", minPoints: 10000, color: "#9E9E9E", description: "Start your journey" },
+    { id: "BASIC", label: "Basic", minPoints: 15000, color: "#4CAF50", description: "Unlock standard benefits" },
+    { id: "ADVANCED", label: "Advanced", minPoints: 20000, color: "#E67E22", description: "Higher earnings potential" },
+    { id: "EXPERT", label: "Expert", minPoints: 30000, color: "#E74C3C", description: "Maximum benefits unlocked" }
 ];
 
-interface AsensoLevelCardProps {
-    currentPoints?: number;
-    variant?: "default" | "compact";
+export interface HousemaidTier {
+    id: string;
+    label: string;
+    minPoints: number;
+    color: string;
+    description: string;
 }
 
-export const AsensoLevelCard: FC<AsensoLevelCardProps> = ({
+interface HousemaidTierCardProps {
+    currentPoints?: number;
+    variant?: "default" | "compact";
+    tiers?: HousemaidTier[];
+}
+
+export const HousemaidTierCard: FC<HousemaidTierCardProps> = ({
     currentPoints = 28500,
     variant = "default",
+    tiers,
 }) => {
+    // Use provided tiers or fallback to defaults
+    const TIERS = tiers && tiers.length > 0 ? tiers : DEFAULT_TIERS;
+
     // Determine current level and next level
-    let currentLevel = ASENSO_TIERS[0];
-    let nextLevel = ASENSO_TIERS[1];
-    let isPreEntry = false;
+    let currentLevel = TIERS[0];
+    let nextLevel = TIERS[1];
 
     // Check if points are below the first tier
-    if (currentPoints < ASENSO_TIERS[0].minPoints) {
-        isPreEntry = true;
-        currentLevel = { id: "STARTER", label: "Starter", minPoints: 0, color: "text-gray-500", description: "Start your journey" };
-        nextLevel = ASENSO_TIERS[0];
+    if (currentPoints < TIERS[0].minPoints) {
+        currentLevel = { id: "STARTER", label: "Starter", minPoints: 0, color: "#9E9E9E", description: "Start your journey" };
+        nextLevel = TIERS[0];
     } else {
         // Iterate to find the highest tier met
-        for (let i = ASENSO_TIERS.length - 1; i >= 0; i--) {
-            if (currentPoints >= ASENSO_TIERS[i].minPoints) {
-                currentLevel = ASENSO_TIERS[i];
-                nextLevel = ASENSO_TIERS[i + 1];
+        for (let i = TIERS.length - 1; i >= 0; i--) {
+            if (currentPoints >= TIERS[i].minPoints) {
+                currentLevel = TIERS[i];
+                nextLevel = TIERS[i + 1];
                 break;
             }
         }
@@ -57,8 +69,11 @@ export const AsensoLevelCard: FC<AsensoLevelCardProps> = ({
         progress = Math.max(progress, 0);
     }
 
-    // Use the tier color or fallback to text-teal/text-gray
-    const levelColor = currentLevel.color || "text-teal";
+    // Handle color: check if it's a hex code or class
+    const levelColor = currentLevel.color || "#0d9488"; // default teal
+    const isHex = levelColor.startsWith("#");
+    const colorStyle = isHex ? { color: levelColor } : {};
+    const colorClass = isHex ? "" : levelColor;
 
     if (variant === "compact") {
         return (
@@ -70,10 +85,10 @@ export const AsensoLevelCard: FC<AsensoLevelCardProps> = ({
                     {/* Left: Icon & Level */}
                     <div className="flex items-center gap-3">
                         <div className={`h-10 w-10 rounded-full bg-gray-50 flex items-center justify-center flex-shrink-0`}>
-                            <Award className={`h-5 w-5 ${levelColor}`} />
+                            <Award className={`h-5 w-5 ${colorClass}`} style={colorStyle} />
                         </div>
                         <div>
-                            <div className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Asenso Level</div>
+                            <div className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Housemaid Tier</div>
                             <div className={`text-xl font-bold italic leading-none text-gray-900`}>{currentLevel.label}</div>
                         </div>
                     </div>
@@ -85,14 +100,14 @@ export const AsensoLevelCard: FC<AsensoLevelCardProps> = ({
                     <div className="flex-1 min-w-0">
                         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-2 gap-1">
                             <div className="text-xs text-gray-500 leading-tight">{currentLevel.description}</div>
-                            <div className={`font-bold text-sm whitespace-nowrap sm:self-auto ${levelColor}`}>
+                            <div className={`font-bold text-sm whitespace-nowrap sm:self-auto ${colorClass}`} style={colorStyle}>
                                 {currentPoints.toLocaleString()} <span className="text-[10px] font-medium text-gray-400">PTS</span>
                             </div>
                         </div>
                         <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden w-full">
                             <div
-                                className={`h-full rounded-full transition-all duration-500 ease-out bg-current ${levelColor}`}
-                                style={{ width: `${progress}%` }}
+                                className={`h-full rounded-full transition-all duration-500 ease-out bg-current ${colorClass}`}
+                                style={{ width: `${progress}%`, ...colorStyle }}
                             />
                         </div>
                     </div>
@@ -101,14 +116,15 @@ export const AsensoLevelCard: FC<AsensoLevelCardProps> = ({
         );
     }
 
+    // Default Variant (Full)
     return (
         <Card className="p-4">
             <div className="flex flex-col items-center text-center">
                 {/* Icon */}
-                <Award className={`h-6 w-6 mb-2 ${levelColor}`} />
+                <Award className={`h-6 w-6 mb-2 ${colorClass}`} style={colorStyle} />
 
                 {/* Label */}
-                <div className="text-xs text-gray-600 mb-1">Asenso Level</div>
+                <div className="text-xs text-gray-600 mb-1">Housemaid Tier</div>
 
                 {/* Level Value */}
                 <div className="text-2xl font-bold text-gray-900 italic">{currentLevel.label}</div>
@@ -124,17 +140,17 @@ export const AsensoLevelCard: FC<AsensoLevelCardProps> = ({
                     </div>
                     <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                         <div
-                            className={`h-full rounded-full transition-all duration-500 ease-out bg-current ${levelColor}`}
-                            style={{ width: `${progress}%` }}
+                            className={`h-full rounded-full transition-all duration-500 ease-out bg-current ${colorClass}`}
+                            style={{ width: `${progress}%`, ...colorStyle }}
                         />
                     </div>
                     <div className="text-xs text-gray-500">
                         {nextLevel ? (
                             <>
-                                Unlock <span className={`font-medium ${nextLevel.color || "text-teal"}`}>{nextLevel.label}</span> at {nextLevel.minPoints.toLocaleString()} points
+                                Unlock <span className={`font-medium ${nextLevel.color?.startsWith("#") ? "" : (nextLevel.color || "text-teal-600")}`} style={nextLevel.color?.startsWith("#") ? { color: nextLevel.color } : {}}>{nextLevel.label}</span> at {nextLevel.minPoints.toLocaleString()} points
                             </>
                         ) : (
-                            <span className="font-medium text-teal">Max Level Reached!</span>
+                            <span className="font-medium text-teal-600">Max Level Reached!</span>
                         )}
                     </div>
                 </div>

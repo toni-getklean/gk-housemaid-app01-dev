@@ -21,11 +21,22 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { AsensoLevelCard } from "@/components/AsensoLevelCard";
+import { HousemaidTierCard } from "@/components/HousemaidTierCard";
 
 export default function Profile() {
   const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  // Fetch housemaid tiers from DB
+  const { data: tiersData } = useQuery({
+    queryKey: ["housemaidTiers"],
+    queryFn: async () => {
+      const res = await fetch("/api/lookups/housemaid-tiers");
+      if (!res.ok) throw new Error("Failed to fetch tiers");
+      return res.json();
+    },
+    staleTime: 10 * 60 * 1000, // 10 minutes
+  });
 
   // Fetch Profile Data
   const { data: profile, isLoading, isError } = useQuery({
@@ -112,7 +123,7 @@ export default function Profile() {
         </div>
 
 
-        <AsensoLevelCard variant="compact" />
+        <HousemaidTierCard variant="compact" tiers={tiersData?.tiers} />
 
         <Card className="p-4 space-y-4">
           <h2 className="font-semibold text-teal text-sm uppercase tracking-wide">Contact Information</h2>

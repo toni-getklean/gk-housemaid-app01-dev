@@ -44,6 +44,8 @@ export * from "./housemaid/housemaidViolations";
 export * from "./housemaid/housemaidEarnings";
 export * from "./housemaid/housemaidPerformance";
 export * from "./housemaid/asensoTransactions"; // New
+export * from "./housemaid/housemaidTiers";
+export * from "./housemaid/asensoPointsConfig";
 
 export * from "./bookings/bookings";
 export * from "./bookings/bookingActivityLog";

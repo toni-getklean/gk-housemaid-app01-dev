@@ -7,11 +7,24 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { TrendingUp, Calendar } from "lucide-react";
 import { PesoIcon } from "@/components/icons/PesoIcon";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 
-import { AsensoLevelCard } from "@/components/AsensoLevelCard";
+import { HousemaidTierCard } from "@/components/HousemaidTierCard";
 
 export default function Earnings() {
   const router = useRouter();
+
+  // Fetch housemaid tiers from DB
+  const { data: tiersData } = useQuery({
+    queryKey: ["housemaidTiers"],
+    queryFn: async () => {
+      const res = await fetch("/api/lookups/housemaid-tiers");
+      if (!res.ok) throw new Error("Failed to fetch tiers");
+      return res.json();
+    },
+    staleTime: 10 * 60 * 1000, // 10 minutes - tiers rarely change
+  });
+
   const summary = {
     today: "₱1,200",
     week: "₱6,500",
@@ -68,7 +81,7 @@ export default function Earnings() {
       <div className="p-4 space-y-6">
         <div>
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Summary</h2>
-          <AsensoLevelCard variant="compact" />
+          <HousemaidTierCard variant="compact" tiers={tiersData?.tiers} />
           <div className="grid grid-cols-3 gap-3 mt-4">
             <Card className="p-4" data-testid="card-today-earnings">
               <div className="w-10 h-10 rounded-lg bg-yellow-50 text-yellow-600 flex items-center justify-center mb-3">

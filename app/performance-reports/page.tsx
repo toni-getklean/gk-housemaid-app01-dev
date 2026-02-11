@@ -4,8 +4,9 @@ import { useState } from "react";
 import { Header } from "@/components/Header";
 import { BottomNav } from "@/components/BottomNav";
 import { Card } from "@/components/ui/card";
-import { Star, CheckCircle, BarChart3, AlertTriangle, Info, Calendar } from "lucide-react";
+import { Star, CheckCircle, BarChart3, AlertTriangle, Info, Calendar, TrendingUp, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 
 type ViolationType = "minor" | "major";
 
@@ -19,11 +20,22 @@ interface Violation {
   pointsImpact: number;
 }
 
-import { AsensoLevelCard } from "@/components/AsensoLevelCard";
+import { HousemaidTierCard } from "@/components/HousemaidTierCard";
 
 export default function PerformanceReports() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<ViolationType>("minor");
+
+  // Fetch housemaid tiers from DB
+  const { data: tiersData } = useQuery({
+    queryKey: ["housemaidTiers"],
+    queryFn: async () => {
+      const res = await fetch("/api/lookups/housemaid-tiers");
+      if (!res.ok) throw new Error("Failed to fetch tiers");
+      return res.json();
+    },
+    staleTime: 10 * 60 * 1000, // 10 minutes
+  });
 
   const stats = {
     averageRating: 4.8,
@@ -63,7 +75,27 @@ export default function PerformanceReports() {
     <div className="min-h-screen bg-gray-50 pb-20">
       <Header title="Performance Reports" onBackClick={() => router.push("/profile")} showBack />
       <div className="p-4 space-y-6">
-        <AsensoLevelCard />
+        <HousemaidTierCard tiers={tiersData?.tiers} />
+
+        {/* Tier Details Entry */}
+        <Card
+          className="p-4 bg-gradient-to-r from-blue-50 to-white border-blue-100 cursor-pointer hover:shadow-md transition-all active:scale-[0.98]"
+          onClick={() => router.push("/performance-reports/growth-path")}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                <TrendingUp className="h-5 w-5" />
+              </div>
+              <div>
+                <div className="text-sm font-bold text-gray-900">Career Growth Path</div>
+                <div className="text-xs text-gray-500">View salary tiers & benefits</div>
+              </div>
+            </div>
+            <ChevronRight className="h-5 w-5 text-gray-400" />
+          </div>
+        </Card>
+
         <div className="grid grid-cols-2 gap-3">
           <Card className="p-4">
             <div className="flex flex-col items-center text-center">

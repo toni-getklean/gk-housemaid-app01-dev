@@ -2,14 +2,36 @@ import { db } from "@/server/db";
 import { bookings } from "@/server/db/schema/bookings/bookings";
 import { housemaids } from "@/server/db/schema/housemaid/housemaids";
 import { asensoTransactions } from "@/server/db/schema/housemaid/asensoTransactions";
+import { asensoPointsConfig } from "@/server/db/schema/housemaid/asensoPointsConfig";
 import { eq, and, sql } from "drizzle-orm";
 
 export class AsensoService {
-    private static POINTS_MAP: Record<string, number> = {
-        "TRIAL": 150,
-        "ONE_TIME": 150,
-        "FLEXI": 300
-    };
+    // Simple in-memory cache for points config
+    private static pointsCache: Record<string, number> | null = null;
+    private static cacheTimestamp: number = 0;
+    private static CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+    /**
+     * Loads points-per-booking-type from the asenso_points_config DB table.
+     * Cached for 5 minutes to avoid repeated queries.
+     */
+    private static async getPointsMap(): Promise<Record<string, number>> {
+        const now = Date.now();
+        if (this.pointsCache && (now - this.cacheTimestamp) < this.CACHE_TTL_MS) {
+            return this.pointsCache;
+        }
+
+        const rows = await db.select().from(asensoPointsConfig);
+        const map: Record<string, number> = {};
+        for (const row of rows) {
+            map[row.bookingTypeCode] = row.pointsAwarded;
+        }
+
+        this.pointsCache = map;
+        this.cacheTimestamp = now;
+        console.log("[AsensoService] Points config loaded from DB:", map);
+        return map;
+    }
 
     /**
      * Awards points to a housemaid for a completed booking.
@@ -25,12 +47,14 @@ export class AsensoService {
         if (booking.statusCode !== "completed") return; // Only award on completion
         if (!booking.housemaidId) return; // Need a housemaid to award
 
-        const bookingType = booking.bookingTypeCode; // Ensure this field is populated in DB
-        const pointsToAward = this.POINTS_MAP[bookingType || "ONE_TIME"] || 0; // Default or 0? Spec says 150/300.
+        // 2. Get points from DB config
+        const pointsMap = await this.getPointsMap();
+        const bookingType = booking.bookingTypeCode;
+        const pointsToAward = pointsMap[bookingType || "ONE_TIME"] || 150; // Fallback to 150
 
         if (pointsToAward === 0) return;
 
-        // 2. Idempotency Check
+        // 3. Idempotency Check
         const existingTx = await db.query.asensoTransactions.findFirst({
             where: and(
                 eq(asensoTransactions.bookingId, bookingId),
@@ -43,7 +67,7 @@ export class AsensoService {
             return;
         }
 
-        // 3. Transaction Block (Insert + Update Balance)
+        // 4. Transaction Block (Insert + Update Balance)
         await db.transaction(async (tx) => {
             // Create Ledger Entry
             await tx.insert(asensoTransactions).values({
@@ -70,3 +94,4 @@ export class AsensoService {
         console.log(`Awarded ${pointsToAward} points to Housemaid ${booking.housemaidId}`);
     }
 }
+

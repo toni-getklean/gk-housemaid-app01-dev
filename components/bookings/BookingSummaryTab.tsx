@@ -11,10 +11,10 @@ interface BookingSummaryTabProps {
     onReschedule: () => void;
 }
 
-const POINTS_MAP: Record<string, number> = {
-    "TRIAL": 150,
-    "ONE_TIME": 150,
-    "FLEXI": 300
+// Points estimation for display (actual awarding uses DB config via AsensoService)
+const getEstimatedPoints = (bookingType: string | null | undefined): number => {
+    if (bookingType === "FLEXI") return 300;
+    return 150; // Default for TRIAL, ONE_TIME, and unknown types
 };
 
 // ============================================
@@ -102,7 +102,7 @@ export function BookingSummaryTab({ booking, onUploadSuccess, onReschedule }: Bo
     };
 
     const pointsAwarded = booking.asensoPointsAwarded || 0;
-    const estimatedPoints = POINTS_MAP[booking.bookingTypeCode || "ONE_TIME"] || 150;
+    const estimatedPoints = getEstimatedPoints(booking.bookingTypeCode);
     const isCancelled = booking.statusCode === "cancelled";
 
     // Calculate HM Share from service fee

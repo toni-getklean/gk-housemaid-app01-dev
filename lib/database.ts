@@ -18,6 +18,7 @@ import {
   housemaidRatings,
   customerRatings,
   housemaidAvailability,
+  housemaidTiers,
 } from "../server/db/schema";
 
 import { parseISO } from "date-fns";
@@ -1442,6 +1443,32 @@ export class DatabaseService {
     } catch (error) {
       console.error("Error updating transport payment status:", error);
       return false;
+    }
+  }
+
+  /**
+   * Retrieves all housemaid tiers ordered by tier_order.
+   * Used to display tier progression UI.
+   */
+  async getHousemaidTiers() {
+    try {
+      const tiers = await db
+        .select()
+        .from(housemaidTiers)
+        .orderBy(asc(housemaidTiers.tierOrder));
+
+      return tiers.map(t => ({
+        id: t.tierCode,
+        label: t.tierLabel,
+        minPoints: t.minPoints,
+        color: t.colorClass || "text-gray-500",
+        description: t.description || "",
+        estimatedBookings: t.estimatedBookings,
+        unlockedSkills: t.unlockedSkills as string[] || [],
+      }));
+    } catch (error) {
+      console.error("Error fetching housemaid tiers:", error);
+      return [];
     }
   }
 }
