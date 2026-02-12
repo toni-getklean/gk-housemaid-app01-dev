@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, numeric, date, timestamp, bigint } from "drizzle-orm/pg-core";
+import { pgTable, text, numeric, date, timestamp, bigint, integer } from "drizzle-orm/pg-core";
 
 
 
@@ -14,6 +14,7 @@ export const housemaidEarnings = pgTable("housemaid_earnings", {
     serviceAmount: numeric("service_amount", { precision: 12, scale: 2 }),
     transportationAmount: numeric("transportation_amount", { precision: 12, scale: 2 }),
     totalAmount: numeric("total_amount", { precision: 12, scale: 2 }),
+    pointsEarned: integer("points_earned"),
     paymentMethodCode: text("payment_method_code"),
     paymentStatusCode: text("payment_status_code"),
     transactionDate: date("transaction_date"),

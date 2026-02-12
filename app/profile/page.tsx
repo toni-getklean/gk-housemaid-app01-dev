@@ -123,7 +123,11 @@ export default function Profile() {
         </div>
 
 
-        <HousemaidTierCard variant="compact" tiers={tiersData?.tiers} />
+        <HousemaidTierCard
+          variant="compact"
+          tiers={tiersData?.tiers}
+          currentPoints={profile.asensoPointsBalance}
+        />
 
         <Card className="p-4 space-y-4">
           <h2 className="font-semibold text-teal text-sm uppercase tracking-wide">Contact Information</h2>

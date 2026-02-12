@@ -5,7 +5,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
@@ -34,9 +34,20 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
 
     const [hasServiceFeeBeenPaid, setHasServiceFeeBeenPaid] = useState(checkPaid(booking.paymentStatusCode));
 
-    const isPayToHousemaid = paymentMethod === "CASH" && settlementTypeCode === "DIRECT_TO_HM";
-    const isServiceFeePaid = checkPaid(booking.paymentStatusCode) || hasServiceFeeBeenPaid;
-    const isTransportFeePaid = checkPaid(transportPaymentStatus) || hasTransportFeeBeenPaid;
+    // Update local state if prop changes (e.g. after refresh)
+    useEffect(() => {
+        if (checkPaid(transportPaymentStatus)) {
+            setHasTransportFeeBeenPaid(true);
+        }
+    }, [transportPaymentStatus]);
+
+    const isPayToHousemaid = settlementTypeCode === "DIRECT_TO_HM";
+    // STRICT CHECK: Service Fee is only considered "Paid" in the UI if the booking is COMPLETED.
+    // This prevents "Paid" status from showing prematurely on active bookings even if DB has a status.
+    const isServiceFeePaid = (checkPaid(booking.paymentStatusCode) || hasServiceFeeBeenPaid) && booking.statusCode === 'completed';
+
+    // STRICT CHECK: Transport Fee is also only considered "Paid" in the UI if the booking is COMPLETED.
+    const isTransportFeePaid = (checkPaid(transportPaymentStatus) || hasTransportFeeBeenPaid) && booking.statusCode === 'completed';
     const isFullyPaid = isServiceFeePaid && isTransportFeePaid;
 
     const handleServiceFeePayment = async () => {
@@ -118,6 +129,12 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
                             {booking.duration?.replace(/_/g, " ") || "N/A"}
                         </p>
                     </div>
+                    <div>
+                        <p className="text-sm text-gray-600">Settlement Type</p>
+                        <p className="text-sm font-medium text-gray-900">
+                            {settlementTypeCode?.replace(/_/g, " ") || "N/A"}
+                        </p>
+                    </div>
                 </div>
             </Card>
 
@@ -174,20 +191,23 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
                                 </Card>
 
                                 <Alert className={`
-                                    ${booking.paymentStatusCode === 'PAYMENT_VERIFIED' ? 'bg-green-50 border-green-200' : ''}
-                                    ${booking.paymentStatusCode === 'PAYMENT_RECEIVED' ? 'bg-blue-50 border-blue-200' : ''}
-                                    ${booking.paymentStatusCode === 'PAYMENT_UNDER_VERIFICATION' ? 'bg-yellow-50 border-yellow-200' : ''}
+                                    ${isServiceFeePaid && booking.paymentStatusCode === 'PAYMENT_VERIFIED' ? 'bg-green-50 border-green-200' : ''}
+                                    ${isServiceFeePaid && booking.paymentStatusCode === 'PAYMENT_UNDER_VERIFICATION' ? 'bg-yellow-50 border-yellow-200' : ''}
+                                    ${isServiceFeePaid && (booking.paymentStatusCode === 'PAYMENT_RECEIVED' || hasServiceFeeBeenPaid) ? 'bg-blue-50 border-blue-200' : ''}
                                     ${!isServiceFeePaid ? 'bg-blue-50 border-blue-200' : ''}
                                 `}>
-                                    <p className={`text-xs ${booking.paymentStatusCode === 'PAYMENT_VERIFIED' ? 'text-green-700' :
-                                        booking.paymentStatusCode === 'PAYMENT_RECEIVED' ? 'text-blue-700' :
-                                            booking.paymentStatusCode === 'PAYMENT_UNDER_VERIFICATION' ? 'text-yellow-700' :
+                                    <p className={`text-xs ${isServiceFeePaid && booking.paymentStatusCode === 'PAYMENT_VERIFIED' ? 'text-green-700' :
+                                        isServiceFeePaid && booking.paymentStatusCode === 'PAYMENT_UNDER_VERIFICATION' ? 'text-yellow-700' :
+                                            isServiceFeePaid ? 'text-blue-700' :
                                                 'text-blue-700'
                                         }`}>
-                                        {booking.paymentStatusCode === 'PAYMENT_VERIFIED' && "Service Fee payment verified."}
-                                        {booking.paymentStatusCode === 'PAYMENT_RECEIVED' && "Service Fee Paid — Confirmation in Progress"}
-                                        {booking.paymentStatusCode === 'PAYMENT_UNDER_VERIFICATION' && "Payment is currently under verification."}
-                                        {!isServiceFeePaid && "This payment covers the platform service only. Transport fee is paid separately."}
+                                        {isServiceFeePaid ? (
+                                            booking.paymentStatusCode === 'PAYMENT_VERIFIED' ? "Service Fee payment verified." :
+                                                booking.paymentStatusCode === 'PAYMENT_UNDER_VERIFICATION' ? "Payment is currently under verification." :
+                                                    "Service Fee Paid — Confirmation in Progress"
+                                        ) : (
+                                            "This payment covers the platform service only. Transport fee is paid separately."
+                                        )}
                                     </p>
                                 </Alert>
 
@@ -243,35 +263,20 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
                                 </Card>
 
                                 <Alert className={`
-                                    ${transportPaymentStatus === 'PAYMENT_VERIFIED' ? 'bg-green-50 border-green-200' : ''}
-                                    ${transportPaymentStatus === 'PAYMENT_RECEIVED' ? 'bg-blue-50 border-blue-200' : ''}
-                                    ${transportPaymentStatus === 'PAYMENT_UNDER_VERIFICATION' ? 'bg-yellow-50 border-yellow-200' : ''}
-                                    ${!isTransportFeePaid ? 'bg-gray-50 border-gray-200' : ''}
+                                    ${isTransportFeePaid ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}
                                 `}>
-                                    <p className={`text-xs ${transportPaymentStatus === 'PAYMENT_VERIFIED' ? 'text-green-700' :
-                                        transportPaymentStatus === 'PAYMENT_RECEIVED' ? 'text-blue-700' :
-                                            transportPaymentStatus === 'PAYMENT_UNDER_VERIFICATION' ? 'text-yellow-700' :
-                                                'text-gray-700'
-                                        }`}>
-                                        {transportPaymentStatus === 'PAYMENT_VERIFIED' && "Transportation payment paid & verified."}
-                                        {transportPaymentStatus === 'PAYMENT_RECEIVED' && "Payment received. Pending validation."}
-                                        {transportPaymentStatus === 'PAYMENT_UNDER_VERIFICATION' && "Payment is currently under verification."}
-                                        {!isTransportFeePaid && "This payment goes directly to the housemaid and is not collected by the platform."}
+                                    <p className={`text-xs ${isTransportFeePaid ? 'text-green-700' : 'text-gray-700'}`}>
+                                        {isTransportFeePaid ? (
+                                            "Payment received."
+                                        ) : (
+                                            "This payment goes directly to the housemaid and is not collected by the platform."
+                                        )}
                                     </p>
                                 </Alert>
 
                                 {isTransportFeePaid ? (
-                                    <div className={`w-full p-2 rounded text-center text-sm font-medium border ${transportPaymentStatus === 'PAYMENT_VERIFIED' ? 'bg-green-50 text-green-700 border-green-200' :
-                                        transportPaymentStatus === 'PAYMENT_UNDER_VERIFICATION' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' :
-                                            'bg-blue-50 text-blue-700 border-blue-200'
-                                        }`}>
-                                        {transportPaymentStatus === 'PAYMENT_VERIFIED' ? (
-                                            <><CheckCircle2 className="inline-block mr-2 h-4 w-4" /> Transport Fee Verified</>
-                                        ) : transportPaymentStatus === 'PAYMENT_UNDER_VERIFICATION' ? (
-                                            "Verification in Progress"
-                                        ) : (
-                                            "Payment Received - Validating"
-                                        )}
+                                    <div className="w-full p-2 rounded text-center text-sm font-medium border bg-green-50 text-green-700 border-green-200">
+                                        <CheckCircle2 className="inline-block mr-2 h-4 w-4" /> Transport Fee Paid
                                     </div>
                                 ) : (
                                     <Button
@@ -279,7 +284,7 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
                                         disabled={isLoading || booking.statusCode !== 'completed'}
                                         className="w-full bg-green-600 hover:bg-green-700"
                                     >
-                                        Mark Transport Fee as Paid
+                                        Mark Transport Fee as Paid {isTransportFeePaid}
                                     </Button>
                                 )}
                             </TabsContent>
@@ -378,36 +383,21 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
                         </Card>
 
                         <Alert className={`mt-4
-                            ${transportPaymentStatus === 'PAYMENT_VERIFIED' ? 'bg-green-50 border-green-200' : ''}
-                            ${transportPaymentStatus === 'PAYMENT_RECEIVED' ? 'bg-blue-50 border-blue-200' : ''}
-                            ${transportPaymentStatus === 'PAYMENT_UNDER_VERIFICATION' ? 'bg-yellow-50 border-yellow-200' : ''}
-                            ${!isTransportFeePaid ? 'bg-gray-50 border-gray-200' : ''}
+                            ${isTransportFeePaid ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}
                         `}>
-                            <p className={`text-xs ${transportPaymentStatus === 'PAYMENT_VERIFIED' ? 'text-green-700' :
-                                transportPaymentStatus === 'PAYMENT_RECEIVED' ? 'text-blue-700' :
-                                    transportPaymentStatus === 'PAYMENT_UNDER_VERIFICATION' ? 'text-yellow-700' :
-                                        'text-gray-700'
-                                }`}>
-                                {transportPaymentStatus === 'PAYMENT_VERIFIED' && "Transportation payment paid & verified."}
-                                {transportPaymentStatus === 'PAYMENT_RECEIVED' && "Payment received. Pending validation."}
-                                {transportPaymentStatus === 'PAYMENT_UNDER_VERIFICATION' && "Payment is currently under verification."}
-                                {!isTransportFeePaid && "This payment goes directly to the housemaid and is not collected by the platform."}
+                            <p className={`text-xs ${isTransportFeePaid ? 'text-green-700' : 'text-gray-700'}`}>
+                                {isTransportFeePaid ? (
+                                    "Payment received."
+                                ) : (
+                                    "This payment goes directly to the housemaid and is not collected by the platform."
+                                )}
                             </p>
                         </Alert>
 
                         <div className="mt-4">
                             {isTransportFeePaid ? (
-                                <div className={`w-full p-2 rounded text-center text-sm font-medium border ${transportPaymentStatus === 'PAYMENT_VERIFIED' ? 'bg-green-50 text-green-700 border-green-200' :
-                                    transportPaymentStatus === 'PAYMENT_UNDER_VERIFICATION' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' :
-                                        'bg-blue-50 text-blue-700 border-blue-200'
-                                    }`}>
-                                    {transportPaymentStatus === 'PAYMENT_VERIFIED' ? (
-                                        <><CheckCircle2 className="inline-block mr-2 h-4 w-4" /> Transport Fee Verified</>
-                                    ) : transportPaymentStatus === 'PAYMENT_UNDER_VERIFICATION' ? (
-                                        "Verification in Progress"
-                                    ) : (
-                                        "Payment Received - Validating"
-                                    )}
+                                <div className="w-full p-2 rounded text-center text-sm font-medium border bg-green-50 text-green-700 border-green-200">
+                                    <CheckCircle2 className="inline-block mr-2 h-4 w-4" /> Transport Fee Paid
                                 </div>
                             ) : (
                                 <Button

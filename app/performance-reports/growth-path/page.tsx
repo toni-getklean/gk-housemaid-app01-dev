@@ -40,8 +40,17 @@ const TIER_CONFIG: Record<string, { tagline: string; months: string; color: stri
 export default function GrowthPath() {
     const router = useRouter();
     // Assuming a current points value for demo - in real app would come from profile
-    // Defaulting to 28,500 based on HousemaidTierCard default for consistency
-    const currentPoints = 28500;
+    // Fetch Profile Data for Points
+    const { data: profile } = useQuery({
+        queryKey: ["housemaidProfile"],
+        queryFn: async () => {
+            const res = await fetch("/api/profile");
+            if (!res.ok) throw new Error("Failed to fetch profile");
+            return res.json();
+        }
+    });
+
+    const currentPoints = profile?.asensoPointsBalance || 0;
 
     // Fetch housemaid tiers from DB
     const { data: tiersData, isLoading } = useQuery({

@@ -23,6 +23,7 @@ import {
 
 import { parseISO } from "date-fns";
 import { AsensoService } from "@/server/services/AsensoService";
+import { HousemaidEarningsService } from "@/server/services/HousemaidEarningsService";
 
 // Type aliases for the schema types
 type Housemaid = typeof housemaids.$inferSelect;
@@ -613,6 +614,7 @@ export class DatabaseService {
             // Select transportation info
             transportationId: transportationDetails.transportationId,
             totalTransportationCost: transportationDetails.totalTransportationCost,
+            transportPaymentStatus: transportationDetails.paymentStatus,
             // Select payment info
             paymentMethod: bookingPayments.paymentMethodCode,
             settlementTypeCode: bookingPayments.settlementTypeCode,
@@ -748,10 +750,13 @@ export class DatabaseService {
 
         if (paymentRecord.length > 0) {
           const pay = paymentRecord[0];
-          // If Cash and currently PENDING/NULL, move to AWAITING_PAYMENT
+          // If Settlement is DIRECT_TO_HM (Cash, QR to Maid) and currently PENDING/NULL/AWAITING, ensure it is set to AWAITING_PAYMENT
+          // This ensures logic covers both Cash and QR payments that are collected by the maid.
           if (
-            pay.paymentMethodCode === "CASH" &&
-            (pay.paymentStatusCode === "PENDING" || !pay.paymentStatusCode)
+            pay.settlementTypeCode === "DIRECT_TO_HM" &&
+            (pay.paymentStatusCode === "PENDING" || !pay.paymentStatusCode || pay.paymentStatusCode === "AWAITING_PAYMENT") &&
+            pay.paymentStatusCode !== "PAYMENT_RECEIVED" &&
+            pay.paymentStatusCode !== "PAYMENT_VERIFIED"
           ) {
             await db
               .update(bookingPayments)
@@ -788,6 +793,9 @@ export class DatabaseService {
               .where(eq(transportationDetails.transportationId, trans.transportationId));
           }
         }
+
+        // Create Earning Record
+        await HousemaidEarningsService.createEarningFromBooking(bookingId);
       }
       if (newStatus === "cancelled" || newStatus === "rescheduled") {
         // These might have specific fields handled in additionalUpdates or logic elsewhere
@@ -1398,6 +1406,9 @@ export class DatabaseService {
         message: `Service Fee Payment collected: ${status}`,
         createdAt: new Date(),
       });
+
+      // Sync with Earnings (Strict Sync - Option B)
+      await HousemaidEarningsService.syncPaymentStatus(booking.bookingId, status);
 
       return true;
     } catch (error) {

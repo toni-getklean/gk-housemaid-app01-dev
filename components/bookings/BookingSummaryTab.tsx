@@ -41,7 +41,7 @@ interface HMShareBreakdown {
 
 function calculateHMServiceShare(booking: Booking): HMShareBreakdown {
     // Determine service type (WHOLE_DAY or HALF_DAY)
-    const isWholeDay = booking.serviceTypeCode === "WHOLE_DAY";
+    const isWholeDay = booking.duration === "WHOLE_DAY";
     const serviceTypeLabel = isWholeDay ? "Whole Day" : "Half Day";
 
     // Base HM rates (fixed, not percentage)

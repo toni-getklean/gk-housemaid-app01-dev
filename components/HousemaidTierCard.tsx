@@ -16,6 +16,7 @@ export interface HousemaidTier {
     minPoints: number;
     color: string;
     description: string;
+    estimatedBookings?: number;
 }
 
 interface HousemaidTierCardProps {

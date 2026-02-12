@@ -28,8 +28,7 @@ export function PaymentCollectionDialog({
         ? PAID_STATUSES.includes(booking.paymentStatusCode)
         : false;
 
-    const isPayToHousemaid =
-        booking.paymentMethod === "CASH" && booking.settlementTypeCode === "DIRECT_TO_HM";
+    const isPayToHousemaid = booking.settlementTypeCode === "DIRECT_TO_HM";
 
     // Service fee needs collection only if it's cash/direct AND not yet paid
     const needsServiceFeeCollection = isPayToHousemaid && !isServiceFeePaid;

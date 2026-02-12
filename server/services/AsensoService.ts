@@ -3,6 +3,7 @@ import { bookings } from "@/server/db/schema/bookings/bookings";
 import { housemaids } from "@/server/db/schema/housemaid/housemaids";
 import { asensoTransactions } from "@/server/db/schema/housemaid/asensoTransactions";
 import { asensoPointsConfig } from "@/server/db/schema/housemaid/asensoPointsConfig";
+import { housemaidEarnings } from "@/server/db/schema/housemaid/housemaidEarnings";
 import { eq, and, sql } from "drizzle-orm";
 
 export class AsensoService {
@@ -44,7 +45,7 @@ export class AsensoService {
         });
 
         if (!booking) throw new Error(`Booking ${bookingId} not found`);
-        if (booking.statusCode !== "completed") return; // Only award on completion
+        // if (booking.statusCode != "completed") return; // Only award on completion
         if (!booking.housemaidId) return; // Need a housemaid to award
 
         // 2. Get points from DB config
@@ -68,28 +69,34 @@ export class AsensoService {
         }
 
         // 4. Transaction Block (Insert + Update Balance)
-        await db.transaction(async (tx) => {
-            // Create Ledger Entry
-            await tx.insert(asensoTransactions).values({
-                housemaidId: booking.housemaidId!,
-                bookingId: booking.bookingId,
-                points: pointsToAward,
-                transactionType: "EARN_BOOKING",
-                notes: `Completed ${bookingType} booking`,
-            });
+        // NOTE: Removed db.transaction() because neon-http driver does not support it.
+        // Executing sequentially instead.
 
-            // Update Housemaid Balance
-            await tx.update(housemaids)
-                .set({
-                    asensoPointsBalance: sql`${housemaids.asensoPointsBalance} + ${pointsToAward}`
-                })
-                .where(eq(housemaids.housemaidId, booking.housemaidId!));
-
-            // Update Booking metadata
-            await tx.update(bookings)
-                .set({ asensoPointsAwarded: pointsToAward })
-                .where(eq(bookings.bookingId, bookingId));
+        // Create Ledger Entry
+        await db.insert(asensoTransactions).values({
+            housemaidId: booking.housemaidId!,
+            bookingId: booking.bookingId,
+            points: pointsToAward,
+            transactionType: "EARN_BOOKING",
+            notes: `Completed ${bookingType} booking`,
         });
+
+        // Update Housemaid Balance
+        await db.update(housemaids)
+            .set({
+                asensoPointsBalance: sql`${housemaids.asensoPointsBalance} + ${pointsToAward}`
+            })
+            .where(eq(housemaids.housemaidId, booking.housemaidId!));
+
+        // Update Booking metadata
+        await db.update(bookings)
+            .set({ asensoPointsAwarded: pointsToAward })
+            .where(eq(bookings.bookingId, bookingId));
+
+        // Update Housemaid Earnings Record
+        await db.update(housemaidEarnings)
+            .set({ pointsEarned: pointsToAward })
+            .where(eq(housemaidEarnings.bookingId, bookingId));
 
         console.log(`Awarded ${pointsToAward} points to Housemaid ${booking.housemaidId}`);
     }

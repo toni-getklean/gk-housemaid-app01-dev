@@ -37,10 +37,20 @@ export default function PerformanceReports() {
     staleTime: 10 * 60 * 1000, // 10 minutes
   });
 
+  // Fetch Profile Data for Points
+  const { data: profile } = useQuery({
+    queryKey: ["housemaidProfile"],
+    queryFn: async () => {
+      const res = await fetch("/api/profile");
+      if (!res.ok) throw new Error("Failed to fetch profile");
+      return res.json();
+    }
+  });
+
   const stats = {
-    averageRating: 4.8,
+    averageRating: profile?.rating || 4.8,
     completionRate: 95,
-    totalJobs: 145,
+    totalJobs: profile?.completedJobs || 145,
     violations: {
       minor: 2,
       major: 0,
@@ -75,7 +85,10 @@ export default function PerformanceReports() {
     <div className="min-h-screen bg-gray-50 pb-20">
       <Header title="Performance Reports" onBackClick={() => router.push("/profile")} showBack />
       <div className="p-4 space-y-6">
-        <HousemaidTierCard tiers={tiersData?.tiers} />
+        <HousemaidTierCard
+          tiers={tiersData?.tiers}
+          currentPoints={profile?.asensoPointsBalance}
+        />
 
         {/* Tier Details Entry */}
         <Card

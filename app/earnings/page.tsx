@@ -11,6 +11,17 @@ import { useQuery } from "@tanstack/react-query";
 
 import { HousemaidTierCard } from "@/components/HousemaidTierCard";
 
+interface Earning {
+  id: string;
+  bookingCode: string;
+  date: string;
+  client: string;
+  amount: string;
+  status: string;
+  bookingType: string;
+  points: number;
+}
+
 export default function Earnings() {
   const router = useRouter();
 
@@ -25,53 +36,26 @@ export default function Earnings() {
     staleTime: 10 * 60 * 1000, // 10 minutes - tiers rarely change
   });
 
-  const summary = {
-    today: "₱1,200",
-    week: "₱6,500",
-    month: "₱28,400",
+  // Fetch earnings data from API
+  const { data: earningsData, isLoading } = useQuery({
+    queryKey: ["earnings"],
+    queryFn: async () => {
+      const res = await fetch("/api/earnings");
+      if (!res.ok) throw new Error("Failed to fetch earnings");
+      return res.json();
+    },
+  });
+
+  const summary = earningsData?.summary || {
+    today: "₱0.00",
+    week: "₱0.00",
+    month: "₱0.00",
   };
 
-  const earnings = [
-    {
-      id: "1",
-      bookingCode: "HM0225-5495",
-      date: "Today, 2:30 PM",
-      client: "Maria Santos",
-      amount: "₱650",
-      status: "Completed",
-      bookingType: "OneTime",
-    },
-    {
-      id: "2",
-      bookingCode: "HM0225-5496",
-      date: "Today, 9:00 AM",
-      client: "Jose Reyes",
-      amount: "₱550",
-      status: "Completed",
-      bookingType: "OneTime",
-    },
-    {
-      id: "3",
-      bookingCode: "HM0224-5480",
-      date: "Yesterday, 3:00 PM",
-      client: "Ana Cruz",
-      amount: "₱700",
-      status: "Completed",
-      bookingType: "Flexi",
-    },
-    {
-      id: "4",
-      bookingCode: "HM0228-5512",
-      date: "Nov 28, 10:00 AM",
-      client: "Carlos Mendoza",
-      amount: "₱600",
-      status: "Pending",
-      bookingType: "OneTime",
-    },
-  ];
+  const earnings = earningsData?.earnings || [];
 
-  const getPoints = (type: string) => {
-    return type === "Flexi" ? 300 : 150;
+  const getPoints = (points: number) => {
+    return points || 0;
   };
 
   return (
@@ -81,7 +65,11 @@ export default function Earnings() {
       <div className="p-4 space-y-6">
         <div>
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Summary</h2>
-          <HousemaidTierCard variant="compact" tiers={tiersData?.tiers} />
+          <HousemaidTierCard
+            variant="compact"
+            tiers={tiersData?.tiers}
+            currentPoints={earningsData?.currentPoints}
+          />
           <div className="grid grid-cols-3 gap-3 mt-4">
             <Card className="p-4" data-testid="card-today-earnings">
               <div className="w-10 h-10 rounded-lg bg-yellow-50 text-yellow-600 flex items-center justify-center mb-3">
@@ -117,7 +105,7 @@ export default function Earnings() {
             </TabsList>
 
             <TabsContent value="all" className="space-y-3">
-              {earnings.map((earning) => (
+              {earnings.map((earning: Earning) => (
                 <Card
                   key={earning.id}
                   className="p-4 cursor-pointer hover:bg-gray-50 transition-colors"
@@ -130,8 +118,8 @@ export default function Earnings() {
                         {earning.bookingCode}
                       </p>
                       <p className="font-medium text-gray-900">{earning.client}</p>
-                      <p className="text-sm text-gray-600">{earning.date}</p>
-                      <span className={`inline-block px-2 py-1 text-xs rounded-full ${earning.status === "Completed"
+                      <p className="text-sm text-gray-600">{new Date(earning.date).toLocaleDateString()}</p>
+                      <span className={`inline-block px-2 py-1 text-xs rounded-full ${earning.status === "completed" || earning.status === "Completed"
                         ? "bg-green-100 text-green-700"
                         : "bg-yellow-100 text-yellow-700"
                         }`}>
@@ -139,9 +127,9 @@ export default function Earnings() {
                       </span>
                     </div>
                     <div className="text-right flex flex-col justify-between items-end">
-                      <p className="text-lg font-bold text-gray-900">{earning.amount}</p>
+                      <p className="text-lg font-bold text-gray-900">₱{parseFloat(earning.amount).toLocaleString('en-PH', { minimumFractionDigits: 2 })}</p>
                       <div className="flex items-center justify-end gap-1 mt-1 text-teal">
-                        <span className="text-xs font-bold">+{getPoints(earning.bookingType)}</span>
+                        <span className="text-xs font-bold">+{getPoints(earning.points)}</span>
                         <span className="text-[10px] font-medium uppercase text-teal/70">PTS</span>
                       </div>
                     </div>
@@ -151,7 +139,7 @@ export default function Earnings() {
             </TabsContent>
 
             <TabsContent value="pending" className="space-y-3">
-              {earnings.filter(e => e.status === "Pending").map((earning) => (
+              {earnings.filter((e: Earning) => e.status !== "completed" && e.status !== "Completed").map((earning: Earning) => (
                 <Card
                   key={earning.id}
                   className="p-4 cursor-pointer hover:bg-gray-50 transition-colors"
@@ -164,15 +152,15 @@ export default function Earnings() {
                         {earning.bookingCode}
                       </p>
                       <p className="font-medium text-gray-900">{earning.client}</p>
-                      <p className="text-sm text-gray-600">{earning.date}</p>
+                      <p className="text-sm text-gray-600">{new Date(earning.date).toLocaleDateString()}</p>
                       <span className="inline-block px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-700">
                         {earning.status}
                       </span>
                     </div>
                     <div className="text-right flex flex-col justify-between items-end">
-                      <p className="text-lg font-bold text-gray-900">{earning.amount}</p>
+                      <p className="text-lg font-bold text-gray-900">₱{parseFloat(earning.amount).toLocaleString('en-PH', { minimumFractionDigits: 2 })}</p>
                       <div className="flex items-center justify-end gap-1 mt-1 text-teal">
-                        <span className="text-xs font-bold">+{getPoints(earning.bookingType)}</span>
+                        <span className="text-xs font-bold">+{getPoints(earning.points)}</span>
                         <span className="text-[10px] font-medium uppercase text-teal/70">PTS</span>
                       </div>
                     </div>
