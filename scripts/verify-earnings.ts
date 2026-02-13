@@ -37,7 +37,7 @@ async function main() {
         const housemaidsList = await db.select().from(housemaids).limit(1);
         log(`✅ Housemaids fetched: ${housemaidsList.length}`);
 
-        const customersList = await db.select().from(customers).limit(1);
+        const customersList = await db.select().from(customerProfiles).limit(1);
         log(`✅ Customers fetched: ${customersList.length}`);
 
         if (housemaidsList.length === 0 || customersList.length === 0) {
@@ -63,7 +63,6 @@ async function main() {
             serviceDate: new Date().toISOString().split('T')[0],
             time: "08:00:00",
             statusCode: "pending", // Replaces status
-            paymentStatusCode: "pending", // Replaces paymentStatus
         }).returning();
 
         // 3. Add Payment (Paid)

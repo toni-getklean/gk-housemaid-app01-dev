@@ -18,6 +18,17 @@ interface Violation {
   bookingCode: string;
   date: string;
   pointsImpact: number;
+  sanction?: string;
+}
+
+interface PerformanceStats {
+  averageRating: number;
+  completionRate: number;
+  totalJobs: number;
+  violations: {
+    minor: number;
+    major: number;
+  };
 }
 
 import { HousemaidTierCard } from "@/components/HousemaidTierCard";
@@ -47,38 +58,32 @@ export default function PerformanceReports() {
     }
   });
 
-  const stats = {
+  // Fetch Performance Data
+  const { data: performanceData, isLoading: isLoadingPerformance } = useQuery({
+    queryKey: ["performanceReports"],
+    queryFn: async () => {
+      const res = await fetch("/api/performance-reports");
+      if (!res.ok) throw new Error("Failed to fetch performance reports");
+      return res.json();
+    }
+  });
+
+  console.log("Performance Data:", performanceData);
+
+  const stats: PerformanceStats = performanceData?.stats || {
     averageRating: profile?.rating || 4.8,
     completionRate: 95,
-    totalJobs: profile?.completedJobs || 145,
+    totalJobs: profile?.completedJobs || 0,
     violations: {
-      minor: 2,
+      minor: 0,
       major: 0,
     },
   };
 
-  const violations: Violation[] = [
-    {
-      id: "1",
-      type: "minor",
-      title: "Late arrival",
-      description: "Rosa Dela Cruz encountered a transportation issue on the way.",
-      bookingCode: "HM0225-5496",
-      date: "April 24, 2025",
-      pointsImpact: -150,
-    },
-    {
-      id: "2",
-      type: "minor",
-      title: "Not updating the team/client",
-      description: "Rosa Dela Cruz forgot to notify the team/client that she had already arrived at the location.",
-      bookingCode: "HM0225-5497",
-      date: "Feb 01, 2025",
-      pointsImpact: -100,
-    },
-  ];
+  const violations: Violation[] = performanceData?.violations || [];
 
-  const hasViolations = stats.violations.minor > 0 || stats.violations.major > 0;
+  // Check both stats AND the actual list. If list has items, show them.
+  const hasViolations = (stats.violations.minor > 0 || stats.violations.major > 0) || violations.length > 0;
   const filteredViolations = violations.filter((v) => v.type === activeTab);
 
   return (
@@ -115,7 +120,6 @@ export default function PerformanceReports() {
               <Star className="h-6 w-6 text-yellow fill-yellow mb-2" />
               <div className="text-xs text-gray-600 mb-1">Average Rating</div>
               <div className="text-2xl font-bold text-gray-900">{stats.averageRating}</div>
-              <div className="text-xs text-gray-500">/5</div>
             </div>
           </Card>
           <Card className="p-4">
@@ -155,8 +159,12 @@ export default function PerformanceReports() {
               View Guidelines
             </button>
           </div>
-          {!hasViolations ? (
 
+          {isLoadingPerformance ? (
+            <div className="flex justify-center p-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal"></div>
+            </div>
+          ) : !hasViolations ? (
             <Card className="p-4">
               <div className="flex items-center gap-3 text-green-600">
                 <CheckCircle className="h-5 w-5" />
@@ -182,13 +190,21 @@ export default function PerformanceReports() {
                   </Card>
                 ) : (
                   filteredViolations.map((violation) => (
-                    <Card key={violation.id} className="p-4" data-testid={`card-violation-${violation.id}`}>
+                    <Card
+                      key={violation.id}
+                      className="p-4 cursor-pointer hover:bg-gray-50 transition-colors"
+                      onClick={() => router.push(`/performance-reports/violations/${violation.id}`)}
+                      data-testid={`card-violation-${violation.id}`}
+                    >
                       <div className="flex items-start gap-3">
                         {/* Left: Violation Details */}
                         <Info className="h-5 w-5 text-gray-400 flex-shrink-0 mt-0.5" />
                         <div className="flex-1 min-w-0">
                           <div className="font-medium text-gray-900 text-sm">{violation.title}</div>
                           <p className="text-sm text-gray-600 mt-1">{violation.description}</p>
+                          {violation.sanction && (
+                            <p className="text-xs text-red-500 mt-1 font-medium">Sanction: {violation.sanction}</p>
+                          )}
                           <div className="flex items-center gap-3 text-xs text-gray-500 mt-2">
                             <span>{violation.bookingCode}</span>
                             <div className="flex items-center gap-1">

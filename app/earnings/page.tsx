@@ -8,6 +8,8 @@ import { TrendingUp, Calendar } from "lucide-react";
 import { PesoIcon } from "@/components/icons/PesoIcon";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 import { HousemaidTierCard } from "@/components/HousemaidTierCard";
 
@@ -105,37 +107,54 @@ export default function Earnings() {
             </TabsList>
 
             <TabsContent value="all" className="space-y-3">
-              {earnings.map((earning: Earning) => (
-                <Card
-                  key={earning.id}
-                  className="p-4 cursor-pointer hover:bg-gray-50 transition-colors"
-                  onClick={() => router.push(`/earnings/${earning.id}`)}
-                  data-testid={`card-earning-${earning.id}`}
-                >
-                  <div className="flex justify-between">
-                    <div className="space-y-1">
-                      <p className="text-xs font-medium text-blue" data-testid={`text-booking-code-${earning.id}`}>
-                        {earning.bookingCode}
-                      </p>
-                      <p className="font-medium text-gray-900">{earning.client}</p>
-                      <p className="text-sm text-gray-600">{new Date(earning.date).toLocaleDateString()}</p>
-                      <span className={`inline-block px-2 py-1 text-xs rounded-full ${earning.status === "completed" || earning.status === "Completed"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-yellow-100 text-yellow-700"
-                        }`}>
-                        {earning.status}
-                      </span>
-                    </div>
-                    <div className="text-right flex flex-col justify-between items-end">
-                      <p className="text-lg font-bold text-gray-900">₱{parseFloat(earning.amount).toLocaleString('en-PH', { minimumFractionDigits: 2 })}</p>
-                      <div className="flex items-center justify-end gap-1 mt-1 text-teal">
-                        <span className="text-xs font-bold">+{getPoints(earning.points)}</span>
-                        <span className="text-[10px] font-medium uppercase text-teal/70">PTS</span>
+              {!isLoading && earnings.length === 0 ? (
+                <Card className="p-8 text-center flex flex-col items-center justify-center space-y-4">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
+                    <PesoIcon className="h-8 w-8 text-gray-400" />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-lg font-semibold text-gray-900">No earnings yet</h3>
+                    <p className="text-sm text-gray-500 max-w-[250px] mx-auto">
+                      Complete your assigned bookings to start earning.
+                    </p>
+                  </div>
+                  <Button asChild className="mt-4 bg-teal hover:bg-teal/90">
+                    <Link href="/bookings">View Bookings</Link>
+                  </Button>
+                </Card>
+              ) : (
+                earnings.map((earning: Earning) => (
+                  <Card
+                    key={earning.id}
+                    className="p-4 cursor-pointer hover:bg-gray-50 transition-colors"
+                    onClick={() => router.push(`/earnings/${earning.id}`)}
+                    data-testid={`card-earning-${earning.id}`}
+                  >
+                    <div className="flex justify-between">
+                      <div className="space-y-1">
+                        <p className="text-xs font-medium text-blue" data-testid={`text-booking-code-${earning.id}`}>
+                          {earning.bookingCode}
+                        </p>
+                        <p className="font-medium text-gray-900">{earning.client}</p>
+                        <p className="text-sm text-gray-600">{new Date(earning.date).toLocaleDateString()}</p>
+                        <span className={`inline-block px-2 py-1 text-xs rounded-full ${earning.status === "completed" || earning.status === "Completed"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-yellow-100 text-yellow-700"
+                          }`}>
+                          {earning.status}
+                        </span>
+                      </div>
+                      <div className="text-right flex flex-col justify-between items-end">
+                        <p className="text-lg font-bold text-gray-900">₱{parseFloat(earning.amount).toLocaleString('en-PH', { minimumFractionDigits: 2 })}</p>
+                        <div className="flex items-center justify-end gap-1 mt-1 text-teal">
+                          <span className="text-xs font-bold">+{getPoints(earning.points)}</span>
+                          <span className="text-[10px] font-medium uppercase text-teal/70">PTS</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Card>
-              ))}
+                  </Card>
+                ))
+              )}
             </TabsContent>
 
             <TabsContent value="pending" className="space-y-3">

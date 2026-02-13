@@ -29,6 +29,7 @@ export * from "./lookups/validationStatus";
 export * from "./lookups/bookingDeclineReason";
 export * from "./lookups/rescheduleCause";
 export * from "./lookups/rescheduleReason";
+export * from "./lookups/violationTypes";
 
 // customer domain
 export * from "./customer/customerProfiles";
@@ -46,6 +47,7 @@ export * from "./housemaid/housemaidPerformance";
 export * from "./housemaid/asensoTransactions"; // New
 export * from "./housemaid/housemaidTiers";
 export * from "./housemaid/asensoPointsConfig";
+
 
 export * from "./bookings/bookings";
 export * from "./bookings/bookingActivityLog";

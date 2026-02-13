@@ -41,6 +41,9 @@
     "db:seed:pricingCavite": "tsx server/db/seeds/pricingCavite.ts",
     "db:seed:housemaidTiers": "tsx server/db/seeds/housemaidTiers.ts",
     "db:seed:asensoPointsConfig": "tsx server/db/seeds/asensoPointsConfig.ts",
+    "db:seed:violationTypes": "tsx server/db/seeds/violationTypes.ts",
+    "db:seed:test-violation": "tsx server/db/seeds/test-violation-seed.ts",
+    "db:reset:test-violation": "tsx server/db/seeds/test-violation-reset.ts",
     "db:seed:scenario-01": "tsx server/db/seeds/create-scenario-01.ts",
     "db:reset:scenario-01": "tsx server/db/seeds/reset-scenario-01.ts",
     "db:seed:all": "npm-run-all db:seed:idCounters db:seed:marketSegment db:seed:branchCode db:seed:city db:seed:branchOperatingCities db:seed:acquisition db:seed:offered db:seed:paymentMethod db:seed:serviceCategory db:seed:serviceType db:seed:status db:seed:substatus db:seed:paymentStatus db:seed:paymentSource db:seed:sourceInstitution db:seed:destinationWallet db:seed:settlementType db:seed:validationStatus db:seed:housemaids db:seed:customers db:seed:bookingDeclineReason db:seed:rescheduleCause db:seed:rescheduleReason db:seed:bookings"

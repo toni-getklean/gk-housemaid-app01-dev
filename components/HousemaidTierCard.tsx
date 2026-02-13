@@ -26,7 +26,7 @@ interface HousemaidTierCardProps {
 }
 
 export const HousemaidTierCard: FC<HousemaidTierCardProps> = ({
-    currentPoints = 28500,
+    currentPoints = 0,
     variant = "default",
     tiers,
 }) => {

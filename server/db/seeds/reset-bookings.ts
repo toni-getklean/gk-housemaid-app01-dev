@@ -6,6 +6,7 @@ import { transportationDetails } from "@/server/db/schema/transportation/transpo
 import { transportationLegs } from "@/server/db/schema/transportation/transportationLegs";
 import { bookingActivityLog } from "@/server/db/schema/bookings/bookingActivityLog";
 import { housemaidEarnings } from "@/server/db/schema/housemaid/housemaidEarnings";
+import { asensoTransactions } from "@/server/db/schema/housemaid/asensoTransactions";
 import { housemaids } from "@/server/db/schema/housemaid/housemaids";
 import { eq, inArray } from "drizzle-orm";
 
@@ -73,6 +74,12 @@ async function main() {
                 console.log(`   Deleted ${deletedOrphanedEarnings.length - deletedEarnings.length} additional orphaned earnings...`);
             }
 
+            // Asenso Transactions (linked by bookingId)
+            const deletedAsensoTransactions = await db.delete(asensoTransactions)
+                .where(inArray(asensoTransactions.bookingId, bookingIds))
+                .returning({ id: asensoTransactions.transactionId });
+            console.log(`   Deleted ${deletedAsensoTransactions.length} asenso transactions...`);
+
             // Transportation
             // First get transportation IDs linked to these bookings
             const transports = await db.query.transportationDetails.findMany({
@@ -103,6 +110,12 @@ async function main() {
                 .where(inArray(bookings.bookingId, bookingIds))
                 .returning({ id: bookings.bookingId });
             console.log(`   Deleted ${deletedBookings.length} bookings...`);
+
+            // 5. Reset Housemaid Points
+            await db.update(housemaids)
+                .set({ asensoPointsBalance: 0 })
+                .where(eq(housemaids.housemaidId, housemaidId));
+            console.log(`   Reset asenso points balance to 0 for housemaid ID: ${housemaidId}`);
         }
 
         console.log(`\n✅ Successfully removed data for ${TARGET_HOUSEMAID_CODE}.`);
