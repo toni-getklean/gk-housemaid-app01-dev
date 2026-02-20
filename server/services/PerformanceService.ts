@@ -65,6 +65,7 @@ export class PerformanceService {
         // We perform a join to get violation details
         const history = await db.select({
             id: housemaidViolations.violationId,
+            violationCode: housemaidViolations.violationCode, // Added violationCode
             type: violationTypes.type,
             title: violationTypes.title,
             customTitle: housemaidViolations.violationTitle,
@@ -86,6 +87,7 @@ export class PerformanceService {
 
         return history.map(record => ({
             id: record.id.toString(),
+            violationCode: record.violationCode, // Include in result
             type: record.type?.toLowerCase() || "minor",
             title: record.customTitle || record.title || "Unknown Violation",
             description: record.customDescription || record.description || "",
@@ -102,7 +104,7 @@ export class PerformanceService {
     /**
      * Retrieves specific details for a single violation.
      */
-    static async getViolationDetails(violationId: number, housemaidId: number) {
+    static async getViolationDetails(violationCode: string, housemaidId: number) {
         const [detail] = await db.select({
             id: housemaidViolations.violationId,
             type: violationTypes.type,
@@ -126,7 +128,7 @@ export class PerformanceService {
             .leftJoin(bookings, eq(housemaidViolations.bookingId, bookings.bookingId))
             .where(
                 and(
-                    eq(housemaidViolations.violationId, violationId),
+                    eq(housemaidViolations.violationCode, violationCode),
                     eq(housemaidViolations.housemaidId, housemaidId)
                 )
             );

@@ -12,6 +12,7 @@ type ViolationType = "minor" | "major";
 
 interface Violation {
   id: string;
+  violationCode: string;
   type: ViolationType;
   title: string;
   description: string;
@@ -193,7 +194,7 @@ export default function PerformanceReports() {
                     <Card
                       key={violation.id}
                       className="p-4 cursor-pointer hover:bg-gray-50 transition-colors"
-                      onClick={() => router.push(`/performance-reports/violations/${violation.id}`)}
+                      onClick={() => router.push(`/performance-reports/violations/${violation.violationCode}`)}
                       data-testid={`card-violation-${violation.id}`}
                     >
                       <div className="flex items-start gap-3">
@@ -201,6 +202,7 @@ export default function PerformanceReports() {
                         <Info className="h-5 w-5 text-gray-400 flex-shrink-0 mt-0.5" />
                         <div className="flex-1 min-w-0">
                           <div className="font-medium text-gray-900 text-sm">{violation.title}</div>
+                          <p className="text-xs text-gray-500 mb-1 font-mono">{violation.violationCode}</p>
                           <p className="text-sm text-gray-600 mt-1">{violation.description}</p>
                           {violation.sanction && (
                             <p className="text-xs text-red-500 mt-1 font-medium">Sanction: {violation.sanction}</p>

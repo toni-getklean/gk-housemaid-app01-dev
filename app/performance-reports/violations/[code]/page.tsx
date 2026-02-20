@@ -9,14 +9,14 @@ import { AlertTriangle, Calendar, Info, FileText, CheckCircle, AlertCircle } fro
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-export default function ViolationDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+export default function ViolationDetailsPage({ params }: { params: Promise<{ code: string }> }) {
     const router = useRouter();
-    const { id } = use(params);
+    const { code } = use(params);
 
     const { data: violation, isLoading, error } = useQuery({
-        queryKey: ["violationDetails", id],
+        queryKey: ["violationDetails", code],
         queryFn: async () => {
-            const res = await fetch(`/api/performance-reports/violations/${id}`);
+            const res = await fetch(`/api/performance-reports/violations/${code}`);
             if (!res.ok) throw new Error("Failed to fetch violation details");
             return res.json();
         },

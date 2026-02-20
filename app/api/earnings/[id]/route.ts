@@ -18,13 +18,13 @@ export async function GET(
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const earningId = Number(params.id);
+        const id = params.id; // Allow string or number
 
-        if (isNaN(earningId)) {
+        if (!id) {
             return NextResponse.json({ error: "Invalid earning ID" }, { status: 400 });
         }
 
-        const data = await HousemaidEarningsService.getEarningDetails(earningId);
+        const data = await HousemaidEarningsService.getEarningDetails(id);
 
         if (!data) {
             return NextResponse.json({ error: "Earning not found" }, { status: 404 });

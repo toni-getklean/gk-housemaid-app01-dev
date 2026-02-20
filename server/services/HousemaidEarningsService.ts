@@ -204,6 +204,7 @@ export class HousemaidEarningsService {
             currentPoints: housemaid[0]?.asensoPointsBalance || 0,
             earnings: list.map(item => ({
                 id: item.earning.earningId,
+                receiptNumber: item.payment?.receiptNumber,
                 bookingCode: item.booking?.bookingCode || "N/A",
                 date: item.earning.createdAt, // Or transactionDate
                 client: item.customer.name || "Unknown",
@@ -219,7 +220,26 @@ export class HousemaidEarningsService {
     /**
      * Get detailed earning record
      */
-    static async getEarningDetails(earningId: number) {
+    static async getEarningDetails(identifier: string | number) {
+        // Build the where clause dynamically
+        // If it's a number, it could be an ID. If it's a string, it might be a receipt number.
+        // We'll prioritize looking up by receipt number if it's a string, or fallback to ID.
+
+        let whereClause;
+        const idAsNumber = Number(identifier);
+
+        if (!isNaN(idAsNumber)) {
+            // It's a number (or numeric string). 
+            // Ideally we should check both, but for performance let's try to be smart.
+            // If we want to support both ID 10 and Receipt "10", there's a conflict.
+            // Assuming Receipt numbers are strings (which they are in schema), 
+            // we can check if there's a match on receiptNumber OR earningId.
+            whereClause = sql`${housemaidEarnings.earningId} = ${idAsNumber} OR ${bookingPayments.receiptNumber} = ${identifier.toString()}`;
+        } else {
+            // It's definitely not an ID (alphanumeric string)
+            whereClause = eq(bookingPayments.receiptNumber, identifier.toString());
+        }
+
         const result = await db
             .select({
                 earning: housemaidEarnings,
@@ -235,7 +255,7 @@ export class HousemaidEarningsService {
             .leftJoin(bookings, eq(housemaidEarnings.bookingId, bookings.bookingId))
             .leftJoin(bookingPayments, eq(housemaidEarnings.paymentId, bookingPayments.paymentId))
             .leftJoin(transportationDetails, eq(housemaidEarnings.bookingId, transportationDetails.bookingId))
-            .where(eq(housemaidEarnings.earningId, earningId))
+            .where(whereClause)
             .limit(1);
 
         if (result.length === 0) return null;

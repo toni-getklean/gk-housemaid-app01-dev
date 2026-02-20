@@ -17,13 +17,13 @@ export async function GET(
         }
 
         const housemaidId = Number(session.sub);
-        const violationId = Number(params.id);
+        const violationCode = params.id;
 
-        if (isNaN(violationId)) {
-            return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+        if (!violationCode) {
+            return NextResponse.json({ error: "Invalid Code" }, { status: 400 });
         }
 
-        const violation = await PerformanceService.getViolationDetails(violationId, housemaidId);
+        const violation = await PerformanceService.getViolationDetails(violationCode, housemaidId);
 
         if (!violation) {
             return NextResponse.json({ error: "Violation not found" }, { status: 404 });

@@ -354,6 +354,14 @@ async function main() {
 
             console.log(`✓ Created Booking: ${bookingCode}`);
 
+            // Generate Receipt Number if Paid
+            // let receiptNumber = null;
+            // if (booking.paymentStatus === "PAYMENT_RECEIVED") {
+            //     receiptNumber = await databaseService.generateCode(`OR${yy}`);
+            // }
+            let receiptNumber = null;
+            receiptNumber = await databaseService.generateCode(`OR${yy}`);
+
             // Create Booking Payment Record
             if (insertedBooking) {
                 await db.insert(bookingPayments).values({
@@ -363,6 +371,8 @@ async function main() {
                     paymentMethodCode: (booking as any).paymentMethodOverride || "CASH",
                     paymentStatusCode: booking.paymentStatus,
                     validationStatusCode: "PENDING",
+
+                    receiptNumber: receiptNumber,
 
                     settlementTypeCode: (booking as any).settlementTypeOverride || "DIRECT_TO_HM",
 

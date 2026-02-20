@@ -15,6 +15,7 @@ import { HousemaidTierCard } from "@/components/HousemaidTierCard";
 
 interface Earning {
   id: string;
+  receiptNumber?: string;
   bookingCode: string;
   date: string;
   client: string;
@@ -127,7 +128,7 @@ export default function Earnings() {
                   <Card
                     key={earning.id}
                     className="p-4 cursor-pointer hover:bg-gray-50 transition-colors"
-                    onClick={() => router.push(`/earnings/${earning.id}`)}
+                    onClick={() => router.push(`/earnings/${earning.receiptNumber || earning.id}`)}
                     data-testid={`card-earning-${earning.id}`}
                   >
                     <div className="flex justify-between">
@@ -162,7 +163,7 @@ export default function Earnings() {
                 <Card
                   key={earning.id}
                   className="p-4 cursor-pointer hover:bg-gray-50 transition-colors"
-                  onClick={() => router.push(`/earnings/${earning.id}`)}
+                  onClick={() => router.push(`/earnings/${earning.receiptNumber || earning.id}`)}
                   data-testid={`card-earning-${earning.id}`}
                 >
                   <div className="flex justify-between">

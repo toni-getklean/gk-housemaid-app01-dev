@@ -6,9 +6,11 @@ import { housemaidPerformance } from "@/server/db/schema/housemaid/housemaidPerf
 import { violationTypes } from "@/server/db/schema/lookups/violationTypes";
 import { bookings } from "@/server/db/schema/bookings/bookings";
 import { eq, sql, desc } from "drizzle-orm";
+import { getDatabaseService } from "@/lib/database";
 
 const TARGET_HOUSEMAID_CODE = "HMAID25-00002";
-const VIOLATION_CODE = "LATE_ARRIVAL"; // Minor violation
+// const VIOLATION_CODE = "LATE_ARRIVAL"; // Minor violation - REMOVED HARDCODED
+const VIOLATION_TYPE_CODE = "LATE_ARRIVAL";
 
 async function main() {
     console.log(`🌱 Seeding test violation for ${TARGET_HOUSEMAID_CODE}...`);
@@ -28,11 +30,11 @@ async function main() {
 
     // 2. Get Violation Details
     const violationType = await db.query.violationTypes.findFirst({
-        where: eq(violationTypes.violationCode, VIOLATION_CODE),
+        where: eq(violationTypes.violationCode, VIOLATION_TYPE_CODE),
     });
 
     if (!violationType) {
-        console.error(`❌ Violation Type ${VIOLATION_CODE} not found.`);
+        console.error(`❌ Violation Type ${VIOLATION_TYPE_CODE} not found.`);
         process.exit(1);
     }
 
@@ -52,11 +54,18 @@ async function main() {
         console.log(`Linking to Booking ID: ${booking.bookingId} (${booking.bookingCode})`);
     }
 
+    // Generate Violation Code (e.g., HVIO25-00001)
+    const currentYear = new Date().getFullYear();
+    const yy = currentYear.toString().slice(-2);
+    const databaseService = getDatabaseService();
+    const violationCode = await databaseService.generateCode(`HVIO${yy}`);
+
+
     // 4. Insert Violation
     await db.insert(housemaidViolations).values({
         housemaidId: housemaid.housemaidId,
         bookingId: booking?.bookingId || null, // Link to booking if found
-        violationCode: VIOLATION_CODE,
+        violationCode: violationCode,
         violationType: violationType.type,
         violationTitle: violationType.title,
         violationDescription: violationType.description,

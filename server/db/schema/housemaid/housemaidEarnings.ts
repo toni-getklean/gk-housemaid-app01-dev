@@ -1,6 +1,6 @@
-import { sql } from "drizzle-orm";
+import { sql, relations } from "drizzle-orm";
 import { pgTable, text, numeric, date, timestamp, bigint, integer } from "drizzle-orm/pg-core";
-
+import { bookingPayments } from "../bookings/bookingPayments";
 
 
 export const housemaidEarnings = pgTable("housemaid_earnings", {
@@ -21,3 +21,10 @@ export const housemaidEarnings = pgTable("housemaid_earnings", {
     createdAt: timestamp("created_at", { withTimezone: true }),
     updatedAt: timestamp("updated_at", { withTimezone: true }),
 });
+
+export const housemaidEarningsRelations = relations(housemaidEarnings, ({ one }) => ({
+    payment: one(bookingPayments, {
+        fields: [housemaidEarnings.paymentId],
+        references: [bookingPayments.paymentId],
+    }),
+}));
