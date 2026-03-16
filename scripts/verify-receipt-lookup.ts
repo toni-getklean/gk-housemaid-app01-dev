@@ -14,8 +14,8 @@ async function main() {
         },
         where: (earnings, { exists }) => exists(
             db.select()
-            .from(bookingPayments)
-            .where(eq(bookingPayments.paymentId, earnings.paymentId))
+                .from(bookingPayments)
+                .where(eq(bookingPayments.paymentId, earnings.paymentId))
         )
     });
 
@@ -32,10 +32,10 @@ async function main() {
             const earning = await db.query.housemaidEarnings.findFirst({
                 where: eq(housemaidEarnings.paymentId, payment.paymentId)
             });
-            
+
             if (earning) {
-                 console.log(`Found earning ${earning.earningId} for receipt ${payment.receiptNumber}`);
-                 await testLookup(payment.receiptNumber, earning.earningId);
+                console.log(`Found earning ${earning.earningId} for receipt ${payment.receiptNumber}`);
+                await testLookup(payment.receiptNumber, earning.earningId);
             } else {
                 console.log("No earning found for this payment.");
             }
@@ -57,7 +57,7 @@ async function testLookup(receiptNum: string, earningId: number) {
     // Test 1: Lookup by Receipt Number
     console.log(`\nTesting lookup by Receipt Number: ${receiptNum}`);
     const byReceipt = await HousemaidEarningsService.getEarningDetails(receiptNum);
-    
+
     if (byReceipt && byReceipt.earningId === earningId) {
         console.log("✅ Lookup by Receipt Number SUCCESS");
     } else {
@@ -70,7 +70,7 @@ async function testLookup(receiptNum: string, earningId: number) {
     const byId = await HousemaidEarningsService.getEarningDetails(earningId);
 
     if (byId && byId.earningId === earningId) {
-         console.log("✅ Lookup by Earning ID SUCCESS");
+        console.log("✅ Lookup by Earning ID SUCCESS");
     } else {
         console.error("❌ Lookup by Earning ID FAILED");
     }
