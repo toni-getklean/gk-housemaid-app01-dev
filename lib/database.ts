@@ -18,7 +18,7 @@ import {
   housemaidRatings,
   customerRatings,
   housemaidAvailability,
-  housemaidTiers,
+  trainingLevels,
 } from "../server/db/schema";
 
 import { parseISO } from "date-fns";
@@ -1458,15 +1458,15 @@ export class DatabaseService {
   }
 
   /**
-   * Retrieves all housemaid tiers ordered by tier_order.
+   * Retrieves all training levels ordered by tier_order.
    * Used to display tier progression UI.
    */
-  async getHousemaidTiers() {
+  async getTrainingLevels() {
     try {
       const tiers = await db
         .select()
-        .from(housemaidTiers)
-        .orderBy(asc(housemaidTiers.tierOrder));
+        .from(trainingLevels)
+        .orderBy(asc(trainingLevels.tierOrder));
 
       return tiers.map(t => ({
         id: t.tierCode,
@@ -1478,7 +1478,7 @@ export class DatabaseService {
         unlockedSkills: t.unlockedSkills as string[] || [],
       }));
     } catch (error) {
-      console.error("Error fetching housemaid tiers:", error);
+      console.error("Error fetching training levels:", error);
       return [];
     }
   }

@@ -151,7 +151,7 @@ async function main() {
             commitment: "Full-Time",
             status: "active",
 
-            currentTierCode: "REGULAR",
+            currentServiceTierCode: "REGULAR",
             asensoPointsBalance: 0,
 
             createdAt: now,

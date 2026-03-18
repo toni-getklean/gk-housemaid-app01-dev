@@ -49,7 +49,7 @@ type HousemaidSeedRow = {
     lastLogin: string | null;
 
     // Pricing V2
-    currentTierCode?: string;
+    currentServiceTierCode?: string;
     asensoPointsBalance?: number;
 };
 
@@ -97,7 +97,7 @@ const seedData: any[] = [
         createdAt: "2024-08-10T10:30:00Z",
         lastLogin: "2025-04-30T08:15:00Z",
 
-        currentTierCode: "REGULAR",
+        currentServiceTierCode: "REGULAR",
         asensoPointsBalance: 0,
     },
     {
@@ -142,7 +142,7 @@ const seedData: any[] = [
         createdAt: "2024-08-10T10:30:00Z",
         lastLogin: "2025-11-26T06:18:03.569Z",
 
-        currentTierCode: "PLUS",
+        currentServiceTierCode: "PLUS",
         asensoPointsBalance: 150,
     },
 ];
@@ -237,7 +237,7 @@ async function main() {
             gcashNumber: seed.gcashNumber,
             status: seed.status,
 
-            currentTierCode: seed.currentTierCode || "REGULAR",
+            currentServiceTierCode: seed.currentServiceTierCode || "REGULAR",
             asensoPointsBalance: seed.asensoPointsBalance || 0,
 
             createdAt: seed.createdAt ? new Date(seed.createdAt) : null,

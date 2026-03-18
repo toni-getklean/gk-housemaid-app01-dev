@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { db } from "@/server/db/client";
-import { pricingTiers } from "@/server/db/schema/lookups/pricingTiers";
+import { serviceTiers } from "@/server/db/schema/lookups/serviceTiers";
 import { serviceSkus } from "@/server/db/schema/pricing/serviceSkus";
 import { membershipSkus } from "@/server/db/schema/pricing/membershipSkus";
 import { flexiRateCards } from "@/server/db/schema/pricing/flexiRateCards";
@@ -9,7 +9,7 @@ async function seedPricing() {
     console.log("🌱 Seeding CAVITE Pricing Data...");
 
     // 1. Ensure Pricing Tiers Exist
-    await db.insert(pricingTiers).values([
+    await db.insert(serviceTiers).values([
         { tierCode: "REGULAR", displayName: "Regular", description: "Standard Housemaid Service" },
         { tierCode: "PLUS", displayName: "Plus", description: "Experienced Housemaid Service" },
         { tierCode: "ALL_IN", displayName: "All-In", description: "Premium All-Inclusive Service" },

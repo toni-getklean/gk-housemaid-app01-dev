@@ -29,9 +29,9 @@ export default function Profile() {
 
   // Fetch housemaid tiers from DB
   const { data: tiersData } = useQuery({
-    queryKey: ["housemaidTiers"],
+    queryKey: ["trainingLevels"],
     queryFn: async () => {
-      const res = await fetch("/api/lookups/housemaid-tiers");
+      const res = await fetch("/api/lookups/training-levels");
       if (!res.ok) throw new Error("Failed to fetch tiers");
       return res.json();
     },

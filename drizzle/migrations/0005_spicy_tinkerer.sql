@@ -109,7 +109,7 @@ ALTER TABLE "bookings" ADD COLUMN "reschedule_approved_by" text;--> statement-br
 ALTER TABLE "bookings" ADD COLUMN "reschedule_approved_at" timestamp with time zone;--> statement-breakpoint
 ALTER TABLE "bookings" ADD COLUMN "reschedule_count" integer DEFAULT 0 NOT NULL;--> statement-breakpoint
 ALTER TABLE "bookings" ADD COLUMN "assignment_attempt_count" integer DEFAULT 0 NOT NULL;--> statement-breakpoint
-ALTER TABLE "housemaids" ADD COLUMN "current_tier_code" text;--> statement-breakpoint
+ALTER TABLE "housemaids" ADD COLUMN "current_service_tier_code" text;--> statement-breakpoint
 ALTER TABLE "housemaids" ADD COLUMN "asenso_points_balance" integer DEFAULT 0;--> statement-breakpoint
 ALTER TABLE "housemaid_earnings" ADD COLUMN "payment_method_code" text;--> statement-breakpoint
 ALTER TABLE "transportation_details" ADD COLUMN "payment_status" text DEFAULT 'AWAITING_PAYMENT';--> statement-breakpoint

@@ -11,7 +11,7 @@ export * from "./lookups/sourceInstitution";
 export * from "./lookups/destinationWallet";
 export * from "./lookups/bookingDeclineReason";
 export * from "./lookups/serviceType";
-export * from "./lookups/pricingTiers"; // New
+export * from "./lookups/serviceTiers"; // New
 export * from "./lookups/acquisition";
 export * from "./lookups/branchCode";
 export * from "./lookups/branchOperatingCities";
@@ -45,7 +45,7 @@ export * from "./housemaid/housemaidViolations";
 export * from "./housemaid/housemaidEarnings";
 export * from "./housemaid/housemaidPerformance";
 export * from "./housemaid/asensoTransactions"; // New
-export * from "./housemaid/housemaidTiers";
+export * from "./housemaid/trainingLevels";
 export * from "./housemaid/asensoPointsConfig";
 
 

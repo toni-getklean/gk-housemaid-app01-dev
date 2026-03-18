@@ -248,6 +248,37 @@ src/
 - **Secondary/accent color**: `#FFEB3B` (yellow)
 - Refer to `DESIGN.md` for complete token system
 
+### Badge Color Specification
+
+All badge colors across the app follow this centralized palette. Components: `StatusBadge`, `TypeBadge` (in `DESIGN.md` §4.6.1).
+
+#### Service Tiers (Housemaid Tiers)
+
+| Tier | Color | HEX | Tailwind |
+|------|-------|-----|----------|
+| Regular | Slate | `#334155` | `bg-slate-100 text-slate-800` |
+| Plus | Blue | `#1D4ED8` | `bg-blue-50 text-blue-700` |
+| All-in | Amber / Gold | `#B45309` | `bg-amber-50 text-amber-700` |
+
+#### Booking Types
+
+| Type | Color | HEX | Tailwind |
+|------|-------|-----|----------|
+| Trial | Purple | `#7E22CE` | `bg-purple-50 text-purple-700` |
+| One-time | Green | `#15803D` | `bg-green-50 text-green-700` |
+| Flexi | Orange | `#C2410C` | `bg-orange-50 text-orange-700` |
+
+#### Booking Statuses (Operational Color Logic)
+
+Statuses follow a semantic system so operations can identify urgency at a glance.
+
+| Color | HEX | Statuses |
+|-------|-----|----------|
+| Yellow | `#CA8A04` | `needs_confirmation`, `pending_review`, `rescheduled` |
+| Blue | `#1D4ED8` | `dispatched`, `on_the_way`, `arrived`, `in_progress` |
+| Green | `#15803D` | `accepted`, `completed` |
+| Red | `#DC2626` | `cancelled`, `no_show` |
+
 ### Layout Structure
 
 ```
@@ -377,7 +408,7 @@ Columns:
 | **Booking Type** | Trial, One-time, Flexi |
 | **Booking Date** | Service date and time |
 | **Housemaid** | Assigned housemaid name or "Unassigned" |
-| **Status** | `StatusChip` component |
+| **Status** | `StatusBadge` component |
 | **Payment** | Payment status indicator |
 | **Actions** | Edit icon button → detail page |
 
@@ -400,7 +431,7 @@ Full detail view for a single booking. The admin's primary workspace for managin
 
 #### Header
 - Back button → `/bookings`
-- Booking code + `StatusChip`
+- Booking code + `StatusBadge`
 - Action buttons (context-sensitive based on status and role):
   - "Cancel Booking" (destructive-outlined)
   - "Reschedule" (outlined)
@@ -695,7 +726,7 @@ View and manage customer profiles, addresses, memberships, and flags.
 | **Area** | Primary service area (from `primarySegmentCode`) |
 | **Bookings** | Total booking count |
 | **Membership** | Flexi membership status (Active/Expired/None) |
-| **Status** | `StatusChip`: Active, Flagged, Banned |
+| **Status** | `StatusBadge`: Active, Flagged, Banned |
 | **Actions** | View detail |
 
 #### Customer Detail (`/customers/[code]`)

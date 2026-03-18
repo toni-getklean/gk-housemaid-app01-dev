@@ -11,7 +11,7 @@ export const housemaids = pgTable("housemaids", {
     housemaidCode: text("housemaid_code"),
 
     // Loyalty & Tiers
-    currentTierCode: text("current_tier_code"), // REGULAR, PLUS, ALL_IN
+    currentServiceTierCode: text("current_service_tier_code"), // REGULAR, PLUS, ALL_IN
     asensoPointsBalance: integer("asenso_points_balance").default(0),
 
     name: text("name").notNull(),

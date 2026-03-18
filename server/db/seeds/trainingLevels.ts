@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { db } from "@/server/db/client";
-import { housemaidTiers } from "@/server/db/schema/housemaid/housemaidTiers";
+import { trainingLevels } from "@/server/db/schema/housemaid/trainingLevels";
 import { eq } from "drizzle-orm";
 
 const seedData = [
@@ -71,32 +71,32 @@ const seedData = [
 ];
 
 async function main() {
-    console.log("🌱 Seeding housemaid_tiers...");
+    console.log("🌱 Seeding training_levels...");
 
     for (const row of seedData) {
         const existing = await db
             .select()
-            .from(housemaidTiers)
-            .where(eq(housemaidTiers.tierCode, row.tierCode));
+            .from(trainingLevels)
+            .where(eq(trainingLevels.tierCode, row.tierCode));
 
         if (existing.length === 0) {
-            await db.insert(housemaidTiers).values(row);
+            await db.insert(trainingLevels).values(row);
             console.log(`Inserted → ${row.tierCode} (${row.tierLabel}) - ${row.minPoints} pts`);
         } else {
             // Update existing row with latest data
             await db
-                .update(housemaidTiers)
+                .update(trainingLevels)
                 .set(row)
-                .where(eq(housemaidTiers.tierCode, row.tierCode));
+                .where(eq(trainingLevels.tierCode, row.tierCode));
             console.log(`Updated → ${row.tierCode} (${row.tierLabel}) - ${row.minPoints} pts`);
         }
     }
 
-    console.log("✅ Seed complete: housemaid_tiers");
+    console.log("✅ Seed complete: training_levels");
     process.exit(0);
 }
 
 main().catch((err) => {
-    console.error("❌ Error seeding housemaid_tiers:", err);
+    console.error("❌ Error seeding training_levels:", err);
     process.exit(1);
 });

@@ -3,7 +3,7 @@ import { pgTable, text, date, integer, timestamp, bigint, jsonb } from "drizzle-
 
 
 
-import { pricingTiers } from "../lookups/pricingTiers";
+import { serviceTiers } from "../lookups/serviceTiers";
 
 export const bookings = pgTable("bookings", {
     bookingId: bigint("booking_id", { mode: "number" })
@@ -46,7 +46,7 @@ export const bookings = pgTable("bookings", {
 
     // Pricing & Specs V2 Fields
     location: text("location"), // NCR, CEBU, CAVITE
-    tierCode: text("tier_code").references(() => pricingTiers.tierCode), // REGULAR, PLUS, ALL_IN
+    tierCode: text("tier_code").references(() => serviceTiers.tierCode), // REGULAR, PLUS, ALL_IN
     bookingTypeCode: text("booking_type_code"), // TRIAL, ONE_TIME, FLEXI
     dayType: text("day_type"), // WEEKDAY, WEEKEND_HOLIDAY
 

@@ -1,6 +1,6 @@
 import { pgTable, text, integer, timestamp, jsonb } from "drizzle-orm/pg-core";
 
-export const housemaidTiers = pgTable("housemaid_tiers", {
+export const trainingLevels = pgTable("training_levels", {
     tierCode: text("tier_code").primaryKey(), // ENTRY, BASIC, ADVANCED, EXPERT
     tierLabel: text("tier_label").notNull(),
     minPoints: integer("min_points").notNull(),

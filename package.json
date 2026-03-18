@@ -39,7 +39,7 @@
     "db:seed:rescheduleReason": "tsx server/db/seeds/rescheduleReason.ts",
     "db:seed:pricingNcr": "tsx server/db/seeds/pricingNcr.ts",
     "db:seed:pricingCavite": "tsx server/db/seeds/pricingCavite.ts",
-    "db:seed:housemaidTiers": "tsx server/db/seeds/housemaidTiers.ts",
+    "db:seed:trainingLevels": "tsx server/db/seeds/trainingLevels.ts",
     "db:seed:asensoPointsConfig": "tsx server/db/seeds/asensoPointsConfig.ts",
     "db:seed:violationTypes": "tsx server/db/seeds/violationTypes.ts",
     "db:seed:test-violation": "tsx server/db/seeds/test-violation-seed.ts",

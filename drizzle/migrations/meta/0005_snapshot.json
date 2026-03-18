@@ -1005,8 +1005,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "current_tier_code": {
-          "name": "current_tier_code",
+        "current_service_tier_code": {
+          "name": "current_service_tier_code",
           "type": "text",
           "primaryKey": false,
           "notNull": false
