@@ -29,6 +29,7 @@ const testBookings = [
         duration: "HALF_DAY", // formerly categoryCode: "4_hours"
         notes: "Test booking - needs_confirmation status",
         paymentStatus: "AWAITING_PAYMENT",
+        settlementTypeOverride: "DIRECT_TO_HM",
         totalAmount: "1090.00",
         // Pricing V2
         location: "NCR",
@@ -48,8 +49,12 @@ const testBookings = [
         duration: "HALF_DAY",
         notes: "Test booking - pending_review status",
         paymentStatus: "AWAITING_PAYMENT",
+        settlementTypeOverride: "DIRECT_TO_HM",
+        totalAmount: "900.00",
         location: "CAVITE",
-        totalAmount: "900.00"
+        tierCode: "REGULAR",
+        bookingType: "ONE_TIME",
+        dayType: "WEEKDAY"
     },
     // Booking 3: ACCEPTED
     {
@@ -64,7 +69,12 @@ const testBookings = [
         notes: "Test booking - accepted status",
         housemaidAcceptedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
         paymentStatus: "AWAITING_PAYMENT",
-        totalAmount: "1090.00"
+        settlementTypeOverride: "DIRECT_TO_HM",
+        totalAmount: "1090.00",
+        location: "NCR",
+        tierCode: "REGULAR",
+        bookingType: "ONE_TIME",
+        dayType: "WEEKDAY"
     },
     // Booking 4: DISPATCHED
     {
@@ -79,8 +89,13 @@ const testBookings = [
         notes: "Test booking - dispatched status",
         housemaidAcceptedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
         housemaidDispatchedAt: new Date(Date.now() - 1 * 60 * 60 * 1000),
-        paymentStatus: "PAYMENT_RECEIVED",
-        totalAmount: "1090.00"
+        paymentStatus: "AWAITING_PAYMENT",
+        settlementTypeOverride: "DIRECT_TO_HM",
+        totalAmount: "1090.00",
+        location: "NCR",
+        tierCode: "REGULAR",
+        bookingType: "ONE_TIME",
+        dayType: "WEEKDAY"
     },
     // 5 New PENDING REVIEW Bookings
     {
@@ -94,7 +109,12 @@ const testBookings = [
         duration: "HALF_DAY",
         notes: "Additional Pending Review 1",
         paymentStatus: "AWAITING_PAYMENT",
-        totalAmount: "1090.00"
+        settlementTypeOverride: "DIRECT_TO_HM",
+        totalAmount: "1090.00",
+        location: "NCR",
+        tierCode: "REGULAR",
+        bookingType: "ONE_TIME",
+        dayType: "WEEKDAY"
     },
     {
         customerAccount: "ACC-2024-002",
@@ -107,8 +127,12 @@ const testBookings = [
         duration: "HALF_DAY",
         notes: "Additional Pending Review 2",
         paymentStatus: "AWAITING_PAYMENT",
+        settlementTypeOverride: "DIRECT_TO_HM",
+        totalAmount: "900.00",
         location: "CAVITE",
-        totalAmount: "900.00"
+        tierCode: "REGULAR",
+        bookingType: "ONE_TIME",
+        dayType: "WEEKDAY"
     },
     {
         customerAccount: "ACC-2024-003",
@@ -121,7 +145,12 @@ const testBookings = [
         duration: "WHOLE_DAY", // Changed to Whole Day for test variety
         notes: "Additional Pending Review 3 - WHOLE_DAY NCR",
         paymentStatus: "AWAITING_PAYMENT",
-        totalAmount: "1390.00"
+        settlementTypeOverride: "DIRECT_TO_HM",
+        totalAmount: "1390.00",
+        location: "NCR",
+        tierCode: "REGULAR",
+        bookingType: "ONE_TIME",
+        dayType: "WEEKDAY"
     },
     {
         customerAccount: "ACC-2024-001",
@@ -132,10 +161,14 @@ const testBookings = [
         time: "2:00PM - 6:00PM",
         serviceTypeCode: "general_cleaning",
         duration: "WHOLE_DAY", // Changed to Whole Day Cavite
-        location: "CAVITE",
         notes: "Additional Pending Review 4 - WHOLE_DAY CAVITE",
         paymentStatus: "AWAITING_PAYMENT",
-        totalAmount: "1190.00"
+        settlementTypeOverride: "DIRECT_TO_HM",
+        totalAmount: "1190.00",
+        location: "CAVITE",
+        tierCode: "REGULAR",
+        bookingType: "ONE_TIME",
+        dayType: "WEEKDAY"
     },
     {
         customerAccount: "ACC-2024-002",
@@ -148,7 +181,12 @@ const testBookings = [
         duration: "HALF_DAY",
         notes: "Additional Pending Review 5",
         paymentStatus: "AWAITING_PAYMENT",
-        totalAmount: "1090.00"
+        settlementTypeOverride: "DIRECT_TO_HM",
+        totalAmount: "1090.00",
+        location: "NCR",
+        tierCode: "REGULAR",
+        bookingType: "ONE_TIME",
+        dayType: "WEEKDAY"
     },
     // ── PAID_TO_GK Bookings (Service fee paid to company via E-Wallet) ──
     {
@@ -164,7 +202,11 @@ const testBookings = [
         paymentStatus: "PAYMENT_RECEIVED",
         paymentMethodOverride: "E_WALLET",
         settlementTypeOverride: "PAID_TO_GK",
-        totalAmount: "1090.00"
+        totalAmount: "1090.00",
+        location: "NCR",
+        tierCode: "REGULAR",
+        bookingType: "ONE_TIME",
+        dayType: "WEEKDAY"
     },
     {
         customerAccount: "ACC-2024-002",
@@ -180,8 +222,11 @@ const testBookings = [
         paymentStatus: "PAYMENT_RECEIVED",
         paymentMethodOverride: "E_WALLET",
         settlementTypeOverride: "PAID_TO_GK",
+        totalAmount: "900.00",
         location: "CAVITE",
-        totalAmount: "900.00"
+        tierCode: "REGULAR",
+        bookingType: "ONE_TIME",
+        dayType: "WEEKDAY"
     },
     {
         customerAccount: "ACC-2024-003",
@@ -198,7 +243,11 @@ const testBookings = [
         paymentStatus: "PAYMENT_RECEIVED",
         paymentMethodOverride: "E_WALLET",
         settlementTypeOverride: "PAID_TO_GK",
-        totalAmount: "1390.00"
+        totalAmount: "1390.00",
+        location: "NCR",
+        tierCode: "REGULAR",
+        bookingType: "ONE_TIME",
+        dayType: "WEEKDAY"
     },
     {
         customerAccount: "ACC-2024-001",
@@ -215,7 +264,11 @@ const testBookings = [
         paymentStatus: "PAYMENT_RECEIVED",
         paymentMethodOverride: "E_WALLET",
         settlementTypeOverride: "PAID_TO_GK",
-        totalAmount: "1390.00"
+        totalAmount: "1390.00",
+        location: "NCR",
+        tierCode: "REGULAR",
+        bookingType: "ONE_TIME",
+        dayType: "WEEKDAY"
     }
 ];
 
@@ -360,7 +413,7 @@ async function main() {
             //     receiptNumber = await databaseService.generateCode(`OR${yy}`);
             // }
             let receiptNumber = null;
-            receiptNumber = await databaseService.generateCode(`OR${yy}`);
+            receiptNumber = await databaseService.generateCode(`ER${yy}`);
 
             // Create Booking Payment Record
             if (insertedBooking) {

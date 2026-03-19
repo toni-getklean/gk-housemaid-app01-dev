@@ -886,16 +886,60 @@ Record, categorize, and manage housemaid violations with automatic points deduct
 **API**: `GET /api/asenso/config`, `PUT /api/asenso/config`
 **Access**: Super Admin (config), Ops (view)
 
-#### Points Configuration
-Asenso points serve strictly as currency to enroll in Training/Certification programs. They DO NOT determine a housemaid's service tier automatically. Points accumulate continuously and never reset.
+#### 7.10.1 Points Earning
 
 | Action | Regular | Plus | All-in |
 |--------|:---:|:---:|:---:|
 | Trial booking | 150 pts | 300 pts | 600 pts |
 | One-time booking | 150 pts | 300 pts | 600 pts |
-| Repeat booking | 150 pts | 300 pts | 300 pts |
-| Subscription / Flexi | 300 pts | 600 pts | 900 pts |
-| Marked available (no booking)| 100 pts | - | - |
+| Repeat booking | 150 pts | 300 pts | 600 pts |
+| Subscription / Flexi booking | 300 pts | 600 pts | 900 pts |
+| Marked available but no booking | 100 pts | — | — |
+
+**Rules**
+- Points earned per completed booking
+- No monthly or daily cap
+- Earnings accumulate continuously
+- Points may go negative due to violations
+
+#### 7.10.2 Availability Reward
+
+Housemaids may earn +100 Asenso points when they mark themselves available but do not receive any booking offers for the day.
+
+**Conditions for awarding the availability reward:**
+1. The housemaid must have marked herself available for that specific day in the system.
+2. The system must have not sent any booking offer to the housemaid during that day.
+3. The housemaid must not be suspended or restricted from receiving bookings.
+
+If all conditions are met, the housemaid is awarded:
+**+100 Asenso points**
+
+This reward is intended to compensate housemaids for maintaining availability when the platform was unable to provide booking opportunities.
+
+**Important Rules**
+- The reward is granted per day of availability.
+- If the housemaid receives at least one booking offer, the availability reward is not granted.
+- This applies regardless of whether the booking was accepted, declined, missed, or later cancelled.
+- The key condition is whether the system issued an offer, not whether a booking was completed.
+
+**Processing Method**
+Availability rewards are processed through a daily automated system job.
+
+Process flow:
+1. The system reviews all housemaids who marked themselves available on the previous day.
+2. The system checks whether any booking offers were sent to each housemaid on that day.
+3. If no booking offers exist, the system automatically credits +100 Asenso points to the housemaid’s account.
+
+All awarded points must be recorded in the Asenso Points transaction ledger for auditing and reporting purposes.
+
+#### 7.10.3 Points Usage
+
+Asenso points are used only for: Enrollment into certification/training programs
+
+They do NOT:
+- Automatically upgrade tier
+- Act as a level threshold
+- Expire or reset
 
 #### Training Progression (Certifications)
 
@@ -1316,7 +1360,7 @@ IDs are generated via the `idCounters` table using `DatabaseService.generateCode
 | Prefix | Entity | Example | Schema Field |
 |--------|--------|---------|-------------|
 | `HM{YY}` | Booking Code | `HM26-00001` | `bookings.bookingCode` |
-| `OR{YY}` | Receipt Number (Booking Payments) | `OR26-00001` | `bookingPayments.receiptNumber` |
+| `ER{YY}` | Receipt Number (Booking Payments) | `ER26-00001` | `bookingPayments.receiptNumber` |
 | `CUST{YY}` | Customer Code | `CUST26-00001` | `customerProfiles.customerCode` |
 | `HMAID{YY}` | Housemaid Code | `HMAID26-00001` | `housemaids.housemaidCode` |
 | `HVIO{YY}` | Housemaid Violation Code | `HVIO26-00001` | `housemaidViolations.violationCode` |

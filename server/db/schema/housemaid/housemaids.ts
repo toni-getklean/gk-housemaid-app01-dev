@@ -37,6 +37,7 @@ export const housemaids = pgTable("housemaids", {
     facebookAccessToken: text("facebook_access_token"),
     tokenExpiresAt: timestamp("token_expires_at", { withTimezone: true }),
     gcashNumber: text("gcash_number"),
+    gcashQrCodeUrl: text("gcash_qr_code_url"),
     status: text("status"),
     createdAt: timestamp("created_at", { withTimezone: true }),
     updatedAt: timestamp("updated_at", { withTimezone: true }),

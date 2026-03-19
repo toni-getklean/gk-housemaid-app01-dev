@@ -63,7 +63,10 @@ export class PricingService {
             }
 
             basePrice = parseFloat(sku.servicePrice);
-            // No surge for fixed price SKUs (per spec)
+            
+            if (bookingType === "ONE_TIME" && sku.surgeAmount && this.isWeekendOrHoliday(date)) {
+                surgeAmount = parseFloat(sku.surgeAmount);
+            }
         }
         else if (bookingType === "FLEXI") {
             // Rule D: Flexi Membership Pricing

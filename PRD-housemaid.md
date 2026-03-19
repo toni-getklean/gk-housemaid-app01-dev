@@ -763,41 +763,78 @@ The platform uses a **Flat Rate Model**. Housemaids earn a fixed flat rate per b
 ### Overview
 "Asenso" is GetKlean's internal loyalty points system for housemaids. Points are earned per completed booking and serve as **currency to enroll in Training/Certification programs**. Points do NOT automatically determine a housemaid's service tier. Points accumulate continuously and **never reset**.
 
-### How Points Are Earned
+### 9.1 Points Earning
 
 | Action | Regular | Plus | All-in |
 |--------|---------|------|--------|
 | Trial booking | 150 pts | 300 pts | 600 pts |
 | One-time booking | 150 pts | 300 pts | 600 pts |
-| Repeat booking | 150 pts | 300 pts | 300 pts |
-| Subscription / Flexi | 300 pts | 600 pts | 900 pts |
-| Marked available (no booking) | 100 pts | — | — |
+| Repeat booking | 150 pts | 300 pts | 600 pts |
+| Subscription / Flexi booking | 300 pts | 600 pts | 900 pts |
+| Marked available but no booking | 100 pts | — | — |
 
-Points are awarded when a booking is marked **Completed**.
+**Rules**
+- Points earned per completed booking
+- No monthly or daily cap
+- Earnings accumulate continuously
+- Points may go negative due to violations
 
-### Points Deductions
+#### 9.1.1 Availability Reward
+
+Housemaids may earn +100 Asenso points when they mark themselves available but do not receive any booking offers for the day.
+
+**Conditions for awarding the availability reward:**
+1. The housemaid must have marked herself available for that specific day in the system.
+2. The system must have not sent any booking offer to the housemaid during that day.
+3. The housemaid must not be suspended or restricted from receiving bookings.
+
+If all conditions are met, the housemaid is awarded:
+**+100 Asenso points**
+
+This reward is intended to compensate housemaids for maintaining availability when the platform was unable to provide booking opportunities.
+
+**Important Rules**
+- The reward is granted per day of availability.
+- If the housemaid receives at least one booking offer, the availability reward is not granted.
+- This applies regardless of whether the booking was accepted, declined, missed, or later cancelled.
+- The key condition is whether the system issued an offer, not whether a booking was completed.
+
+**Processing Method**
+Availability rewards are processed through a daily automated system job.
+
+Process flow:
+1. The system reviews all housemaids who marked themselves available on the previous day.
+2. The system checks whether any booking offers were sent to each housemaid on that day.
+3. If no booking offers exist, the system automatically credits +100 Asenso points to the housemaid’s account.
+
+All awarded points must be recorded in the Asenso Points transaction ledger for auditing and reporting purposes.
+
+### 9.2 Points Usage
+
+Asenso points are used only for: Enrollment into certification/training programs
+
+They do NOT:
+- Automatically upgrade tier
+- Act as a level threshold
+- Expire or reset
+
+### 9.3 Points Deductions
 - **Minor violation**: Deducts points per violation type (e.g., -5 to -15 pts)
 - **Major violation**: Deducts larger amounts (e.g., -50 to -100 pts)
 - Admin can manually adjust points (add/deduct with reason)
 
-### Points Ledger (`asensoTransactions`)
+### 9.4 Points Ledger (`asensoTransactions`)
 Every point movement is recorded:
 - Transaction type (earn / deduct / adjustment)
 - Amount
 - Reference (booking code or violation ID)
 - Timestamp
 
-### Points Balance
+### 9.5 Points Balance
 - Stored on `housemaids.asensoPointsBalance`
 - Updated atomically with each transaction
 
-### Using Points: Training Enrollment
-- Points are spent to **enroll in certification/training programs**
-- Each certification level has a points cost to enroll
-- Completing certification can unlock eligibility for a higher Service Tier
-- Service Tier upgrades are **manual admin actions** based on certification achievement (not automatic)
-
-### Certification → Service Tier Path
+### 9.6 Certification → Service Tier Path
 
 | Highest Certification Level | Eligible Service Tier |
 |---|---|
@@ -863,7 +900,7 @@ IDs are generated via the `idCounters` table using `DatabaseService.generateCode
 | Prefix | Entity | Example | Schema Field |
 |--------|--------|---------|-------------|
 | `HM{YY}` | Booking Code | `HM26-00001` | `bookings.bookingCode` |
-| `OR{YY}` | Receipt Number (Booking Payments) | `OR26-00001` | `bookingPayments.receiptNumber` |
+| `ER{YY}` | Receipt Number (Booking Payments) | `ER26-00001` | `bookingPayments.receiptNumber` |
 | `CUST{YY}` | Customer Code | `CUST26-00001` | `customerProfiles.customerCode` |
 | `HMAID{YY}` | Housemaid Code | `HMAID26-00001` | `housemaids.housemaidCode` |
 | `HVIO{YY}` | Housemaid Violation Code | `HVIO26-00001` | `housemaidViolations.violationCode` |

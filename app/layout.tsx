@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,6 +10,13 @@ export const metadata: Metadata = {
   description: "Manage your work schedules, bookings, and earnings",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -17,10 +24,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <Providers>
-          {children}
-        </Providers>
+      <body className="bg-zinc-100 dark:bg-zinc-900 flex justify-center min-h-screen">
+        <main className="w-full max-w-[430px] min-h-[100dvh] bg-background shadow-2xl relative overflow-x-hidden flex flex-col">
+          <Providers>
+            {children}
+          </Providers>
+        </main>
       </body>
     </html>
   );

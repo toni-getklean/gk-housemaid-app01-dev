@@ -14,7 +14,7 @@ async function main() {
 
     // New prefixes based on business rules
     // HM{YY}    -> Booking Code
-    // OR{YY}    -> Receipt Number in Booking Payments
+    // ER{YY}    -> Receipt Number in Booking Payments
     // CUST{YY}  -> Customer Code
     // HMAID{YY} -> Housemaid Code
     // HVIO{YY}  -> Housemaid Violation Code
@@ -22,7 +22,7 @@ async function main() {
 
     const prefixes = [
         `HM${yy}`,
-        `OR${yy}`,
+        `ER${yy}`,
         `CUST${yy}`,
         `HMAID${yy}`,
         `HVIO${yy}`,

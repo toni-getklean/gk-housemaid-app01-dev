@@ -46,6 +46,7 @@ export * from "./housemaid/housemaidEarnings";
 export * from "./housemaid/housemaidPerformance";
 export * from "./housemaid/asensoTransactions"; // New
 export * from "./housemaid/trainingLevels";
+export * from "./housemaid/housemaidCertifications";
 export * from "./housemaid/asensoPointsConfig";
 
 

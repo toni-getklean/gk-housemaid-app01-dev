@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GetKlean Housemaid Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        yellow: '#F4D03F',
+                        'yellow-hover': '#E4C02F',
+                        teal: '#1D72C6', // Using the blue from actual tokens mapping
+                        'teal-hover': '#1562B6',
+                    },
+                    fontFamily: {
+                        sans: ['ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { -webkit-tap-highlight-color: transparent; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen text-gray-900 antialiased pb-20">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-40 h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 shadow-sm">
+        <button class="text-gray-600 hover:bg-gray-100 p-2 rounded-full transition-colors">
+            <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+        <h1 class="text-lg font-semibold text-gray-900">Profile</h1>
+        <div class="w-9 h-9"></div> <!-- Spacer for centering -->
+    </header>
+
+    <!-- Page Content -->
+    <main class="w-full max-w-md mx-auto">
+        
+        <!-- Top Banner & Avatar Profile -->
+        <div class="relative mb-20">
+            <!-- Background Banner -->
+            <div class="h-32 bg-gradient-to-r from-yellow to-yellow-hover w-full rounded-b-xl shadow-inner"></div>
+            
+            <!-- Avatar Overlay -->
+            <div class="absolute -bottom-16 left-1/2 -translate-x-1/2 flex flex-col items-center w-full">
+                <!-- Avatar -->
+                <div class="relative">
+                    <div class="h-32 w-32 rounded-full border-4 border-white shadow-lg bg-teal flex items-center justify-center overflow-hidden">
+                        <!-- Initials Fallback if no image -->
+                        <span class="text-3xl font-bold text-white tracking-wider">MA</span>
+                        <!-- Replace src with actual image if available -->
+                        <img src="https://ui-avatars.com/api/?name=Maria+Santos&background=1D72C6&color=fff&size=128" alt="Profile Photo" class="w-full h-full object-cover">
+                    </div>
+                    <!-- Status Indicator Badge (Optional enhancement) -->
+                    <div class="absolute bottom-1 right-3 h-5 w-5 bg-green-500 border-2 border-white rounded-full"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-4 space-y-6">
+            
+            <!-- Basic Info & Ratings -->
+            <div class="text-center">
+                <h1 class="text-2xl font-bold text-gray-900">Maria Santos</h1>
+                <div class="flex items-center justify-center gap-1.5 mt-2">
+                    <i data-lucide="star" class="h-4 w-4 fill-yellow text-yellow"></i>
+                    <span class="font-semibold text-gray-900 border-b-2 border-yellow/30 leading-tight">4.95</span>
+                    <span class="text-gray-500 text-sm ml-1.5 font-medium">(142 completed jobs)</span>
+                </div>
+            </div>
+
+            <!-- Tier / Asenso Points Card -->
+            <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl p-5 text-white shadow-lg border border-gray-700 relative overflow-hidden">
+                <!-- Decorative background accent -->
+                <div class="absolute top-0 right-0 w-32 h-32 bg-teal opacity-20 rounded-full blur-3xl -mr-10 -mt-10"></div>
+                
+                <div class="flex justify-between items-start relative z-10">
+                    <div>
+                        <p class="text-xs text-gray-400 font-medium tracking-wide uppercase mb-0.5">Current Tier</p>
+                        <h2 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-yellow to-[#FDE68A]">Elite Housemaid</h2>
+                    </div>
+                    <div class="bg-white/10 px-3 py-1.5 rounded-lg border border-white/10 flex items-center gap-2">
+                        <i data-lucide="award" class="h-4 w-4 text-yellow"></i>
+                        <span class="text-sm font-bold text-white">2,500 pts</span>
+                    </div>
+                </div>
+                
+                <div class="mt-5 relative z-10">
+                    <div class="flex justify-between text-xs font-medium text-gray-300 mb-1.5">
+                        <span>Progress to Master Tier</span>
+                        <span>500 pts left</span>
+                    </div>
+                    <!-- Progress Bar -->
+                    <div class="h-2 w-full bg-gray-700/80 rounded-full overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-yellow to-[#FDE68A] rounded-full" style="width: 83%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 space-y-4">
+                <h2 class="font-bold text-teal text-xs uppercase tracking-wider mb-2">Contact Information</h2>
+                
+                <div class="flex items-center gap-4 text-sm group">
+                    <div class="w-9 h-9 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-teal group-hover:text-white transition-colors">
+                        <i data-lucide="phone" class="h-4 w-4"></i>
+                    </div>
+                    <span class="font-medium text-gray-800 group-hover:text-teal transition-colors">0917-123-4567</span>
+                </div>
+                
+                <div class="flex items-center gap-4 text-sm group">
+                    <div class="w-9 h-9 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-teal group-hover:text-white transition-colors">
+                        <i data-lucide="mail" class="h-4 w-4"></i>
+                    </div>
+                    <span class="font-medium text-gray-800">maria.santos@gmail.com</span>
+                </div>
+
+                <div class="flex items-center gap-4 text-sm group">
+                    <div class="w-9 h-9 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-[#1877F2] group-hover:text-white transition-colors">
+                        <i data-lucide="facebook" class="h-4 w-4"></i>
+                    </div>
+                    <span class="font-medium text-gray-800">Maria Santos (Getklean)</span>
+                </div>
+
+                <div class="flex items-center gap-4 text-sm group">
+                    <div class="w-9 h-9 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-teal group-hover:text-white transition-colors">
+                        <i data-lucide="map-pin" class="h-4 w-4"></i>
+                    </div>
+                    <span class="font-medium text-gray-800 line-clamp-2">BRGY. UP CAMPUS, Quezon City</span>
+                </div>
+            </div>
+
+            <!-- Menu Links -->
+            <div class="space-y-2">
+                <button class="w-full bg-white rounded-xl border border-gray-200 shadow-sm p-4 flex items-center justify-between hover:border-gray-300 hover:shadow-md transition-all group">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="calendar" class="h-5 w-5 text-teal group-hover:scale-110 transition-transform"></i>
+                        <span class="font-medium text-gray-900">Manage Availability</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="h-5 w-5 text-gray-400 group-hover:text-gray-600"></i>
+                </button>
+
+                <button class="w-full bg-white rounded-xl border border-gray-200 shadow-sm p-4 flex items-center justify-between hover:border-gray-300 hover:shadow-md transition-all group">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="bar-chart-3" class="h-5 w-5 text-teal group-hover:scale-110 transition-transform"></i>
+                        <span class="font-medium text-gray-900">Performance Reports</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="h-5 w-5 text-gray-400 group-hover:text-gray-600"></i>
+                </button>
+            </div>
+
+            <!-- Logout -->
+            <button class="w-full bg-transparent border border-red-200 text-red-600 py-3.5 rounded-xl text-sm font-semibold hover:bg-red-50 hover:border-red-300 transition-colors flex items-center justify-center shadow-sm">
+                <i data-lucide="log-out" class="h-4 w-4 mr-2"></i>
+                Logout
+            </button>
+            
+        </div>
+    </main>
+
+    <!-- Bottom Navigation Mockup -->
+    <nav class="fixed bottom-0 w-full h-16 bg-white border-t border-gray-200 flex items-center justify-around z-50">
+        <a href="#" class="flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-gray-900 transition-colors">
+            <i data-lucide="home" class="h-6 w-6 mb-0.5"></i>
+        </a>
+        <a href="#" class="flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-gray-900 transition-colors">
+            <i data-lucide="calendar-days" class="h-6 w-6 mb-0.5"></i>
+        </a>
+        <a href="#" class="flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-gray-900 transition-colors">
+            <i data-lucide="wallet" class="h-6 w-6 mb-0.5 relative"><span class="absolute -top-1 -right-1 flex h-2.5 w-2.5 bg-red-500 rounded-full border border-white"></span></i>
+        </a>
+        <!-- Active Nav Item -->
+        <a href="#" class="flex flex-col items-center justify-center w-full h-full transition-all">
+            <div class="bg-yellow/20 text-yellow-800 px-4 py-1.5 rounded-full flex gap-2 items-center">
+                <i data-lucide="user" class="h-5 w-5"></i>
+                <span class="text-xs font-bold leading-none">Profile</span>
+            </div>
+        </a>
+    </nav>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

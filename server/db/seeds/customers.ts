@@ -13,9 +13,11 @@ const testCustomers = [
         profile: {
             accountNumber: "ACC-2024-001",
             customerName: "Maria Santos",
+            email: "maria.santos@example.com",
             contactNumber: "639171234567",
             repeatOrNew: "new",
             primarySegmentCode: "residential",
+            status: "ACTIVE",
         },
         address: {
             addressUnit: "Unit 1205",
@@ -37,9 +39,11 @@ const testCustomers = [
         profile: {
             accountNumber: "ACC-2024-002",
             customerName: "Juan Dela Cruz",
+            email: "juan.delacruz@example.com",
             contactNumber: "639189876543",
             repeatOrNew: "repeat",
             primarySegmentCode: "residential",
+            status: "ACTIVE",
         },
         address: {
             addressUnit: "House 42",
@@ -61,9 +65,11 @@ const testCustomers = [
         profile: {
             accountNumber: "ACC-2024-003",
             customerName: "Tech Solutions Corp",
+            email: "admin@techsolutionscorp.com",
             contactNumber: "639201234567",
             repeatOrNew: "new",
             primarySegmentCode: "commercial",
+            status: "ACTIVE",
         },
         address: {
             addressUnit: "Floor 25",

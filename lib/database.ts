@@ -65,6 +65,7 @@ type BookingWithParsedFields = Booking & {
   rescheduleCount?: number;
   assignmentAttemptCount?: number;
   gcashNumber?: string | null;
+  gcashQrCodeUrl?: string | null;
 };
 
 // Export for use in API routes and frontend
@@ -147,10 +148,11 @@ export class DatabaseService {
       paymentStatusCode?: string | null;
       totalAmount?: string | null;
       gcashNumber?: string | null;
+      gcashQrCodeUrl?: string | null;
     },
     statusList: Status[]
   ): BookingWithParsedFields {
-    const { booking, customerName, contactNumber, address, city, landmark, addressLink, totalTransportationCost, transportPaymentStatus, transportationLegs, paymentMethod, settlementTypeCode, paymentStatusCode, totalAmount, gcashNumber } = bookingData;
+    const { booking, customerName, contactNumber, address, city, landmark, addressLink, totalTransportationCost, transportPaymentStatus, transportationLegs, paymentMethod, settlementTypeCode, paymentStatusCode, totalAmount, gcashNumber, gcashQrCodeUrl } = bookingData;
 
     const enriched: BookingWithParsedFields = {
       ...booking,
@@ -177,6 +179,7 @@ export class DatabaseService {
       rescheduleCount: booking.rescheduleCount,
       assignmentAttemptCount: booking.assignmentAttemptCount,
       gcashNumber: gcashNumber || null,
+      gcashQrCodeUrl: gcashQrCodeUrl || null,
     };
 
     if (booking.serviceDate) {
@@ -553,6 +556,7 @@ export class DatabaseService {
             paymentStatusCode: bookingPayments.paymentStatusCode,
             totalAmount: bookingPayments.totalAmount,
             gcashNumber: housemaids.gcashNumber,
+            gcashQrCodeUrl: housemaids.gcashQrCodeUrl,
           })
           .from(bookings)
           .leftJoin(customerProfiles, eq(bookings.customerId, customerProfiles.customerId))
@@ -621,6 +625,7 @@ export class DatabaseService {
             paymentStatusCode: bookingPayments.paymentStatusCode,
             totalAmount: bookingPayments.totalAmount,
             gcashNumber: housemaids.gcashNumber,
+            gcashQrCodeUrl: housemaids.gcashQrCodeUrl,
           })
           .from(bookings)
           .leftJoin(customerProfiles, eq(bookings.customerId, customerProfiles.customerId))
@@ -678,6 +683,7 @@ export class DatabaseService {
             paymentStatusCode: bookingPayments.paymentStatusCode,
             totalAmount: bookingPayments.totalAmount,
             gcashNumber: housemaids.gcashNumber,
+            gcashQrCodeUrl: housemaids.gcashQrCodeUrl,
           })
           .from(bookings)
           .leftJoin(customerProfiles, eq(bookings.customerId, customerProfiles.customerId))

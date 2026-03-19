@@ -10,7 +10,7 @@ import { addresses } from "@/server/db/schema/customer/addresses";
 import { eq, inArray, and } from "drizzle-orm";
 
 const SCENARIO_CONFIG = {
-    housemaidName: "Scenario Housemaid 01",
+    housemaidName: "Marvin Perol",
     housemaidEmail: "hm.scenario@test.com",
     customerAccountNumber: "ACC-SCENARIO-01"
 };

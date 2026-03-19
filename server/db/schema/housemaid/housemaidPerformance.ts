@@ -11,6 +11,7 @@ export const housemaidPerformance = pgTable("housemaid_performance", {
     month: text("month").notNull(),
     totalJobs: integer("total_jobs"),
     completedJobs: integer("completed_jobs"),
+    performanceScore: numeric("performance_score", { precision: 5, scale: 2 }),
     avgRating: numeric("avg_rating", { precision: 4, scale: 2 }),
     completionRate: numeric("completion_rate", { precision: 5, scale: 2 }),
     totalEarnings: numeric("total_earnings", { precision: 12, scale: 2 }),

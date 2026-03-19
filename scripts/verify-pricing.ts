@@ -16,14 +16,28 @@ async function main() {
 
     // Insert Mock Pricing Data
     console.log("Inserting Mock Pricing Data...");
-    await db.insert(serviceSkus).values({
-        skuId: "NCR_REGULAR_WHOLE_ONE_TIME",
-        location: "NCR",
-        tierCode: "REGULAR",
-        duration: "WHOLE_DAY",
-        bookingType: "ONE_TIME",
-        servicePrice: "1390.00"
-    }).onConflictDoNothing();
+    await db.insert(serviceSkus).values([
+        {
+            skuId: "NCR_REGULAR_WHOLE_ONE_TIME",
+            location: "NCR",
+            tierCode: "REGULAR",
+            duration: "WHOLE_DAY",
+            bookingType: "ONE_TIME",
+            servicePrice: "1390.00",
+            priceHm: "650.00",
+            surgeAmount: "65.00"
+        },
+        {
+            skuId: "NCR_REGULAR_WHOLE_TRIAL",
+            location: "NCR",
+            tierCode: "REGULAR",
+            duration: "WHOLE_DAY",
+            bookingType: "TRIAL",
+            servicePrice: "650.00",
+            priceHm: "650.00",
+            surgeAmount: null
+        }
+    ]).onConflictDoNothing();
 
     await db.insert(flexiRateCards).values({
         location: "NCR",
@@ -35,14 +49,32 @@ async function main() {
 
     // 2. Test One-Time Pricing
     console.log("Testing One-Time Pricing...");
-    const price1 = await PricingService.calculateBookingPrice({
+    const priceWeekday = await PricingService.calculateBookingPrice({
         location: "NCR",
         tier: "REGULAR",
         duration: "WHOLE_DAY",
         bookingType: "ONE_TIME",
         date: new Date("2026-02-02") // Monday
     });
-    console.log(`One-Time Price: ${price1.finalPrice} (Expect 1390)`);
+    console.log(`One-Time Price (Weekday): ${priceWeekday.finalPrice} (Expect 1390)`);
+
+    const priceWeekend = await PricingService.calculateBookingPrice({
+        location: "NCR",
+        tier: "REGULAR",
+        duration: "WHOLE_DAY",
+        bookingType: "ONE_TIME",
+        date: new Date("2026-02-07") // Saturday
+    });
+    console.log(`One-Time Price (Weekend): ${priceWeekend.finalPrice} (Expect 1455)`);
+
+    const priceTrial = await PricingService.calculateBookingPrice({
+        location: "NCR",
+        tier: "REGULAR",
+        duration: "WHOLE_DAY",
+        bookingType: "TRIAL",
+        date: new Date("2026-02-07") // Saturday
+    });
+    console.log(`Trial Price (Weekend): ${priceTrial.finalPrice} (Expect 650)`);
 
     // 3. Test Flexi Pricing (Weekday) - skipping membership check validation for this basic unit test if possible 
     // or we mock it. MembershipService uses db, so we need a real customer.

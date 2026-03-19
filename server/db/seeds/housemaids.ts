@@ -44,6 +44,7 @@ type HousemaidSeedRow = {
     tokenExpiresAt: string | null;
 
     gcashNumber: string | null;
+    gcashQrCodeUrl?: string | null;
     status: string | null;
     createdAt: string | null;
     lastLogin: string | null;
@@ -93,6 +94,7 @@ const seedData: any[] = [
         tokenExpiresAt: "2025-05-30T12:00:00Z",
 
         gcashNumber: "639171234567",
+        gcashQrCodeUrl: "https://qoa40lvv6y.ufs.sh/f/1yON7gnuFNUnFwzWqHmQ6EhiVXlPDq2p9KfBnRIs3tOjTSgH",
         status: "active",
         createdAt: "2024-08-10T10:30:00Z",
         lastLogin: "2025-04-30T08:15:00Z",
@@ -235,6 +237,7 @@ async function main() {
                 : null,
 
             gcashNumber: seed.gcashNumber,
+            gcashQrCodeUrl: seed.gcashQrCodeUrl,
             status: seed.status,
 
             currentServiceTierCode: seed.currentServiceTierCode || "REGULAR",

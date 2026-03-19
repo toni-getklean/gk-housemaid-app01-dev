@@ -10,9 +10,14 @@ export const customerProfiles = pgTable("customer_profiles", {
     customerCode: text("customer_code"),
     accountNumber: text("account_number"),
     customerName: text("customer_name").notNull(),
+    email: text("email"),
     contactNumber: text("contact_number"),
     repeatOrNew: text("repeat_or_new"),
     primarySegmentCode: text("primary_segment_code"),
+    // Customer account status: ACTIVE | FLAGGED | BANNED
+    status: text("status").default("ACTIVE"),
+    flagReason: text("flag_reason"),
+    banReason: text("ban_reason"),
     createdAt: timestamp("created_at", { withTimezone: true }),
     updatedAt: timestamp("updated_at", { withTimezone: true }),
 });

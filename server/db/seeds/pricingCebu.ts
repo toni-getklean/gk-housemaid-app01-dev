@@ -6,7 +6,7 @@ import { membershipSkus } from "@/server/db/schema/pricing/membershipSkus";
 import { flexiRateCards } from "@/server/db/schema/pricing/flexiRateCards";
 
 async function seedPricing() {
-    console.log("🌱 Seeding CAVITE Pricing Data...");
+    console.log("🌱 Seeding CEBU Pricing Data...");
 
     // 1. Ensure Pricing Tiers Exist
     await db.insert(serviceTiers).values([
@@ -15,28 +15,25 @@ async function seedPricing() {
         { tierCode: "ALL_IN", displayName: "All-In", description: "Premium All-Inclusive Service" },
     ]).onConflictDoNothing();
 
-    const LOCATION = "CAVITE";
+    const LOCATION = "CEBU";
     const TIER = "REGULAR";
 
     // 2. Service SKUs (Trial & One-Time)
-    // Data from Image: 
-    // Whole Day: Trial=600, OneTime=1190
-    // Half Day: Trial=460, OneTime=900
     console.log("...Service SKUs");
     const services = [
         // Trial
-        { skuId: "CAVITE_REGULAR_WHOLE_TRIAL", tierCode: "REGULAR", duration: "WHOLE_DAY", bookingType: "TRIAL", price: "600.00", priceHm: "600.00", surgeAmount: null },
-        { skuId: "CAVITE_REGULAR_HALF_TRIAL", tierCode: "REGULAR", duration: "HALF_DAY", bookingType: "TRIAL", price: "460.00", priceHm: "460.00", surgeAmount: null },
+        { skuId: "CEBU_REGULAR_WHOLE_TRIAL", tierCode: "REGULAR", duration: "WHOLE_DAY", bookingType: "TRIAL", price: "540.00", priceHm: "540.00", surgeAmount: null },
+        { skuId: "CEBU_REGULAR_HALF_TRIAL", tierCode: "REGULAR", duration: "HALF_DAY", bookingType: "TRIAL", price: "420.00", priceHm: "420.00", surgeAmount: null },
         
         // One Time - Whole Day
-        { skuId: "CAVITE_REGULAR_WHOLE_ONE_TIME", tierCode: "REGULAR", duration: "WHOLE_DAY", bookingType: "ONE_TIME", price: "1190.00", priceHm: "600.00", surgeAmount: "60.00" },
-        { skuId: "CAVITE_PLUS_WHOLE_ONE_TIME", tierCode: "PLUS", duration: "WHOLE_DAY", bookingType: "ONE_TIME", price: "900.00", priceHm: "690.00", surgeAmount: "69.00" },
-        { skuId: "CAVITE_ALL_IN_WHOLE_ONE_TIME", tierCode: "ALL_IN", duration: "WHOLE_DAY", bookingType: "ONE_TIME", price: "900.00", priceHm: "950.00", surgeAmount: "95.00" },
+        { skuId: "CEBU_REGULAR_WHOLE_ONE_TIME", tierCode: "REGULAR", duration: "WHOLE_DAY", bookingType: "ONE_TIME", price: "1190.00", priceHm: "540.00", surgeAmount: "54.00" },
+        { skuId: "CEBU_PLUS_WHOLE_ONE_TIME", tierCode: "PLUS", duration: "WHOLE_DAY", bookingType: "ONE_TIME", price: "900.00", priceHm: "630.00", surgeAmount: "63.00" },
+        { skuId: "CEBU_ALL_IN_WHOLE_ONE_TIME", tierCode: "ALL_IN", duration: "WHOLE_DAY", bookingType: "ONE_TIME", price: "900.00", priceHm: "890.00", surgeAmount: "89.00" },
         
         // One Time - Half Day
-        { skuId: "CAVITE_REGULAR_HALF_ONE_TIME", tierCode: "REGULAR", duration: "HALF_DAY", bookingType: "ONE_TIME", price: "900.00", priceHm: "460.00", surgeAmount: "46.00" },
-        { skuId: "CAVITE_PLUS_HALF_ONE_TIME", tierCode: "PLUS", duration: "HALF_DAY", bookingType: "ONE_TIME", price: "900.00", priceHm: "550.00", surgeAmount: "55.00" },
-        { skuId: "CAVITE_ALL_IN_HALF_ONE_TIME", tierCode: "ALL_IN", duration: "HALF_DAY", bookingType: "ONE_TIME", price: "900.00", priceHm: "700.00", surgeAmount: "70.00" },
+        { skuId: "CEBU_REGULAR_HALF_ONE_TIME", tierCode: "REGULAR", duration: "HALF_DAY", bookingType: "ONE_TIME", price: "900.00", priceHm: "420.00", surgeAmount: "42.00" },
+        { skuId: "CEBU_PLUS_HALF_ONE_TIME", tierCode: "PLUS", duration: "HALF_DAY", bookingType: "ONE_TIME", price: "900.00", priceHm: "510.00", surgeAmount: "51.00" },
+        { skuId: "CEBU_ALL_IN_HALF_ONE_TIME", tierCode: "ALL_IN", duration: "HALF_DAY", bookingType: "ONE_TIME", price: "900.00", priceHm: "660.00", surgeAmount: "66.00" },
     ];
 
     for (const s of services) {
@@ -61,7 +58,6 @@ async function seedPricing() {
     }
 
     // 3. Membership SKUs (Flexi Plans)
-    // Data from Image: 1mo=1490, 3mo=3990, 6mo=4990, 12mo=7990
     console.log("...Membership SKUs");
     const memberships = [
         { term: 1, price: "1490.00" },
@@ -72,7 +68,7 @@ async function seedPricing() {
 
     for (const m of memberships) {
         await db.insert(membershipSkus).values({
-            skuId: `CAVITE_FLEXI_REGULAR_${m.term}M`,
+            skuId: `CEBU_FLEXI_REGULAR_${m.term}M`,
             location: LOCATION,
             tierCode: TIER,
             termMonths: m.term,
@@ -81,32 +77,29 @@ async function seedPricing() {
     }
 
     // 4. Flexi Rate Cards (Member Booking Rates)
-    // Data from Image:
-    // Whole Day: Base=600, Surge=+60
-    // Half Day: Base=460, Surge=+46
     console.log("...Flexi Rate Cards");
     await db.insert(flexiRateCards).values([
         {
             location: LOCATION,
             tierCode: TIER,
             duration: "WHOLE_DAY",
-            baseRateWeekday: "600.00",
-            surgeAddWeekendHoliday: "60.00"
+            baseRateWeekday: "540.00",
+            surgeAddWeekendHoliday: "54.00"
         },
         {
             location: LOCATION,
             tierCode: TIER,
             duration: "HALF_DAY",
-            baseRateWeekday: "460.00",
-            surgeAddWeekendHoliday: "46.00"
+            baseRateWeekday: "420.00",
+            surgeAddWeekendHoliday: "42.00"
         }
     ]);
 
-    console.log("✅ Pricing Seeding Complete!");
+    console.log("✅ CEBU Pricing Seeding Complete!");
     process.exit(0);
 }
 
 seedPricing().catch((err) => {
-    console.error("Error seeding pricing:", err);
+    console.error("Error seeding Cebu pricing:", err);
     process.exit(1);
 });

@@ -24,23 +24,40 @@ async function seedPricing() {
     // Half Day: Trial=510, OneTime=1090
     console.log("...Service SKUs");
     const services = [
-        // Whole Day
-        { skuId: "NCR_REGULAR_WHOLE_TRIAL", duration: "WHOLE_DAY", bookingType: "TRIAL", price: "650.00" },
-        { skuId: "NCR_REGULAR_WHOLE_ONE_TIME", duration: "WHOLE_DAY", bookingType: "ONE_TIME", price: "1390.00" },
-        // Half Day
-        { skuId: "NCR_REGULAR_HALF_TRIAL", duration: "HALF_DAY", bookingType: "TRIAL", price: "510.00" },
-        { skuId: "NCR_REGULAR_HALF_ONE_TIME", duration: "HALF_DAY", bookingType: "ONE_TIME", price: "1090.00" },
+        // Trial
+        { skuId: "NCR_REGULAR_WHOLE_TRIAL", tierCode: "REGULAR", duration: "WHOLE_DAY", bookingType: "TRIAL", price: "650.00", priceHm: "650.00", surgeAmount: null },
+        { skuId: "NCR_REGULAR_HALF_TRIAL", tierCode: "REGULAR", duration: "HALF_DAY", bookingType: "TRIAL", price: "510.00", priceHm: "510.00", surgeAmount: null },
+        
+        // One Time - Whole Day
+        { skuId: "NCR_REGULAR_WHOLE_ONE_TIME", tierCode: "REGULAR", duration: "WHOLE_DAY", bookingType: "ONE_TIME", price: "1390.00", priceHm: "650.00", surgeAmount: "65.00" },
+        { skuId: "NCR_PLUS_WHOLE_ONE_TIME", tierCode: "PLUS", duration: "WHOLE_DAY", bookingType: "ONE_TIME", price: "1390.00", priceHm: "740.00", surgeAmount: "74.00" },
+        { skuId: "NCR_ALL_IN_WHOLE_ONE_TIME", tierCode: "ALL_IN", duration: "WHOLE_DAY", bookingType: "ONE_TIME", price: "1390.00", priceHm: "1000.00", surgeAmount: "100.00" },
+
+        // One Time - Half Day
+        { skuId: "NCR_REGULAR_HALF_ONE_TIME", tierCode: "REGULAR", duration: "HALF_DAY", bookingType: "ONE_TIME", price: "1090.00", priceHm: "510.00", surgeAmount: "51.00" },
+        { skuId: "NCR_PLUS_HALF_ONE_TIME", tierCode: "PLUS", duration: "HALF_DAY", bookingType: "ONE_TIME", price: "1090.00", priceHm: "600.00", surgeAmount: "60.00" },
+        { skuId: "NCR_ALL_IN_HALF_ONE_TIME", tierCode: "ALL_IN", duration: "HALF_DAY", bookingType: "ONE_TIME", price: "1090.00", priceHm: "750.00", surgeAmount: "75.00" },
     ];
 
     for (const s of services) {
         await db.insert(serviceSkus).values({
             skuId: s.skuId,
             location: LOCATION,
-            tierCode: TIER,
+            tierCode: s.tierCode,
             duration: s.duration,
             bookingType: s.bookingType,
-            servicePrice: s.price
-        }).onConflictDoNothing();
+            servicePrice: s.price,
+            priceHm: s.priceHm,
+            surgeAmount: s.surgeAmount
+        }).onConflictDoUpdate({
+            target: serviceSkus.skuId,
+            set: {
+                servicePrice: s.price,
+                priceHm: s.priceHm,
+                surgeAmount: s.surgeAmount,
+                updatedAt: new Date()
+            }
+        });
     }
 
     // 3. Membership SKUs (Flexi Plans)

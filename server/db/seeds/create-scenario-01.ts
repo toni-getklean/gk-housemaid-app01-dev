@@ -199,6 +199,7 @@ async function main() {
             bookingTypeCode: "ONE_TIME",
             location: "NCR",
             tierCode: "REGULAR",
+            dayType: "WEEKDAY",
 
             duration: scenario.duration,
             time: scenario.duration === "HALF_DAY" ? "8:00AM - 12:00PM" : "8:00AM - 5:00PM",
@@ -215,12 +216,13 @@ async function main() {
 
         await db.insert(bookingPayments).values({
             bookingId: bk.bookingId,
-            paymentStatusCode: "PENDING",
+            paymentStatusCode: "AWAITING_PAYMENT",
             totalAmount: scenario.price,
             balanceAmount: scenario.price,
             amountPaid: "0.00",
             paymentSourceCode: "CUSTOMER_DIRECT",
             paymentMethodCode: "CASH",
+            settlementTypeCode: "DIRECT_TO_HM",
             createdAt: now,
             updatedAt: now
         } as any);

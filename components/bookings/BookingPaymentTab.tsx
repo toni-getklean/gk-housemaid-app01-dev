@@ -244,11 +244,19 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
 
                                 <Card className="p-6 flex flex-col items-center justify-center bg-white border-dashed">
                                     <div className="w-full mb-4">
-                                        <Image
-                                            src={transportFeeQr}
-                                            alt="Transport Fee QR Code"
-                                            className="w-full h-auto object-contain"
-                                        />
+                                        {booking.gcashQrCodeUrl ? (
+                                            <img
+                                                src={booking.gcashQrCodeUrl}
+                                                alt="Housemaid GCash QR Code"
+                                                className="w-full max-h-[300px] object-contain"
+                                            />
+                                        ) : (
+                                            <Image
+                                                src={transportFeeQr}
+                                                alt="Transport Fee QR Code"
+                                                className="w-full h-auto object-contain"
+                                            />
+                                        )}
                                     </div>
                                     <p className="text-xs text-gray-500 text-center mt-1 mb-4">Scan using GCash or Maya</p>
                                     <div className="w-full border-t border-gray-100 pt-3 mt-1 text-center space-y-1">
@@ -364,11 +372,19 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
 
                         <Card className="p-6 flex flex-col items-center justify-center bg-white border-dashed">
                             <div className="w-full mb-4">
-                                <Image
-                                    src={transportFeeQr}
-                                    alt="Transport Fee QR Code"
-                                    className="w-full h-auto object-contain"
-                                />
+                                {booking.gcashQrCodeUrl ? (
+                                    <img
+                                        src={booking.gcashQrCodeUrl}
+                                        alt="Housemaid GCash QR Code"
+                                        className="w-full max-h-[300px] object-contain"
+                                    />
+                                ) : (
+                                    <Image
+                                        src={transportFeeQr}
+                                        alt="Transport Fee QR Code"
+                                        className="w-full h-auto object-contain"
+                                    />
+                                )}
                             </div>
                             <p className="text-xs text-gray-500 text-center mt-1 mb-4">Scan using GCash or Maya</p>
                             <div className="w-full border-t border-gray-100 pt-3 mt-1 text-center space-y-1">
