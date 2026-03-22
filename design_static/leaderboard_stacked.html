@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-high": "#e6e8ef",
+              "surface-container-lowest": "#ffffff",
+              "primary-fixed-dim": "#a4c8ff",
+              "tertiary": "#705d00",
+              "surface-variant": "#e1e2ea",
+              "on-primary-container": "#f3f6ff",
+              "inverse-primary": "#a4c8ff",
+              "on-tertiary": "#ffffff",
+              "on-secondary-container": "#455d7e",
+              "on-primary-fixed": "#001c39",
+              "on-error-container": "#93000a",
+              "primary": "#0059a2",
+              "on-secondary": "#ffffff",
+              "on-surface-variant": "#414752",
+              "error": "#ba1a1a",
+              "surface-container-highest": "#e1e2ea",
+              "primary-fixed": "#d4e3ff",
+              "on-background": "#191c21",
+              "inverse-surface": "#2d3036",
+              "error-container": "#ffdad6",
+              "on-tertiary-fixed": "#221b00",
+              "primary-container": "#1d72c6",
+              "surface-dim": "#d8dae1",
+              "on-secondary-fixed-variant": "#304868",
+              "secondary": "#486081",
+              "secondary-fixed": "#d4e3ff",
+              "surface-container-low": "#f2f3fb",
+              "surface": "#f9f9ff",
+              "on-primary": "#ffffff",
+              "tertiary-fixed": "#ffe174",
+              "secondary-container": "#bed6fd",
+              "inverse-on-surface": "#eff0f8",
+              "outline": "#717783",
+              "on-secondary-fixed": "#001c39",
+              "outline-variant": "#c1c7d3",
+              "surface-bright": "#f9f9ff",
+              "tertiary-container": "#c9a810",
+              "surface-container": "#ecedf5",
+              "secondary-fixed-dim": "#b0c8ee",
+              "on-primary-fixed-variant": "#004784",
+              "on-error": "#ffffff",
+              "background": "#f9f9ff",
+              "on-tertiary-fixed-variant": "#554500",
+              "tertiary-fixed-dim": "#e7c433",
+              "on-tertiary-container": "#4c3e00",
+              "surface-tint": "#005fad",
+              "on-surface": "#191c21"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-gold { background: linear-gradient(135deg, #F4D03F 0%, #D4AF37 100%); }
+        .bg-silver { background: linear-gradient(135deg, #BDC3C7 0%, #95A5A6 100%); }
+        .bg-bronze { background: linear-gradient(135deg, #CD7F32 0%, #A0522D 100%); }
+        .glass-header { backdrop-filter: blur(12px); background: rgba(249, 249, 255, 0.8); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-6 h-16 w-full fixed top-0 z-50 glass-header">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary-container" data-icon="menu">menu</span>
+<h1 class="font-['Plus_Jakarta_Sans'] font-bold tracking-tight text-[#191c21] text-xl">Leaderboard</h1>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden border-2 border-primary-container">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="Close up portrait of a professional worker" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAI_w8QiCBGNHATXa7oNzACxqWbr1TIw_eC514mx1tF58XMMLELYDHnPZU3eKrOR5Tb4t1hqa479RmBua5PyfBWSSsmJvTM_2LihS-_dy_vQJTyq4SWF54fZNN68P4b9v00buxEZrZb7xmBHbU6W7B5QeG-ao3oJ36UW8rVY-Tp6upSD8tedjpgnaNC-oKwbGEcL5fy42ByC-C52TWqRhBGykKGmoSlW9FkROhE6lA71o8kZXHfYqWq0cSjKDcagnwyza9qspvEcQ0w"/>
+</div>
+</header>
+<div class="h-1 bg-surface-container-low mt-16"></div>
+<main class="max-w-2xl mx-auto px-4 py-6 space-y-8">
+<!-- Top 3 Podium Section -->
+<section class="grid grid-cols-3 gap-2 items-end pt-4 h-64">
+<!-- Rank 2 -->
+<div class="flex flex-col items-center space-y-2">
+<div class="relative">
+<div class="w-16 h-16 rounded-full border-4 border-silver overflow-hidden">
+<img alt="Rank 2" class="w-full h-full object-cover" data-alt="Smiling female professional in uniform" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBdQ7JV5tDhFwmJjl-_tjwqe3Tz_9k_seb2heyMX7g37yFXvT4BL2DGHylL0PXviAUmcXKazffNmuKYXQCgKY01H_HnsCSfEIpzoKzRlTt0DKZd2zn89TXf3mdjGmqUoFYnkM-nEboVetFSTUeTJPYkxk42HaibEYfm2Yg7g2jsMs8LY-fNB76bLFVUMkakAfho7EvDCr9aT-OiPAUKZJ-ZVZX9l8GQYFFrq4eJGdXZ3Qk4-d3lqDOwEXXW66qIKkfbGybg9UFE7ig"/>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-silver text-white text-[10px] font-bold w-6 h-6 flex items-center justify-center rounded-full border-2 border-surface">2</div>
+</div>
+<div class="text-center">
+<p class="text-xs font-bold truncate w-24">Elena R.</p>
+<p class="text-[10px] text-primary-container font-semibold">₱42,500</p>
+</div>
+<div class="w-full bg-surface-container-highest h-16 rounded-t-xl flex flex-col items-center justify-center">
+<span class="material-symbols-outlined text-silver" data-icon="military_tech">military_tech</span>
+</div>
+</div>
+<!-- Rank 1 -->
+<div class="flex flex-col items-center space-y-2">
+<span class="material-symbols-outlined text-tertiary-fixed-dim" data-icon="workspace_premium" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+<div class="relative">
+<div class="w-20 h-20 rounded-full border-4 border-gold overflow-hidden">
+<img alt="Rank 1" class="w-full h-full object-cover" data-alt="Portrait of a top performing male worker" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfl_Nl_ZfnW7X9DaegerOQMrIQ02no8sV89xt7yvca-CwNnETXg9oW1uTJ8Ogk1ZqcCWD-HsPppD3M43V8TUcANr_t1S9mFSRz8VH5eYdPof3-VtFmBIfFTjdDslG6CMtkBF_lB4V6xAvqE7JpOKo9G1SmidJkg9qqads8KJfwHHMXndBpvW4uBw4nynXq41tyAd6-IFINVogJ0a7q7Bo5sfsD--_54_joiKwG01DOKZspWbn_vGEJtF3hD7N3GReNJB9UWTG67xHn"/>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-gold text-white text-[10px] font-bold w-7 h-7 flex items-center justify-center rounded-full border-2 border-surface">1</div>
+</div>
+<div class="text-center">
+<p class="text-sm font-bold truncate w-24">Marcus G.</p>
+<p class="text-xs text-primary-container font-extrabold">₱51,200</p>
+</div>
+<div class="w-full bg-surface-container-highest h-24 rounded-t-xl flex flex-col items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-gold" data-icon="trophy" style="font-variation-settings: 'FILL' 1;">trophy</span>
+</div>
+</div>
+<!-- Rank 3 -->
+<div class="flex flex-col items-center space-y-2">
+<div class="relative">
+<div class="w-16 h-16 rounded-full border-4 border-bronze overflow-hidden">
+<img alt="Rank 3" class="w-full h-full object-cover" data-alt="Confident female service professional" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB5zECvTlY65qKgtIVE78GdN_2_AzGAO9AOsGW8eRPRHh-XR33nUV4vsnlD-0K_6UQqI3ouKVNnvfKaralcT-RIDOZTesHsUZWeTZOms0RIPmuGJV9Wf8fqAcUEy_o7uY4PmUEAyngSyAN2zsUYVThtOey5odePSm7Mo-xpmBm9YgVCIP0srRw6eXnzhq3PWxkTUqsNFRJKzHbviGzE5YqdSaKPKHfnlrmkECM0FsWu8mHi2ZuL8yX7Hnncpydmws51YnurF7VbUILL"/>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-bronze text-white text-[10px] font-bold w-6 h-6 flex items-center justify-center rounded-full border-2 border-surface">3</div>
+</div>
+<div class="text-center">
+<p class="text-xs font-bold truncate w-24">Sarah L.</p>
+<p class="text-[10px] text-primary-container font-semibold">₱38,900</p>
+</div>
+<div class="w-full bg-surface-container-highest h-12 rounded-t-xl flex flex-col items-center justify-center">
+<span class="material-symbols-outlined text-bronze" data-icon="military_tech">military_tech</span>
+</div>
+</div>
+</section>
+<!-- Your Rank Sticky Section -->
+<div class="sticky top-20 z-40">
+<div class="bg-primary-container text-white p-4 rounded-xl shadow-xl flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-full border-2 border-white/30 overflow-hidden">
+<img alt="Me" class="w-full h-full object-cover" data-alt="Close up of current user" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRdmZxNKlB5j8qCcWZBi3lX9WcLK8nAEYwyaelee-3c6JVv0PZm2VGgtrA28QgiwBexEyVJos1Wgx1_br2grp6x4C3aQbF6foLmzX2L8RPC326PgFo6U_7YQN1UpejfuaOukXnGi2zQOjt-ir8UylbEz2TrsLqo_5DWEQ-BiiTHbcE-spN9SVc4HQFF4JxAYDqcYel3B-6XBqMNn9hdj_q_KFNde6HZWHgzbKoco-twrSc1R7aPLTFY6kpj-agTPrCp_si6FH4YvsQ"/>
+</div>
+<div>
+<p class="text-[10px] uppercase tracking-widest opacity-80 font-bold">Your Current Rank</p>
+<h3 class="text-lg font-bold">Rank #42 <span class="text-xs font-normal opacity-70">(Top 15%)</span></h3>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xs font-bold">₱12,450</p>
+<p class="text-[10px] opacity-80">Earnings</p>
+</div>
+</div>
+</div>
+<!-- How it works -->
+<section class="bg-surface-container-low rounded-2xl p-6 border border-outline-variant/20">
+<div class="flex items-center gap-3 mb-4">
+<div class="p-2 bg-primary/10 rounded-lg">
+<span class="material-symbols-outlined text-primary" data-icon="info">info</span>
+</div>
+<h4 class="font-bold text-on-surface">How Ranking Works</h4>
+</div>
+<p class="text-sm text-on-surface-variant leading-relaxed">
+                Rankings are updated every Monday at 12:00 AM. Your position is calculated based on <span class="font-bold text-primary">Asenso Points</span>, which are earned through completed bookings, high ratings, and platform reliability.
+            </p>
+<div class="mt-4 grid grid-cols-2 gap-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-green-600 text-sm" data-icon="add_circle">add_circle</span>
+<span class="text-[11px] font-medium">+10 pts / Completion</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-red-600 text-sm" data-icon="remove_circle">remove_circle</span>
+<span class="text-[11px] font-medium">-5 pts / Violation</span>
+</div>
+</div>
+</section>
+<!-- List View - Stacked Cards -->
+<section class="space-y-4">
+<h4 class="font-bold text-on-surface px-2">Top Performers</h4>
+<!-- Performer Card 4 -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm border border-surface-container">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<div class="text-lg font-black text-on-surface-variant/30 italic">#4</div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-low overflow-hidden">
+<img alt="Performer" class="w-full h-full object-cover" data-alt="Female housekeeper professional" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBs4vh9mIdL-yIOMosZhWj-lFbP0jayhIJEGH9hsOQ8s9cCTQEz-XOnjBW98znJhvgo0KRRrFYqlpTWnE3PhsCe_Dtt8hnBc-2ijMX_8dGZyrqRMkMgQOGpNz_XnX-u6TkZQuXRpnfDEgneoo4LNOV7qvYBn8TkKBVu8djuoduUG_dqMnfQqPLaPtneQZqDso3_ghFbFaCdfYRI81gBGbc-dNo_u44zx4if2t0fxeO-ywKHcxjBbOobr9izULNOMy5wx2-vuYbFTFYv"/>
+</div>
+<div>
+<h5 class="font-bold text-on-surface">Sofia Vergara</h5>
+<div class="flex items-center gap-1">
+<span class="bg-secondary-container text-on-secondary-container text-[10px] px-2 py-0.5 rounded-full font-bold">PLATINUM TIER</span>
+</div>
+</div>
+</div>
+<div class="text-right">
+<div class="text-primary font-black text-sm">2,450 pts</div>
+<div class="text-[10px] text-on-surface-variant font-bold">ASENSO POINTS</div>
+</div>
+</div>
+<div class="grid grid-cols-4 gap-2 pt-3 border-t border-surface-container">
+<div class="text-center">
+<p class="text-[10px] text-outline font-bold">COMPLETED</p>
+<p class="text-xs font-bold text-on-surface">142</p>
+</div>
+<div class="text-center">
+<p class="text-[10px] text-outline font-bold">DECLINED</p>
+<p class="text-xs font-bold text-on-surface">2</p>
+</div>
+<div class="text-center">
+<p class="text-[10px] text-outline font-bold">VIOLATION</p>
+<p class="text-xs font-bold text-error">0</p>
+</div>
+<div class="text-center">
+<p class="text-[10px] text-outline font-bold">EARNINGS</p>
+<p class="text-xs font-extrabold text-primary-container">₱32k</p>
+</div>
+</div>
+</div>
+<!-- Performer Card 5 -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm border border-surface-container">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<div class="text-lg font-black text-on-surface-variant/30 italic">#5</div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-low overflow-hidden">
+<img alt="Performer" class="w-full h-full object-cover" data-alt="Male cleaner professional" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0c9MeV2oT7GfRz2kB9YWjmy70txE_eJ3DSkZvy57oGoLz6bTm9Z-ioe9oLSzfogOuU7aI5gXXM1mowfS5_6qBvAlGNCvDA89XRgB-B1S0GuBGYjTGHyUTZGYwHJwf1BCcBVm-TQqftR7DGKLC6H02Swg5kdZWfWDhtjk0zf12Wb5RlKTbzsPUeO_pHmZmls3_5QJgl3qMOX8-c7A304zconZiLz7ypm5yM5gS7AmCqtmfK7Kow3r-5Pv6Quujqj72NH9RiCKMIkbk"/>
+</div>
+<div>
+<h5 class="font-bold text-on-surface">Ricardo Dalisay</h5>
+<div class="flex items-center gap-1">
+<span class="bg-primary-container text-white text-[10px] px-2 py-0.5 rounded-full font-bold">GOLD TIER</span>
+</div>
+</div>
+</div>
+<div class="text-right">
+<div class="text-primary font-black text-sm">2,120 pts</div>
+<div class="text-[10px] text-on-surface-variant font-bold">ASENSO POINTS</div>
+</div>
+</div>
+<div class="grid grid-cols-4 gap-2 pt-3 border-t border-surface-container">
+<div class="text-center">
+<p class="text-[10px] text-outline font-bold">COMPLETED</p>
+<p class="text-xs font-bold text-on-surface">118</p>
+</div>
+<div class="text-center">
+<p class="text-[10px] text-outline font-bold">DECLINED</p>
+<p class="text-xs font-bold text-on-surface">5</p>
+</div>
+<div class="text-center">
+<p class="text-[10px] text-outline font-bold">VIOLATION</p>
+<p class="text-xs font-bold text-error">1</p>
+</div>
+<div class="text-center">
+<p class="text-[10px] text-outline font-bold">EARNINGS</p>
+<p class="text-xs font-extrabold text-primary-container">₱28k</p>
+</div>
+</div>
+</div>
+<!-- Performer Card 6 -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm border border-surface-container">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<div class="text-lg font-black text-on-surface-variant/30 italic">#6</div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-low overflow-hidden">
+<img alt="Performer" class="w-full h-full object-cover" data-alt="Smiling professional service man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOgRaeJUURrs4hW__yUvlHxl6HyRwKiFAs--rl5dLb79xoXYiCyPKVqu5zV2YysLYrs1QMNXEhDxMjyVz1vYGXrJaBh0fXcjDhm4kMGBtOPtaEuw-NCXMBWH6L6iuA9JDxUOvmKUXth0y6tF3brJjyvx-7IBf-dIkHVeshXP6GxpA5yb0Iuc5aSVp6p6sxqGUfFbgZneFM7uTS_97aiIv_Qnj9x4v71J0Kk8aqjs3FAcU-qHfgU7CuE-tnsq6tVtKIWJs5aJ7p5HWm"/>
+</div>
+<div>
+<h5 class="font-bold text-on-surface">Antonio Luna</h5>
+<div class="flex items-center gap-1">
+<span class="bg-surface-container-highest text-on-surface-variant text-[10px] px-2 py-0.5 rounded-full font-bold">SILVER TIER</span>
+</div>
+</div>
+</div>
+<div class="text-right">
+<div class="text-primary font-black text-sm">1,980 pts</div>
+<div class="text-[10px] text-on-surface-variant font-bold">ASENSO POINTS</div>
+</div>
+</div>
+<div class="grid grid-cols-4 gap-2 pt-3 border-t border-surface-container">
+<div class="text-center">
+<p class="text-[10px] text-outline font-bold">COMPLETED</p>
+<p class="text-xs font-bold text-on-surface">95</p>
+</div>
+<div class="text-center">
+<p class="text-[10px] text-outline font-bold">DECLINED</p>
+<p class="text-xs font-bold text-on-surface">1</p>
+</div>
+<div class="text-center">
+<p class="text-[10px] text-outline font-bold">VIOLATION</p>
+<p class="text-xs font-bold text-error">0</p>
+</div>
+<div class="text-center">
+<p class="text-[10px] text-outline font-bold">EARNINGS</p>
+<p class="text-xs font-extrabold text-primary-container">₱24k</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg shadow-[0_-4px_20px_0_rgba(25,23,33,0.06)] rounded-t-2xl">
+<div class="flex flex-col items-center justify-center text-[#455d7e] py-2 px-4 hover:text-[#1D72C6] transition-colors active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider mt-1">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-[#1D72C6] text-white rounded-xl py-2 px-4 active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="leaderboard" style="font-variation-settings: 'FILL' 1;">leaderboard</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider mt-1">Rankings</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#455d7e] py-2 px-4 hover:text-[#1D72C6] transition-colors active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider mt-1">Earnings</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#455d7e] py-2 px-4 hover:text-[#1D72C6] transition-colors active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider mt-1">Profile</span>
+</div>
+</nav>
+</body></html>

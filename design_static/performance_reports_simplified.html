@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "outline": "#717783",
+              "primary-fixed-dim": "#a4c8ff",
+              "inverse-primary": "#a4c8ff",
+              "tertiary-container": "#c9a810",
+              "on-secondary-fixed-variant": "#304868",
+              "error-container": "#ffdad6",
+              "surface-container": "#ecedf5",
+              "on-primary-container": "#f3f6ff",
+              "on-error": "#ffffff",
+              "on-secondary-container": "#455d7e",
+              "surface-container-high": "#e6e8ef",
+              "inverse-surface": "#2d3036",
+              "surface-tint": "#005fad",
+              "surface-container-lowest": "#ffffff",
+              "secondary-fixed-dim": "#b0c8ee",
+              "on-tertiary-container": "#4c3e00",
+              "surface-container-highest": "#e1e2ea",
+              "primary-container": "#1d72c6",
+              "on-primary": "#ffffff",
+              "on-tertiary-fixed": "#221b00",
+              "surface-bright": "#f9f9ff",
+              "surface-variant": "#e1e2ea",
+              "surface-dim": "#d8dae1",
+              "secondary-container": "#bed6fd",
+              "primary": "#0059a2",
+              "on-tertiary-fixed-variant": "#554500",
+              "inverse-on-surface": "#eff0f8",
+              "on-surface": "#191c21",
+              "surface-container-low": "#f2f3fb",
+              "on-background": "#191c21",
+              "tertiary-fixed-dim": "#e7c433",
+              "primary-fixed": "#d4e3ff",
+              "error": "#ba1a1a",
+              "surface": "#f9f9ff",
+              "on-surface-variant": "#414752",
+              "tertiary": "#705d00",
+              "outline-variant": "#c1c7d3",
+              "secondary-fixed": "#d4e3ff",
+              "on-primary-fixed": "#001c39",
+              "background": "#f9f9ff",
+              "secondary": "#486081",
+              "on-primary-fixed-variant": "#004784",
+              "on-secondary-fixed": "#001c39",
+              "on-error-container": "#93000a",
+              "tertiary-fixed": "#ffe174",
+              "on-secondary": "#ffffff",
+              "on-tertiary": "#ffffff"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+<style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-50 bg-[#f9f9ff] dark:bg-slate-950">
+<div class="flex items-center justify-between px-6 h-16 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-[#ecedf5] dark:hover:bg-slate-800 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-[#1D72C6] dark:text-blue-400">arrow_back</span>
+</button>
+<h1 class="font-['Plus_Jakarta_Sans'] text-lg font-bold tracking-tight text-[#191c21] dark:text-slate-100">Performance Reports</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#ecedf5] transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">info</span>
+</button>
+</div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-6 py-8 space-y-8">
+<!-- Hero: Performance Score -->
+<section class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-primary-container p-8 text-on-primary">
+<div class="relative z-10 flex flex-col md:flex-row items-center gap-8">
+<div class="relative flex items-center justify-center">
+<div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-8 border-white/20 flex items-center justify-center">
+<div class="text-5xl md:text-6xl font-extrabold">98</div>
+</div>
+<div class="absolute -bottom-2 bg-tertiary-fixed text-on-tertiary-fixed px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase">Excellent</div>
+</div>
+<div class="text-center md:text-left space-y-2">
+<h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">Top Performer Status</h2>
+<p class="text-on-primary-container/80 max-w-md font-medium">Higher score = higher booking priority. You are in the top 5% of service providers in your area.</p>
+</div>
+</div>
+<!-- Decorative circle -->
+<div class="absolute -right-20 -top-20 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+</section>
+<!-- Breakdown: Achievement Progress -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Rating Card -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-outline-variant/10">
+<div class="flex justify-between items-end mb-4">
+<div>
+<p class="text-sm font-bold text-on-surface-variant uppercase tracking-wider mb-1">Rating</p>
+<h3 class="text-3xl font-extrabold text-on-surface">4.9<span class="text-lg text-outline">/5</span></h3>
+</div>
+<div class="text-right">
+<span class="text-xs font-bold text-primary">49/50 points</span>
+</div>
+</div>
+<div class="w-full bg-surface-container rounded-full h-2.5">
+<div class="bg-primary h-2.5 rounded-full" style="width: 98%"></div>
+</div>
+</div>
+<!-- Completion Card -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-outline-variant/10">
+<div class="flex justify-between items-end mb-4">
+<div>
+<p class="text-sm font-bold text-on-surface-variant uppercase tracking-wider mb-1">Completion</p>
+<h3 class="text-3xl font-extrabold text-on-surface">96%</h3>
+</div>
+<div class="text-right">
+<span class="text-xs font-bold text-primary">29/30 jobs</span>
+</div>
+</div>
+<div class="w-full bg-surface-container rounded-full h-2.5">
+<div class="bg-primary h-2.5 rounded-full" style="width: 96%"></div>
+</div>
+</div>
+<!-- Violations Card -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-outline-variant/10">
+<div class="flex justify-between items-end mb-4">
+<div>
+<p class="text-sm font-bold text-on-surface-variant uppercase tracking-wider mb-1">Violations</p>
+<h3 class="text-3xl font-extrabold text-on-surface">0</h3>
+</div>
+<div class="text-right">
+<span class="text-xs font-bold text-primary">20/20 points</span>
+</div>
+</div>
+<div class="w-full bg-surface-container rounded-full h-2.5">
+<div class="bg-primary h-2.5 rounded-full" style="width: 100%"></div>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-4">
+<!-- How to get more bookings -->
+<div class="bg-surface-container-highest/30 rounded-3xl p-8 border border-primary/5">
+<h3 class="text-xl font-extrabold mb-6">How to get more bookings</h3>
+<ul class="space-y-5">
+<li class="flex gap-4">
+<div class="w-6 h-6 rounded-full bg-primary flex-shrink-0 flex items-center justify-center mt-0.5">
+<span class="material-symbols-outlined text-[14px] text-white" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<p class="text-on-surface-variant leading-relaxed">Maintain a performance score above 95 to stay in the **Preferred Partner** tier.</p>
+</li>
+<li class="flex gap-4">
+<div class="w-6 h-6 rounded-full bg-primary flex-shrink-0 flex items-center justify-center mt-0.5">
+<span class="material-symbols-outlined text-[14px] text-white" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<p class="text-on-surface-variant leading-relaxed">Respond to booking requests within 15 minutes to increase visibility by 20%.</p>
+</li>
+<li class="flex gap-4">
+<div class="w-6 h-6 rounded-full bg-primary flex-shrink-0 flex items-center justify-center mt-0.5">
+<span class="material-symbols-outlined text-[14px] text-white" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<p class="text-on-surface-variant leading-relaxed">Update your availability calendar at least once every 48 hours.</p>
+</li>
+</ul>
+</div>
+<!-- Success Tips -->
+<div class="space-y-4">
+<h3 class="text-lg font-extrabold px-2">Success Tips</h3>
+<div class="grid gap-4">
+<div class="bg-surface-container-low p-5 rounded-2xl flex items-start gap-4 hover:bg-surface-container transition-colors cursor-pointer">
+<div class="w-10 h-10 rounded-xl bg-tertiary-fixed flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-on-tertiary-fixed">tips_and_updates</span>
+</div>
+<div>
+<p class="font-bold text-sm mb-1">Arrive 5 mins early</p>
+<p class="text-xs text-on-surface-variant">Early arrival is the #1 cited reason for 5-star reviews.</p>
+</div>
+</div>
+<div class="bg-surface-container-low p-5 rounded-2xl flex items-start gap-4 hover:bg-surface-container transition-colors cursor-pointer">
+<div class="w-10 h-10 rounded-xl bg-secondary-container flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-on-secondary-container">photo_camera</span>
+</div>
+<div>
+<p class="font-bold text-sm mb-1">Better Profile Photos</p>
+<p class="text-xs text-on-surface-variant">Profiles with professional photos get 3x more clicks.</p>
+</div>
+</div>
+<div class="bg-surface-container-low p-5 rounded-2xl flex items-start gap-4 hover:bg-surface-container transition-colors cursor-pointer">
+<div class="w-10 h-10 rounded-xl bg-primary-fixed flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-on-primary-fixed">chat</span>
+</div>
+<div>
+<p class="font-bold text-sm mb-1">Active Communication</p>
+<p class="text-xs text-on-surface-variant">Clients appreciate status updates during the job.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg z-50 rounded-t-3xl shadow-[0_-4px_20px_0_rgba(25,28,33,0.06)] border-t border-[#c1c7d3]/20">
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-2 hover:text-[#1D72C6] dark:hover:text-blue-300 transition-all duration-300 ease-out active:scale-90" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-2 hover:text-[#1D72C6] dark:hover:text-blue-300 transition-all duration-300 ease-out active:scale-90" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider mt-1">Bookings</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#bed6fd] dark:bg-blue-900/40 text-[#1D72C6] dark:text-blue-200 rounded-2xl px-5 py-2 transition-all duration-300 ease-out active:scale-90" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider mt-1">Earnings</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-2 hover:text-[#1D72C6] dark:hover:text-blue-300 transition-all duration-300 ease-out active:scale-90" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider mt-1">Profile</span>
+</a>
+</nav>
+</body></html>

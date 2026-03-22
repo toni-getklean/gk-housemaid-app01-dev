@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Growth Path - Career Progression</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-tertiary-container": "#4c3e00",
+              "surface-tint": "#005fad",
+              "inverse-surface": "#2d3036",
+              "surface-container": "#ecedf5",
+              "on-surface": "#191c21",
+              "on-secondary": "#ffffff",
+              "on-primary-container": "#f3f6ff",
+              "surface-container-low": "#f2f3fb",
+              "tertiary": "#705d00",
+              "inverse-on-surface": "#eff0f8",
+              "on-error": "#ffffff",
+              "on-secondary-container": "#455d7e",
+              "on-background": "#191c21",
+              "tertiary-fixed-dim": "#e7c433",
+              "tertiary-fixed": "#ffe174",
+              "secondary-container": "#bed6fd",
+              "on-tertiary-fixed-variant": "#554500",
+              "primary-fixed-dim": "#a4c8ff",
+              "on-primary": "#ffffff",
+              "secondary-fixed-dim": "#b0c8ee",
+              "outline-variant": "#c1c7d3",
+              "inverse-primary": "#a4c8ff",
+              "surface-bright": "#f9f9ff",
+              "error-container": "#ffdad6",
+              "error": "#ba1a1a",
+              "outline": "#717783",
+              "on-secondary-fixed-variant": "#304868",
+              "on-primary-fixed": "#001c39",
+              "surface-variant": "#e1e2ea",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary": "#ffffff",
+              "primary": "#0059a2",
+              "on-tertiary-fixed": "#221b00",
+              "surface": "#f9f9ff",
+              "secondary": "#486081",
+              "on-primary-fixed-variant": "#004784",
+              "background": "#f9f9ff",
+              "surface-container-highest": "#e1e2ea",
+              "primary-container": "#1d72c6",
+              "on-error-container": "#93000a",
+              "primary-fixed": "#d4e3ff",
+              "surface-container-high": "#e6e8ef",
+              "tertiary-container": "#c9a810",
+              "surface-dim": "#d8dae1",
+              "secondary-fixed": "#d4e3ff",
+              "on-surface-variant": "#414752",
+              "on-secondary-fixed": "#001c39"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      body { font-family: 'Plus Jakarta Sans', sans-serif; }
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="bg-[#f9f9ff] dark:bg-slate-950 w-full top-0 z-50 flex items-center px-6 py-4 w-full justify-between">
+<div class="flex items-center gap-4">
+<button class="active:scale-95 duration-200 text-[#1D72C6] dark:text-blue-400">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-['Plus_Jakarta_Sans'] font-bold text-lg tracking-tight text-[#191c21] dark:text-slate-100">Growth Path</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#455d7e]">notifications</span>
+</div>
+</header>
+<div class="bg-[#f2f3fb] dark:bg-slate-900 h-1"></div>
+<main class="px-6 pt-8 space-y-10">
+<!-- Hero Section: Premium Tier Card -->
+<section class="relative">
+<div class="bg-surface-container-lowest rounded-xl p-8 shadow-[0_4px_20px_0_rgba(25,28,33,0.04)] overflow-hidden relative border border-outline-variant/10">
+<!-- Abstract background pattern -->
+<div class="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 bg-primary/5 rounded-full blur-3xl"></div>
+<div class="flex justify-between items-start mb-6">
+<div>
+<span class="label-sm uppercase tracking-[0.1em] text-on-surface-variant font-bold text-[10px]">Active Membership</span>
+<h2 class="text-3xl font-extrabold tracking-tight mt-1">Current Tier: <span class="text-primary-container">REGULAR</span></h2>
+</div>
+<div class="bg-surface-container-highest px-3 py-1.5 rounded-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-[#717783] text-[20px]">workspace_premium</span>
+<span class="text-xs font-bold text-on-surface">SLATE</span>
+</div>
+</div>
+<div class="flex items-end justify-between">
+<div>
+<p class="text-on-surface-variant text-sm mb-1">Base Daily Earnings</p>
+<p class="text-2xl font-bold">₱650<span class="text-sm font-medium text-on-surface-variant">/day</span></p>
+</div>
+<div class="text-right">
+<p class="text-[10px] uppercase font-bold text-primary mb-2">Next Milestone</p>
+<div class="flex items-center gap-2">
+<span class="text-sm font-semibold">Tier Plus</span>
+<span class="material-symbols-outlined text-primary text-sm">trending_up</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Asenso Points Elegant Balance -->
+<section class="grid grid-cols-1 gap-4">
+<div class="bg-primary-container bg-gradient-to-br from-primary to-primary-container rounded-xl p-6 flex items-center justify-between text-white shadow-lg shadow-primary/10">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-md">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">stars</span>
+</div>
+<div>
+<p class="text-xs font-medium text-white/80 uppercase tracking-wider">Asenso Points</p>
+<p class="text-2xl font-bold">300 <span class="text-sm font-normal text-white/70">pts</span></p>
+</div>
+</div>
+<button class="bg-white text-primary text-xs font-bold px-4 py-3 rounded-lg active:scale-95 transition-transform">
+                    Enroll in Training
+                </button>
+</div>
+</section>
+<!-- Tier Ladder: Vertical Timeline -->
+<section class="space-y-6">
+<h3 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant opacity-60">Tier Progression</h3>
+<div class="relative pl-8 space-y-12">
+<!-- Vertical Line -->
+<div class="absolute left-[15px] top-2 bottom-2 w-0.5 bg-outline-variant/30"></div>
+<!-- Regular (Active) -->
+<div class="relative">
+<div class="absolute -left-[23px] top-1 w-4 h-4 rounded-full bg-primary ring-4 ring-primary-container/20"></div>
+<div class="space-y-1">
+<div class="flex items-center gap-3">
+<h4 class="font-bold text-lg">Regular Tier</h4>
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded uppercase">Current</span>
+</div>
+<p class="text-sm text-on-surface-variant leading-relaxed">Standard benefits and initial verification complete.</p>
+</div>
+</div>
+<!-- Tier PLUS (Upcoming) -->
+<div class="relative">
+<div class="absolute -left-[23px] top-1 w-4 h-4 rounded-full bg-outline-variant border-2 border-surface"></div>
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<h4 class="font-bold text-lg text-on-surface/50">Tier PLUS</h4>
+<div class="bg-tertiary-fixed text-on-tertiary-fixed-variant text-[10px] font-bold px-2 py-0.5 rounded uppercase">₱850/Day</div>
+</div>
+<div class="bg-surface-container-low p-4 rounded-lg border-l-4 border-primary">
+<p class="text-xs font-bold text-primary uppercase mb-2">Requirements for Plus</p>
+<ul class="text-xs space-y-2 text-on-secondary-container">
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-xs">check_circle</span>
+<span>Complete 200 service hours</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-xs">radio_button_unchecked</span>
+<span>Maintain 4.8★ user rating</span>
+</li>
+<li class="flex items-center gap-2 opacity-50">
+<span class="material-symbols-outlined text-xs">lock</span>
+<span>Pass Advanced Cleaning Cert</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- Tier ALL-IN (Future) -->
+<div class="relative">
+<div class="absolute -left-[23px] top-1 w-4 h-4 rounded-full bg-outline-variant border-2 border-surface"></div>
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<h4 class="font-bold text-lg text-on-surface/30">Tier ALL-IN</h4>
+<div class="bg-surface-container-highest text-on-surface-variant text-[10px] font-bold px-2 py-0.5 rounded uppercase">₱1,200/Day</div>
+</div>
+<p class="text-xs text-on-surface-variant italic">Unlock senior mentorship and specialized clinical cleaning tracks.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Certification Progress -->
+<section class="space-y-6">
+<div class="flex justify-between items-center">
+<h3 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant opacity-60">Certification Matrix</h3>
+<span class="text-xs font-bold text-primary">View All</span>
+</div>
+<div class="space-y-4">
+<!-- Skill Row 1 -->
+<div class="bg-surface-container-low p-5 rounded-xl flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-white flex items-center justify-center text-primary shadow-sm">
+<span class="material-symbols-outlined">cleaning_services</span>
+</div>
+<div>
+<h5 class="font-bold text-sm">General Cleaning</h5>
+<p class="text-[10px] text-on-surface-variant font-medium">BASIC LEVEL REACHED</p>
+</div>
+</div>
+<span class="text-primary font-bold text-sm">50%</span>
+</div>
+<div class="grid grid-cols-4 gap-2">
+<div class="h-1.5 rounded-full bg-primary"></div>
+<div class="h-1.5 rounded-full bg-primary"></div>
+<div class="h-1.5 rounded-full bg-outline-variant/30"></div>
+<div class="h-1.5 rounded-full bg-outline-variant/30"></div>
+</div>
+<div class="flex justify-between text-[10px] text-on-surface-variant font-bold uppercase opacity-60">
+<span>Entry</span>
+<span>Basic</span>
+<span>Adv</span>
+<span>Expert</span>
+</div>
+</div>
+<!-- Skill Row 2 -->
+<div class="bg-surface-container-low p-5 rounded-xl flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-white flex items-center justify-center text-primary shadow-sm">
+<span class="material-symbols-outlined">sanitizer</span>
+</div>
+<div>
+<h5 class="font-bold text-sm">Sanitization</h5>
+<p class="text-[10px] text-on-surface-variant font-medium">ENTRY LEVEL REACHED</p>
+</div>
+</div>
+<span class="text-primary font-bold text-sm">25%</span>
+</div>
+<div class="grid grid-cols-4 gap-2">
+<div class="h-1.5 rounded-full bg-primary"></div>
+<div class="h-1.5 rounded-full bg-outline-variant/30"></div>
+<div class="h-1.5 rounded-full bg-outline-variant/30"></div>
+<div class="h-1.5 rounded-full bg-outline-variant/30"></div>
+</div>
+<div class="flex justify-between text-[10px] text-on-surface-variant font-bold uppercase opacity-60">
+<span>Entry</span>
+<span>Basic</span>
+<span>Adv</span>
+<span>Expert</span>
+</div>
+</div>
+</div>
+</section>
+<!-- How it Works: Editorial List -->
+<section class="bg-surface-container p-8 rounded-[2rem] space-y-8">
+<h3 class="text-2xl font-extrabold tracking-tight">How to level up</h3>
+<div class="space-y-8">
+<div class="flex gap-6">
+<span class="text-4xl font-black text-primary/10 select-none">01</span>
+<div>
+<h4 class="font-bold text-base mb-1">Earn Points</h4>
+<p class="text-sm text-on-surface-variant leading-relaxed">Accumulate Asenso points for every successfully completed job and positive client feedback.</p>
+</div>
+</div>
+<div class="flex gap-6">
+<span class="text-4xl font-black text-primary/10 select-none">02</span>
+<div>
+<h4 class="font-bold text-base mb-1">Pass Certifications</h4>
+<p class="text-sm text-on-surface-variant leading-relaxed">Use points to enroll in professional training modules to increase your skill ratings.</p>
+</div>
+</div>
+<div class="flex gap-6">
+<span class="text-4xl font-black text-primary/10 select-none">03</span>
+<div>
+<h4 class="font-bold text-base mb-1">Auto-Tier Update</h4>
+<p class="text-sm text-on-surface-variant leading-relaxed">Once requirements are met, your daily base rate automatically increases the following week.</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-8 pt-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg rounded-t-[2rem] shadow-[0_-4px_20px_0_rgba(25,28,33,0.06)]">
+<a class="flex flex-col items-center justify-center text-[#455d7e] dark:text-slate-400 px-5 py-2 hover:text-[#1D72C6] transition-all duration-300" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-medium uppercase tracking-wider mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#455d7e] dark:text-slate-400 px-5 py-2 hover:text-[#1D72C6] transition-all duration-300" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-medium uppercase tracking-wider mt-1">Schedule</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#1D72C6] text-white rounded-2xl px-5 py-2 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-medium uppercase tracking-wider mt-1">Growth</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#455d7e] dark:text-slate-400 px-5 py-2 hover:text-[#1D72C6] transition-all duration-300" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-medium uppercase tracking-wider mt-1">Profile</span>
+</a>
+</nav>
+</body></html>
