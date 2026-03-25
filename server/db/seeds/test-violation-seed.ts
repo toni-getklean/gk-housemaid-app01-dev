@@ -38,9 +38,10 @@ async function main() {
         process.exit(1);
     }
 
-    const pointsDeduction = violationType.defaultPointsDeduction;
+    const performanceDeduction = violationType.performanceDeduction;
+    const asensoDeduction = violationType.asensoDeduction;
     console.log(`Violation: ${violationType.title} (${violationType.type})`);
-    console.log(`Points Deduction: ${pointsDeduction}`);
+    console.log(`Performance Deduction: ${performanceDeduction} | Asenso Deduction: ${asensoDeduction}`);
 
     // 3. Find a Booking to link
     const booking = await db.query.bookings.findFirst({
@@ -70,7 +71,8 @@ async function main() {
         violationTitle: violationType.title,
         violationDescription: violationType.description,
         date: new Date().toISOString().split('T')[0], // Today
-        pointsDeducted: pointsDeduction,
+        performancePointsDeducted: performanceDeduction,
+        asensoPointsDeducted: asensoDeduction,
         sanctionApplied: violationType.sanctionInfo,
         status: "RESOLVED",
     });
@@ -78,7 +80,7 @@ async function main() {
     console.log("✅ Inserted violation record.");
 
     // 5. Update Housemaid Points
-    const newBalance = (housemaid.asensoPointsBalance || 0) + pointsDeduction;
+    const newBalance = (housemaid.asensoPointsBalance || 0) + asensoDeduction;
 
     await db.update(housemaids)
         .set({

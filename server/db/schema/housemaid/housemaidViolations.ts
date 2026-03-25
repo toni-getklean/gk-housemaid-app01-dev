@@ -14,7 +14,8 @@ export const housemaidViolations = pgTable("housemaid_violations", {
     violationTitle: text("violation_title"),
     violationDescription: text("violation_description"),
     date: date("date"),
-    pointsDeducted: integer("points_deducted"), // Snapshot of actual deduction
+    performancePointsDeducted: integer("performance_points_deducted"), // Snapshot of actual deduction
+    asensoPointsDeducted: integer("asenso_points_deducted"), // Snapshot of asenso deduction
     sanctionApplied: text("sanction_applied"), // Snapshot of sanction
     status: text("status"),
     createdAt: timestamp("created_at", { withTimezone: true }),

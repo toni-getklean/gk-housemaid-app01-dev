@@ -36,7 +36,7 @@ async function main() {
     if (!violation) {
         console.log("ℹ️ No matching violation found to reset.");
     } else {
-        const pointsToRestore = (violation.pointsDeducted || 0) * -1; // Invert negative points to positive
+        const pointsToRestore = (violation.asensoPointsDeducted || 0) * -1; // Invert negative points to positive
         console.log(`Found violation ID: ${violation.violationId}`);
         console.log(`Points to restore: ${pointsToRestore}`);
 

@@ -74,8 +74,10 @@ export class PerformanceService {
             bookingId: housemaidViolations.bookingId,
             bookingCode: bookings.bookingCode, // Get actual booking code
             date: housemaidViolations.date,
-            pointsDeducted: housemaidViolations.pointsDeducted,
-            defaultPoints: violationTypes.defaultPointsDeduction,
+            performancePointsDeducted: housemaidViolations.performancePointsDeducted,
+            asensoPointsDeducted: housemaidViolations.asensoPointsDeducted,
+            performanceDeduction: violationTypes.performanceDeduction,
+            asensoDeduction: violationTypes.asensoDeduction,
             sanctionInfo: violationTypes.sanctionInfo,
             sanctionApplied: housemaidViolations.sanctionApplied,
         })
@@ -96,7 +98,8 @@ export class PerformanceService {
             // Format date
             date: record.date ? new Date(record.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : "N/A",
             // Use snapshot points or default
-            pointsImpact: record.pointsDeducted ?? record.defaultPoints ?? 0,
+            performanceImpact: record.performancePointsDeducted ?? record.performanceDeduction ?? 0,
+            asensoImpact: record.asensoPointsDeducted ?? record.asensoDeduction ?? 0,
             sanction: record.sanctionApplied || record.sanctionInfo,
         }));
     }
@@ -116,8 +119,10 @@ export class PerformanceService {
             bookingCode: bookings.bookingCode,
             serviceDate: bookings.serviceDate,
             date: housemaidViolations.date,
-            pointsDeducted: housemaidViolations.pointsDeducted,
-            defaultPoints: violationTypes.defaultPointsDeduction,
+            performancePointsDeducted: housemaidViolations.performancePointsDeducted,
+            asensoPointsDeducted: housemaidViolations.asensoPointsDeducted,
+            performanceDeduction: violationTypes.performanceDeduction,
+            asensoDeduction: violationTypes.asensoDeduction,
             sanctionInfo: violationTypes.sanctionInfo,
             sanctionApplied: housemaidViolations.sanctionApplied,
             status: housemaidViolations.status,
@@ -148,7 +153,8 @@ export class PerformanceService {
                 serviceDate: detail.serviceDate ? new Date(detail.serviceDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : "N/A",
             } : null,
             date: detail.date ? new Date(detail.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : "N/A",
-            pointsImpact: detail.pointsDeducted ?? detail.defaultPoints ?? 0,
+            performanceImpact: detail.performancePointsDeducted ?? detail.performanceDeduction ?? 0,
+            asensoImpact: detail.asensoPointsDeducted ?? detail.asensoDeduction ?? 0,
             sanction: detail.sanctionApplied || detail.sanctionInfo,
         };
     }
@@ -161,7 +167,8 @@ export class PerformanceService {
             type: violationTypes.type,
             title: violationTypes.title,
             description: violationTypes.description,
-            points: violationTypes.defaultPointsDeduction,
+            performanceDeduction: violationTypes.performanceDeduction,
+            asensoDeduction: violationTypes.asensoDeduction,
             sanction: violationTypes.sanctionInfo,
         })
             .from(violationTypes)

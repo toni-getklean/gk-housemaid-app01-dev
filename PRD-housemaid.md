@@ -35,9 +35,10 @@
 9. [Asenso Points & Certification System](#9-asenso-points--certification-system)
 10. [Data Models Summary](#10-data-models-summary)
 11. [API Endpoints Reference](#11-api-endpoints-reference)
-12. [Non-Functional Requirements](#12-non-functional-requirements)
-13. [Integration with Admin Dashboard](#13-integration-with-admin-dashboard)
-14. [Planned / Partially Implemented Features](#14-planned--partially-implemented-features)
+12. [UI & Badge Color Specifications](#12-ui--badge-color-specifications)
+13. [Non-Functional Requirements](#13-non-functional-requirements)
+14. [Integration with Admin Dashboard](#14-integration-with-admin-dashboard)
+15. [Planned / Partially Implemented Features](#15-planned--partially-implemented-features)
 
 ---
 
@@ -736,6 +737,18 @@ The platform uses a **Flat Rate Model**. Housemaids earn a fixed flat rate per b
 - Validated via `MembershipService` before pricing is returned
 - Membership scoped by location and tier
 
+#### Flexi Plan Customer Pricing
+| Plan | Price |
+|------|------:|
+| 1 Month | 1790 |
+| 3 Months | 4990 |
+| 6 Months | 5990 |
+| 12 Months | 8990 |
+
+- Same across all territories
+- Not affected by surge
+- Membership pricing (not HM rate)
+
 ### What the Housemaid Sees
 - The housemaid sees their **flat rate earned** per booking (not the customer-facing price)
 - Surge bonus is shown as a separate line item
@@ -989,7 +1002,40 @@ All endpoints require a valid JWT session cookie. Return 401 if session is inval
 
 ---
 
-## 12. Non-Functional Requirements
+## 12. UI & Badge Color Specifications
+
+All badge colors across the app follow this centralized palette to seamlessly match the Admin Dashboard.
+
+### Service Tiers (Housemaid Tiers)
+
+| Tier | Color | HEX | Tailwind |
+|------|-------|-----|----------|
+| Regular | Slate | `#334155` | `bg-slate-100 text-slate-800` |
+| Plus | Blue | `#1D4ED8` | `bg-blue-50 text-blue-700` |
+| All-in | Amber / Gold | `#B45309` | `bg-amber-50 text-amber-700` |
+
+### Booking Types
+
+| Type | Color | HEX | Tailwind |
+|------|-------|-----|----------|
+| Trial | Purple | `#7E22CE` | `bg-purple-50 text-purple-700` |
+| One-time | Green | `#15803D` | `bg-green-50 text-green-700` |
+| Flexi | Orange | `#C2410C` | `bg-orange-50 text-orange-700` |
+
+### Booking Statuses (Operational Color Logic)
+
+Statuses follow a semantic system so operations can identify urgency at a glance.
+
+| Color | HEX | Statuses |
+|-------|-----|----------|
+| Yellow | `#CA8A04` | `needs_confirmation`, `pending_review`, `rescheduled` |
+| Blue | `#1D4ED8` | `dispatched`, `on_the_way`, `arrived`, `in_progress` |
+| Green | `#15803D` | `accepted`, `completed` |
+| Red | `#DC2626` | `cancelled`, `no_show` |
+
+---
+
+## 13. Non-Functional Requirements
 
 ### Performance
 - Mobile-first design; target < 3s initial load on 3G
@@ -1027,7 +1073,7 @@ All endpoints require a valid JWT session cookie. Return 401 if session is inval
 
 ---
 
-## 13. Integration with Admin Dashboard
+## 14. Integration with Admin Dashboard
 
 ### Shared Database (Single Source of Truth)
 Both apps connect to the **same Neon PostgreSQL database**. There is no API-to-API integration — both apps read/write directly.
@@ -1066,7 +1112,7 @@ Both apps connect to the **same Neon PostgreSQL database**. There is no API-to-A
 
 ---
 
-## 14. Planned / Partially Implemented Features
+## 15. Planned / Partially Implemented Features
 
 The following features have infrastructure or route stubs in the codebase but are **not yet fully implemented**:
 

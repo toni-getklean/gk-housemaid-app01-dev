@@ -81,6 +81,36 @@ export default function PerformanceReports() {
     },
   };
 
+  // Derived Performance Score calculations based on PRD
+  const avgRating = stats.averageRating > 0 ? stats.averageRating : 4.5;
+  const ratingPoints = Math.round((avgRating / 5) * 50);
+  
+  // Mock values based on PRD (assuming 30 points max for completion)
+  const completionPercent = stats.completionRate || 95;
+  const completionPoints = Math.round((completionPercent / 100) * 30);
+  
+  // Violations (20% weight, starting at 20 points, deduct from there)
+  // Mocking deduction (using arbitary weights for demo purposes if minor/major > 0)
+  const totalViolations = (stats.violations.minor * 5) + (stats.violations.major * 15);
+  const violationsPoints = Math.max(0, 20 - totalViolations);
+  
+  const performanceScore = ratingPoints + completionPoints + violationsPoints;
+
+  let performanceLabel = "GOOD";
+  let performanceColor = "bg-yellow-100 text-yellow-800"; // fallback
+  if (performanceScore >= 95) {
+    performanceLabel = "EXCELLENT";
+    performanceColor = "bg-[#FFE174] text-[#4C3E00]"; // yellow pill matching design
+  }
+  else if (performanceScore >= 85) {
+    performanceLabel = "VERY GOOD";
+    performanceColor = "bg-[#D4E3FF] text-[#001C39]";
+  }
+  else if (performanceScore < 75) {
+    performanceLabel = "NEEDS IMPROVEMENT";
+    performanceColor = "bg-red-100 text-red-800";
+  }
+
   const violations: Violation[] = performanceData?.violations || [];
 
   // Check both stats AND the actual list. If list has items, show them.
@@ -98,7 +128,7 @@ export default function PerformanceReports() {
 
         {/* Tier Details Entry */}
         <Card
-          className="p-4 bg-gradient-to-r from-blue-50 to-white border-blue-100 cursor-pointer hover:shadow-md transition-all active:scale-[0.98]"
+          className="p-4 bg-white border border-gray-200 cursor-pointer hover:shadow-md transition-all active:scale-[0.98] rounded-xl shadow-sm"
           onClick={() => router.push("/performance-reports/growth-path")}
         >
           <div className="flex items-center justify-between">
@@ -115,39 +145,72 @@ export default function PerformanceReports() {
           </div>
         </Card>
 
-        <div className="grid grid-cols-2 gap-3">
-          <Card className="p-4">
-            <div className="flex flex-col items-center text-center">
-              <Star className="h-6 w-6 text-yellow fill-yellow mb-2" />
-              <div className="text-xs text-gray-600 mb-1">Average Rating</div>
-              <div className="text-2xl font-bold text-gray-900">{stats.averageRating}</div>
-            </div>
-          </Card>
-          <Card className="p-4">
-            <div className="flex flex-col items-center text-center">
-              <CheckCircle className="h-6 w-6 text-green-600 mb-2" />
-              <div className="text-xs text-gray-600 mb-1">Completion Rate</div>
-              <div className="text-2xl font-bold text-gray-900">{stats.completionRate}%</div>
-            </div>
-          </Card>
-          <Card className="p-4">
-            <div className="flex flex-col items-center text-center">
-              <BarChart3 className="h-6 w-6 text-teal mb-2" />
-              <div className="text-xs text-gray-600 mb-1">Total Jobs</div>
-              <div className="text-2xl font-bold text-gray-900">{stats.totalJobs}</div>
-            </div>
-          </Card>
-          <Card className="p-4">
-            <div className="flex flex-col items-center text-center">
-              <AlertTriangle className="h-6 w-6 text-orange-500 mb-2" />
-              <div className="text-xs text-gray-600 mb-1">Violations</div>
-              <div className="text-xs text-gray-700 mt-1">
-                <div>Minor: {stats.violations.minor}</div>
-                <div>Major: {stats.violations.major}</div>
+        {/* Unified Performance & Score Breakdown Card */}
+        <Card className="p-4 bg-white border border-gray-200 rounded-xl shadow-sm space-y-4">
+          <h2 className="font-semibold text-teal text-sm uppercase tracking-wide">
+            Performance Score
+          </h2>
+          
+          <div className="space-y-4">
+            {/* Overall Score */}
+            <div className="flex items-center gap-3 text-sm">
+              <TrendingUp className="h-5 w-5 text-teal" />
+              <div className="flex-1 flex justify-between items-center">
+                  <span className="text-gray-500">Overall Score</span>
+                  <div className="flex items-center gap-2">
+                      <span className="text-xs font-medium text-teal px-2 py-0.5 bg-teal/10 rounded-md uppercase tracking-wider">
+                          {performanceLabel}
+                      </span>
+                      <span className="font-medium text-gray-900">{performanceScore} / 100</span>
+                  </div>
               </div>
             </div>
-          </Card>
-        </div>
+
+            <div className="border-t border-gray-100 pt-3 space-y-3">
+              {/* Rating */}
+              <div className="flex gap-3 text-sm">
+                <Star className="h-5 w-5 text-yellow mt-0.5" />
+                <div className="flex-1 space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-500">Rating ({avgRating.toFixed(1)}/5)</span>
+                    <span className="font-medium text-gray-900">{ratingPoints} pts</span>
+                  </div>
+                  <div className="h-1.5 bg-gray-100 rounded-full w-full overflow-hidden">
+                    <div className="h-full bg-teal rounded-full transition-all duration-500" style={{ width: `${(ratingPoints / 50) * 100}%` }} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Completion */}
+              <div className="flex gap-3 text-sm">
+                <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
+                <div className="flex-1 space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-500">Completion ({completionPercent}%)</span>
+                    <span className="font-medium text-gray-900">{completionPoints} pts</span>
+                  </div>
+                  <div className="h-1.5 bg-gray-100 rounded-full w-full overflow-hidden">
+                    <div className="h-full bg-teal rounded-full transition-all duration-500" style={{ width: `${(completionPoints / 30) * 100}%` }} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Violations */}
+              <div className="flex gap-3 text-sm">
+                <AlertTriangle className="h-5 w-5 text-orange-500 mt-0.5" />
+                <div className="flex-1 space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-500">Violations ({stats.violations.minor + stats.violations.major})</span>
+                    <span className="font-medium text-gray-900">{violationsPoints} pts</span>
+                  </div>
+                  <div className="h-1.5 bg-gray-100 rounded-full w-full overflow-hidden">
+                    <div className="h-full bg-teal rounded-full transition-all duration-500" style={{ width: `${(violationsPoints / 20) * 100}%` }} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Card>
 
         <div className="space-y-4">
           <div className="flex items-center justify-between">

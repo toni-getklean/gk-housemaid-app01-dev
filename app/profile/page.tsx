@@ -125,8 +125,8 @@ export default function Profile() {
 
         <HousemaidTierCard
           variant="compact"
-          tiers={tiersData?.tiers}
           currentPoints={profile.asensoPointsBalance}
+          rating={profile.rating}
         />
 
         <Card className="p-4 space-y-4">
