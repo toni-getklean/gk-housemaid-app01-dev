@@ -6,11 +6,77 @@ import {
     housemaidEarnings,
     bookingPayments,
     transportationDetails,
-    housemaids
+    housemaids,
+    serviceSkus,
+    flexiRateCards
 } from "../db/schema";
 import { startOfDay, endOfDay, startOfWeek, endOfWeek, startOfMonth, endOfMonth, isWeekend } from "date-fns";
 
 export class HousemaidEarningsService {
+
+    /**
+     * Calculates the expected earnings for a given booking based on dynamic pricing rules.
+     */
+    static async calculateExpectedEarnings(bookingDetails: {
+        bookingTypeCode?: string | null;
+        duration?: string | null;
+        serviceDate: string | Date;
+        location?: string | null;
+        tierCode?: string | null;
+    }): Promise<{ baseRate: number; surgeBonus: number; totalServiceShare: number; isWeekend: boolean }> {
+        const bookingType = bookingDetails.bookingTypeCode || "ONE_TIME";
+        const serviceType = (bookingDetails.duration || "WHOLE_DAY") as "WHOLE_DAY" | "HALF_DAY";
+        const serviceDate = new Date(bookingDetails.serviceDate);
+        const isWeekendService = isWeekend(serviceDate);
+        const location = bookingDetails.location || "NCR"; 
+        const tierCode = bookingDetails.tierCode || "REGULAR";
+
+        let hmBaseShare = 0;
+        let surgeBonus = 0;
+
+        if (bookingType === "FLEXI") {
+            const flexiCards = await db.query.flexiRateCards.findMany({
+                where: and(
+                    eq(flexiRateCards.location, location),
+                    eq(flexiRateCards.tierCode, tierCode),
+                    eq(flexiRateCards.duration, serviceType)
+                )
+            });
+            const rate = flexiCards[0];
+            
+            if (rate) {
+                hmBaseShare = parseFloat(rate.baseRateWeekday || "0");
+                if (isWeekendService && rate.surgeAddWeekendHoliday) {
+                    surgeBonus = parseFloat(rate.surgeAddWeekendHoliday || "0");
+                }
+            }
+        } else {
+            const effectiveBookingType = bookingType === "TRIAL" ? "TRIAL" : "ONE_TIME";
+            const skus = await db.query.serviceSkus.findMany({
+                where: and(
+                    eq(serviceSkus.location, location),
+                    eq(serviceSkus.tierCode, tierCode),
+                    eq(serviceSkus.duration, serviceType),
+                    eq(serviceSkus.bookingType, effectiveBookingType)
+                )
+            });
+            const sku = skus[0];
+
+            if (sku) {
+                hmBaseShare = parseFloat(sku.priceHm || "0");
+                if (isWeekendService && sku.surgeAmount) {
+                    surgeBonus = parseFloat(sku.surgeAmount || "0");
+                }
+            }
+        }
+
+        return {
+            baseRate: hmBaseShare,
+            surgeBonus,
+            totalServiceShare: hmBaseShare + surgeBonus,
+            isWeekend: isWeekendService
+        };
+    }
 
     /**
      * Creates an earning record from a completed booking.
@@ -55,59 +121,22 @@ export class HousemaidEarningsService {
                 return true; // Already processed
             }
 
-            // 2. Financial Rules & Calculation
-
-            // Defined HM Rates base on Location & Service Type
-            const LOCATION_RATES: Record<string, { WHOLE_DAY: number; HALF_DAY: number }> = {
-                NCR: { WHOLE_DAY: 650, HALF_DAY: 510 },
-                CAVITE: { WHOLE_DAY: 600, HALF_DAY: 460 },
-                CEBU: { WHOLE_DAY: 500, HALF_DAY: 400 }, // Placeholder for Cebu
-            };
-
-            const bookingType = booking.bookingTypeCode || "ONE_TIME";
-            const serviceType = (booking.duration || "WHOLE_DAY") as "WHOLE_DAY" | "HALF_DAY";
-            const serviceDate = new Date(booking.serviceDate);
-            const isWeekendService = isWeekend(serviceDate);
-            const location = booking.location || "NCR"; // Default to NCR if not set
-
-            // Amounts
-            const totalTransactionAmount = payment ? parseFloat(payment.totalAmount || "0") : 0;
+            // 2. Financial Rules & Calculation dynamically from the DB
             const transportationFee = transport ? parseFloat(transport.totalTransportationCost || "0") : 0;
+            const extensionAmount = parseFloat(booking.extensionAmount?.toString() || "0");
+            const { baseRate, surgeBonus, totalServiceShare } = await this.calculateExpectedEarnings({
+                bookingTypeCode: booking.bookingTypeCode,
+                duration: booking.duration,
+                serviceDate: booking.serviceDate,
+                location: booking.location,
+                tierCode: booking.tierCode
+            });
 
-            let hmBaseShare = 0;
-            let surgeBonus = 0;
+            const hmServiceTotal = totalServiceShare;
 
-            // Get Rate Card for Location
-            const rateCard = LOCATION_RATES[location] || LOCATION_RATES["NCR"];
-
-            if (bookingType === "TRIAL") {
-                // Trial: 100% of Service Fee goes to HM (excluding transpo) - Logic maintained from original
-                // NOTE: User requirement didn't explicitly specify TRIAL logic change, but implied standardizing rates.
-                // However, usually Trial bookings might have specific rules. 
-                // Any specific override for trial? The user input showed Trial Booking Service Price matching HM Regular Rate.
-                // NCR Trial: 650 (Whole) / 510 (Half) -> Matches Rate Card
-                // Cavite Trial: 600 (Whole) / 460 (Half) -> Matches Rate Card
-                // So effectively, for TRIAL, HM gets the full Rate Card amount (which equals the service price).
-
-                hmBaseShare = serviceType === "HALF_DAY" ? rateCard.HALF_DAY : rateCard.WHOLE_DAY;
-
-                // Does Trial get surge? The user table shows "Surge Rate" as "-" for Trial.
-                // So no surge for Trial.
-            } else {
-                // OneTime / Flexi
-                hmBaseShare = serviceType === "HALF_DAY" ? rateCard.HALF_DAY : rateCard.WHOLE_DAY;
-
-                if (isWeekendService) {
-                    // 10% Surge based on HM Share
-                    surgeBonus = Math.round(hmBaseShare * 0.10);
-                }
-            }
-
-            const hmServiceTotal = hmBaseShare + surgeBonus;
-
-            // Total Amount = Service Share (Base + Surge) only. 
+            // Total Amount = Service Share (Base + Surge) + Extension Earnings. 
             // Transportation is paid directly and recorded separately but not added to the 'Earnings' total for platform accounting.
-            const hmTotalEarnings = hmServiceTotal;
+            const hmTotalEarnings = hmServiceTotal + extensionAmount;
 
             // 3. Insert into housemaid_earnings
             await db.insert(housemaidEarnings).values({
@@ -268,11 +297,19 @@ export class HousemaidEarningsService {
 
         const clientPaidTotal = row.payment ? parseFloat(row.payment.originalAmount || "0") : 0;
         const hmTotalShare = parseFloat(row.earning.totalAmount || "0");
+        const hmExtensionAmount = parseFloat(row.booking?.extensionAmount?.toString() || "0");
         const companyShare = clientPaidTotal - hmTotalShare; // Simple derivation
 
         // Service Type Logic for display
         const duration = row.booking?.duration === "WHOLE_DAY" ? "WholeDay" : "HalfDay";
-        const isWeekendService = isWeekend(new Date(row.booking?.serviceDate || new Date()));
+        
+        const expected = await this.calculateExpectedEarnings({
+            bookingTypeCode: row.booking?.bookingTypeCode,
+            duration: row.booking?.duration,
+            serviceDate: row.booking?.serviceDate || new Date(),
+            location: row.booking?.location,
+            tierCode: row.booking?.tierCode
+        });
 
         return {
             ...row.earning,
@@ -283,10 +320,12 @@ export class HousemaidEarningsService {
             clientPaidAmount: clientPaidTotal,
             // Re-constructing the full financial picture for the UI
             calculation: {
-                hmServiceShare: parseFloat(row.earning.serviceAmount || "0") - (isWeekendService && row.booking?.bookingTypeCode !== "TRIAL" ? Math.round((row.booking?.duration === "WHOLE_DAY" ? 650 : 510) * 0.1) : 0), // Approx reverse eng. or just use serviceAmount
-                hmSurgeBonus: isWeekendService && row.booking?.bookingTypeCode !== "TRIAL" ? Math.round((row.booking?.duration === "WHOLE_DAY" ? 650 : 510) * 0.1) : 0,
+                hmServiceShare: expected.baseRate,
+                hmSurgeBonus: expected.surgeBonus,
                 hmTransportation: parseFloat(row.earning.transportationAmount || "0"),
                 hmTotalShare: hmTotalShare,
+                hmExtensionEarnings: hmExtensionAmount,
+                extendedHours: row.booking?.extendedHours || 0,
                 companyShare: companyShare > 0 ? companyShare : 0
             },
             bookingDetails: {

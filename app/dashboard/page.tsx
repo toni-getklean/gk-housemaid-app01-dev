@@ -186,6 +186,8 @@ export default function Dashboard() {
                     time={booking.parsedStartTime}
                     status={booking.statusCode}
                     date={format(new Date(booking.serviceDate), "MMM d")}
+                    tier={booking.serviceTier}
+                    type={booking.bookingTypeCode}
                     onClick={() => router.push(`/bookings/${booking.bookingCode}`)}
                   />
                 ))
@@ -207,6 +209,8 @@ export default function Dashboard() {
                     time={booking.parsedStartTime}
                     status={booking.statusCode}
                     date={format(new Date(booking.serviceDate), "MMM d")}
+                    tier={booking.serviceTier}
+                    type={booking.bookingTypeCode}
                     onClick={() => router.push(`/bookings/${booking.bookingCode}`)}
                   />
                 ))

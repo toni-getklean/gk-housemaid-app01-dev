@@ -3,6 +3,7 @@
 import { Badge } from "@/components/ui/badge";
 
 export type BookingStatus =
+  | "needs_confirmation"
   | "for_review"
   | "pending_review"
   | "accepted"
@@ -12,6 +13,7 @@ export type BookingStatus =
   | "in_progress"
   | "completed"
   | "cancelled"
+  | "no_show"
   | "rescheduled";
 
 interface StatusBadgeProps {
@@ -23,25 +25,22 @@ export function StatusBadge({ status }: StatusBadgeProps) {
     switch (status) {
       case "for_review":
       case "pending_review":
-        return { label: "For Review", variant: "secondary" as const };
-      case "accepted":
-        return { label: "Accepted", variant: "default" as const };
-      case "dispatched":
-        return { label: "Dispatched", variant: "default" as const };
-      case "on_the_way":
-        return { label: "On The Way", variant: "default" as const };
-      case "arrived":
-        return { label: "Arrived", variant: "default" as const };
-      case "in_progress":
-        return { label: "In Progress", variant: "default" as const };
-      case "completed":
-        return { label: "Completed", variant: "default" as const };
-      case "cancelled":
-        return { label: "Cancelled", variant: "destructive" as const };
+      case "needs_confirmation":
       case "rescheduled":
-        return { label: "Rescheduled", variant: "secondary" as const };
+        return { label: (status as string).replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase()), variant: "statusYellow" as const };
+      case "dispatched":
+      case "on_the_way":
+      case "arrived":
+      case "in_progress":
+        return { label: (status as string).replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase()), variant: "statusBlue" as const };
+      case "accepted":
+      case "completed":
+        return { label: (status as string).replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase()), variant: "statusGreen" as const };
+      case "cancelled":
+      case "no_show":
+        return { label: (status as string).replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase()), variant: "statusRed" as const };
       default:
-        return { label: (status as string)?.replace(/_/g, " ") || "Unknown", variant: "secondary" as const };
+        return { label: (status as string)?.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase()) || "Unknown", variant: "secondary" as const };
     }
   };
 

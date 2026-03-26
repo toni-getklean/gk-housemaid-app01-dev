@@ -54,67 +54,54 @@ export default function ViolationDetailsPage({ params }: { params: Promise<{ cod
     const isResolved = violation.status === "RESOLVED";
 
     return (
-        <div className="flex flex-col h-screen bg-gray-50">
+        <div className="flex flex-col h-screen bg-gray-50 pb-20">
             <Header title="Violation Details" showBack onBackClick={() => router.back()} />
 
-            <div className="flex-1 overflow-y-auto pb-20 pt-2">
-                <div className="p-4 space-y-4">
+            <div className="flex-1 overflow-y-auto pt-2">
+                <div className="p-4 space-y-6">
 
                     {/* Violation Information */}
-                    <Card className="p-4">
-                        <h2 className="text-lg font-semibold text-teal mb-4">
-                            Violation Information
-                        </h2>
+                    <Card className="p-4 bg-white border border-gray-200 rounded-xl shadow-sm space-y-4">
+                        <div className="flex items-center justify-between">
+                            <h2 className="font-semibold text-teal text-sm uppercase tracking-wide">
+                                Violation Information
+                            </h2>
+                            {isResolved ? (
+                                <span className="text-xs font-medium text-teal px-2 py-0.5 bg-teal/10 rounded-md uppercase tracking-wider">RESOLVED</span>
+                            ) : (
+                                <span className="text-xs font-medium text-orange-700 px-2 py-0.5 bg-orange-100 rounded-md uppercase tracking-wider">PENDING</span>
+                            )}
+                        </div>
 
                         <div className="space-y-4">
-                            {/* Status - Added here as it fits the info card structure since banner is removed */}
-                            <div className="flex items-start gap-3">
-                                <div className="mt-0.5">
-                                    {isResolved ? (
-                                        <CheckCircle className="h-5 w-5 text-teal" />
-                                    ) : (
-                                        <AlertCircle className="h-5 w-5 text-orange-500" />
-                                    )}
-                                </div>
-                                <div>
-                                    <p className="text-sm text-gray-600">Status</p>
-                                    <p className={`text-sm font-medium ${isResolved ? 'text-teal' : 'text-orange-600'}`}>
-                                        {isResolved ? 'Resolved' : 'Pending Resolution'}
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="flex items-start gap-3">
-                                <AlertTriangle className={`h-5 w-5 flex-shrink-0 mt-0.5 ${violation.type === "major" ? "text-red-500" : "text-teal"}`} />
-                                <div>
-                                    <p className="text-sm text-gray-600">Violation Type</p>
-                                    <div className="flex items-center gap-2">
-                                        <p className="text-sm font-medium text-gray-900">{violation.title}</p>
-                                        <Badge variant={violation.type === "major" ? "destructive" : "secondary"} className="uppercase text-[10px] px-2 py-0 border-none">
+                            <div className="flex gap-3 text-sm">
+                                <AlertTriangle className={`h-5 w-5 mt-0.5 ${violation.type === "major" ? "text-red-500" : "text-orange-500"}`} />
+                                <div className="flex-1 space-y-1">
+                                    <div className="flex justify-between items-start gap-2">
+                                        <p className="font-medium text-gray-900">{violation.title}</p>
+                                        <Badge variant={violation.type === "major" ? "destructive" : "secondary"} className="uppercase text-[10px] px-2 py-0 border-none shrink-0">
                                             {violation.type}
                                         </Badge>
                                     </div>
-                                    <p className="text-xs text-gray-500 mt-1">{violation.violationCode}</p>
+                                    <p className="text-xs text-gray-500 font-mono">{violation.violationCode}</p>
                                 </div>
                             </div>
 
-                            <div className="flex items-start gap-3">
-                                <Calendar className="h-5 w-5 text-teal flex-shrink-0 mt-0.5" />
-                                <div>
-                                    <p className="text-sm text-gray-600">Reported Date</p>
-                                    <p className="text-sm font-medium text-gray-900">{violation.date}</p>
+                            <div className="flex gap-3 text-sm">
+                                <Calendar className="h-5 w-5 text-teal mt-0.5" />
+                                <div className="flex-1">
+                                    <p className="text-gray-500">Reported Date</p>
+                                    <p className="font-medium text-gray-900">{violation.date}</p>
                                 </div>
                             </div>
 
-                            <div className="border-t pt-4">
-                                <div className="flex items-start gap-3">
-                                    <FileText className="h-5 w-5 text-teal flex-shrink-0 mt-0.5" />
-                                    <div>
-                                        <p className="text-sm text-gray-600">Description</p>
-                                        <p className="text-sm font-medium text-gray-900 leading-relaxed bg-gray-50 p-3 rounded-lg border border-gray-100 mt-1">
-                                            {violation.description || "No description provided."}
-                                        </p>
-                                    </div>
+                            <div className="border-t border-gray-100 pt-3 flex gap-3 text-sm">
+                                <FileText className="h-5 w-5 text-teal mt-0.5" />
+                                <div className="flex-1 space-y-2">
+                                    <p className="text-gray-500">Description</p>
+                                    <p className="font-medium text-gray-900 leading-relaxed bg-gray-50 p-3 rounded-lg border border-gray-100">
+                                        {violation.description || "No description provided."}
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -122,23 +109,21 @@ export default function ViolationDetailsPage({ params }: { params: Promise<{ cod
 
                     {/* Related Booking */}
                     {violation.booking && (
-                        <Card className="p-4">
-                            <h2 className="text-lg font-semibold text-teal mb-4">Related Booking</h2>
+                        <Card className="p-4 bg-white border border-gray-200 rounded-xl shadow-sm space-y-4">
+                            <h2 className="font-semibold text-teal text-sm uppercase tracking-wide">Related Booking</h2>
                             <div className="space-y-4">
-                                <div className="flex items-start gap-3">
-                                    <div className="w-5 flex justify-center mt-0.5">
-                                        <span className="text-sm font-bold text-teal">#</span>
-                                    </div>
-                                    <div>
-                                        <p className="text-sm text-gray-600">Booking Code</p>
-                                        <p className="text-sm font-medium text-gray-900">{violation.booking.code}</p>
+                                <div className="flex gap-3 text-sm">
+                                    <div className="h-5 w-5 flex justify-center items-center mt-0.5 font-bold text-teal">#</div>
+                                    <div className="flex-1 flex justify-between items-center">
+                                        <p className="text-gray-500">Booking Code</p>
+                                        <p className="font-medium text-gray-900">{violation.booking.code}</p>
                                     </div>
                                 </div>
-                                <div className="flex items-start gap-3">
-                                    <Calendar className="h-5 w-5 text-teal flex-shrink-0 mt-0.5" />
-                                    <div>
-                                        <p className="text-sm text-gray-600">Service Date</p>
-                                        <p className="text-sm font-medium text-gray-900">{violation.booking.serviceDate}</p>
+                                <div className="flex gap-3 text-sm">
+                                    <Calendar className="h-5 w-5 text-teal mt-0.5" />
+                                    <div className="flex-1 flex justify-between items-center">
+                                        <p className="text-gray-500">Service Date</p>
+                                        <p className="font-medium text-gray-900">{violation.booking.serviceDate}</p>
                                     </div>
                                 </div>
                             </div>
@@ -146,35 +131,36 @@ export default function ViolationDetailsPage({ params }: { params: Promise<{ cod
                     )}
 
                     {/* Impact & Sanction */}
-                    <Card className="p-4">
-                        <h2 className="text-lg font-semibold text-teal mb-4">Impact & Sanction</h2>
+                    <Card className="p-4 bg-white border border-gray-200 rounded-xl shadow-sm space-y-4">
+                        <h2 className="font-semibold text-teal text-sm uppercase tracking-wide">Impact & Sanction</h2>
                         <div className="space-y-4">
-                            <div className="flex items-start gap-3">
-                                <div className="h-5 w-5 flex items-center justify-center mt-0.5">
-                                    <div className="h-2 w-2 rounded-full bg-red-500" />
-                                </div>
-                                <div>
-                                    <p className="text-sm text-gray-600">Points Deducted</p>
-                                    <p className="text-lg font-bold text-red-600">{violation.pointsImpact} PTS</p>
+                            <div className="flex gap-3 text-sm">
+                                <AlertTriangle className="h-5 w-5 text-orange-500 mt-0.5" />
+                                <div className="flex-1 flex justify-between items-center">
+                                    <span className="text-gray-500">Points Deducted</span>
+                                    <span className="font-bold text-orange-500 text-base">{violation.pointsImpact} PTS</span>
                                 </div>
                             </div>
 
-                            <div className="flex items-start gap-3">
-                                <Info className="h-5 w-5 text-teal flex-shrink-0 mt-0.5" />
-                                <div>
-                                    <p className="text-sm text-gray-600">Sanction Applied</p>
-                                    <p className="text-sm font-medium text-gray-900">
+                            <div className="flex gap-3 text-sm">
+                                <Info className="h-5 w-5 text-teal mt-0.5" />
+                                <div className="flex-1 space-y-1">
+                                    <span className="text-gray-500">Sanction Applied</span>
+                                    <p className="font-medium text-gray-900">
                                         {violation.sanction || "No specific sanction recorded."}
                                     </p>
                                 </div>
                             </div>
 
-                            <div className="border-t pt-4 mt-2">
-                                <p className="text-sm text-gray-600">
-                                    For more information, please refer to the{" "}
-                                    <a href="/performance-reports/penalty-guidelines" className="text-sm font-medium text-teal hover:underline inline-block">
-                                        Penalty Guidelines
-                                    </a>.
+                            <div className="border-t border-gray-100 pt-3">
+                                <p className="text-xs text-gray-500 flex items-center gap-1">
+                                    <Info className="h-3.5 w-3.5 flex-shrink-0" />
+                                    <span>
+                                        For more information, please refer to the{" "}
+                                        <button onClick={() => router.push("/performance-reports/penalty-guidelines")} className="font-medium text-teal hover:underline inline-block">
+                                            Penalty Guidelines
+                                        </button>.
+                                    </span>
                                 </p>
                             </div>
                         </div>

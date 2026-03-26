@@ -19,6 +19,19 @@ const badgeVariants = cva(
           "border-transparent bg-green-500 text-white shadow hover:bg-green-600/80",
         warning:
           "border-transparent bg-yellow-500 text-white shadow hover:bg-yellow-600/80",
+        // Semantic Service Tier Variants
+        tierRegular: "border-transparent bg-slate-100 text-slate-800 hover:bg-slate-200",
+        tierPlus: "border-transparent bg-blue-50 text-blue-700 hover:bg-blue-100",
+        tierAllIn: "border-transparent bg-amber-50 text-amber-700 hover:bg-amber-100",
+        // Semantic Booking Type Variants
+        typeTrial: "border-transparent bg-purple-50 text-purple-700 hover:bg-purple-100",
+        typeOneTime: "border-transparent bg-green-50 text-green-700 hover:bg-green-100",
+        typeFlexi: "border-transparent bg-orange-50 text-orange-700 hover:bg-orange-100",
+        // Semantic Operational Status Variants
+        statusYellow: "border-transparent bg-yellow-50 text-yellow-700 hover:bg-yellow-100",
+        statusBlue: "border-transparent bg-blue-50 text-blue-700 hover:bg-blue-100",
+        statusGreen: "border-transparent bg-green-50 text-green-700 hover:bg-green-100",
+        statusRed: "border-transparent bg-red-50 text-red-700 hover:bg-red-100",
       },
     },
     defaultVariants: {

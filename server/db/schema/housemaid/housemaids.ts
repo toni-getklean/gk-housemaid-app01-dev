@@ -1,6 +1,6 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, date, integer, timestamp, bigint } from "drizzle-orm/pg-core";
-
+import { pgTable, text, numeric, date, integer, timestamp, bigint } from "drizzle-orm/pg-core";
+import { serviceTiers } from "../lookups/serviceTiers";
 
 
 // Table definition for housemaids
@@ -11,8 +11,12 @@ export const housemaids = pgTable("housemaids", {
     housemaidCode: text("housemaid_code"),
 
     // Loyalty & Tiers
-    currentServiceTierCode: text("current_service_tier_code"), // REGULAR, PLUS, ALL_IN
+    currentServiceTierCode: text("current_service_tier_code").references(() => serviceTiers.tierCode), // REGULAR, PLUS, ALL_IN
     asensoPointsBalance: integer("asenso_points_balance").default(0),
+
+    // Performance
+    performanceScore: numeric("performance_score", { precision: 5, scale: 2 }), // 0-100
+    averageRating: numeric("average_rating", { precision: 4, scale: 2 }), // 0-5
 
     name: text("name").notNull(),
     mobile: text("mobile"),

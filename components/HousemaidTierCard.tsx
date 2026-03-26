@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { Card } from "@/components/ui/card";
 import { Award, ArrowUp, Star, TrendingUp } from "lucide-react";
+import { ServiceTierBadge } from "@/components/ServiceTierBadge";
 
 // Default tiers used as fallback when DB data hasn't been passed yet
 const DEFAULT_TIERS = [
@@ -101,7 +102,7 @@ export const HousemaidTierCard: FC<HousemaidTierCardProps> = ({
                 <div className="flex items-center gap-3 text-sm">
                     <Award className={`h-5 w-5 ${colorClass}`} style={colorStyle} />
                     <span className="text-gray-500 flex-1">Service Tier</span>
-                    <span className="font-medium text-gray-900 uppercase">{currentLevel.label}</span>
+                    <ServiceTierBadge tier={currentLevel.id} />
                 </div>
 
                 {/* Next Milestone */}

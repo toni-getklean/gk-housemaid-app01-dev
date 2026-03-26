@@ -1,5 +1,8 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge, BookingStatus } from "@/components/StatusBadge";
+import { BookingTypeBadge } from "@/components/BookingTypeBadge";
+import { ServiceTierBadge } from "@/components/ServiceTierBadge";
 import { Calendar as CalendarIcon, Clock, ClipboardList, Star, Wallet } from "lucide-react";
 import { format } from "date-fns";
 import { Booking } from "@/lib/database";
@@ -44,7 +47,18 @@ function calculateHMServiceShare(booking: Booking): HMShareBreakdown {
     const isWholeDay = booking.duration === "WHOLE_DAY";
     const serviceTypeLabel = isWholeDay ? "Whole Day" : "Half Day";
 
-    // Base HM rates (fixed, not percentage)
+    // Use backend's dynamic calculation if available
+    if (booking.expectedHmShare) {
+        return {
+            baseRate: booking.expectedHmShare.baseRate,
+            surgeBonus: booking.expectedHmShare.surgeBonus,
+            totalServiceShare: booking.expectedHmShare.totalServiceShare,
+            isWeekend: booking.expectedHmShare.isWeekend,
+            serviceTypeLabel,
+        };
+    }
+
+    // Base HM rates (fixed, not percentage) - FALLBACK ONLY
     const baseRate = isWholeDay ? 650 : 510;
 
     // Determine if weekend (Saturday = 6, Sunday = 0)
@@ -80,27 +94,6 @@ function calculateHMServiceShare(booking: Booking): HMShareBreakdown {
 }
 
 export function BookingSummaryTab({ booking, onUploadSuccess, onReschedule }: BookingSummaryTabProps) {
-    const getStatusLabel = (status: string) => {
-        switch (status) {
-            case "pending_review":
-                return "For Review";
-            case "accepted":
-                return "Accepted";
-            case "dispatched":
-                return "Dispatched";
-            case "on_the_way":
-                return "On The Way";
-            case "arrived":
-                return "Arrived";
-            case "in_progress":
-                return "In Progress";
-            case "completed":
-                return "Completed";
-            default:
-                return status.replace(/_/g, " ");
-        }
-    };
-
     const pointsAwarded = booking.asensoPointsAwarded || 0;
     const estimatedPoints = getEstimatedPoints(booking.bookingTypeCode);
     const isCancelled = booking.statusCode === "cancelled";
@@ -113,9 +106,14 @@ export function BookingSummaryTab({ booking, onUploadSuccess, onReschedule }: Bo
             <Card className="p-4">
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-lg font-semibold text-teal">Booking Summary</h2>
-                    <Badge variant="secondary" data-testid="badge-status">
-                        {getStatusLabel(booking.statusCode)}
-                    </Badge>
+                    <div className="flex flex-col items-end gap-1">
+                        <StatusBadge status={booking.statusCode as BookingStatus} />
+                        {(booking.extendedHours ?? 0) > 0 && (
+                            <Badge variant="outline" className="border-blue-300 text-blue-700 bg-blue-50 font-medium">
+                                Extended (+{booking.extendedHours}h)
+                            </Badge>
+                        )}
+                    </div>
                 </div>
 
                 <div className="space-y-4">
@@ -129,9 +127,16 @@ export function BookingSummaryTab({ booking, onUploadSuccess, onReschedule }: Bo
                     </div>
 
                     <div className="border-t pt-4">
-                        <h3 className="text-base font-semibold text-gray-900 mb-3">
-                            Service Details
-                        </h3>
+                        <div className="flex items-center justify-between mb-3">
+                            <h3 className="text-base font-semibold text-gray-900">
+                                Service Details
+                            </h3>
+                            <div className="flex items-center gap-2">
+                                {booking.bookingTypeCode && <BookingTypeBadge type={booking.bookingTypeCode} />}
+                                {/* @ts-ignore - serviceTier might be on the extended booking object */}
+                                {booking.serviceTier && <ServiceTierBadge tier={booking.serviceTier} />}
+                            </div>
+                        </div>
 
                         <div className="space-y-3">
                             {/* Your Share (HM) - Service Fee */}
@@ -153,6 +158,26 @@ export function BookingSummaryTab({ booking, onUploadSuccess, onReschedule }: Bo
                                             </div>
                                             <p className="text-xs text-gray-400 mt-0.5">
                                                 Service Fee • {hmShare.serviceTypeLabel}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Extension Earnings (HM) */}
+                            {(booking.extendedHours ?? 0) > 0 && (
+                                <div className="flex items-start gap-3 mt-4 mb-2 border-l-2 pl-3 border-blue-200">
+                                    <Clock className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                                    <div>
+                                        <p className="text-sm text-gray-600">Extension Earnings</p>
+                                        <div className="flex flex-col">
+                                            <div className="flex items-center gap-2">
+                                                <p className="text-sm font-bold text-blue-600">
+                                                    ₱{Number(booking.extensionAmount || 0).toLocaleString('en-PH', { minimumFractionDigits: 2 })}
+                                                </p>
+                                            </div>
+                                            <p className="text-xs text-blue-600/80 mt-0.5 font-medium">
+                                                +{booking.extendedHours} Hour(s) Extended • Paid to HM
                                             </p>
                                         </div>
                                     </div>

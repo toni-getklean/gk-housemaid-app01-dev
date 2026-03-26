@@ -21,6 +21,7 @@
    - 7.1 [Dashboard](#71-dashboard)
    - 7.2 [Bookings](#72-bookings)
    - 7.3 [Booking Detail](#73-booking-detail)
+   - 7.X [Booking Extension (Immediate / On-site)](#7x-booking-extension-immediate--on-site)
    - 7.4 [Payment Collection](#74-payment-collection)
    - 7.5 [Proof of Arrival](#75-proof-of-arrival)
    - 7.6 [Transportation](#76-transportation)
@@ -139,7 +140,7 @@ drizzle/              # Database migrations
 - **Schema-first**: Drizzle ORM schema drives all data modeling
 - **JWT session cookies**: 7-day expiry, stored as HTTP-only cookie
 - **Audit logging**: All booking state transitions logged to `bookingActivityLog`
-- **Schema migrations managed by Admin Dashboard repo** — This app references the shared schema but does not run its own migrations
+- **Schema migrations managed by Admin Dashboard repo** — Admin Dashboard and Housemaid app can run migrations, and this app references the shared schema
 
 ---
 
@@ -281,6 +282,9 @@ Full detail view for a single booking, organized into 4 tabs.
 - Service date, time, duration
 - Service tier (Regular / Plus / All-in) and type (Trial / One-time / Repeat / Flexi)
 - Total price
+- **Extension Details:**
+  - Total Extended Hours
+  - Extension Amount (₱)
 - **Service checklist** (tasks expected for this booking):
   - Housekeeping, Laundry, Childcare, Pet care, Ironing, Other
   - Displayed as a checked/unchecked list so the housemaid knows exactly what tasks are required
@@ -333,6 +337,37 @@ Context-sensitive action buttons based on booking status:
 
 ---
 
+### 7.X Booking Extension (Immediate / On-site)
+
+#### 1. Feature Definition
+Allows housemaids to extend an ongoing booking when the client requests additional time during service.
+
+#### 2. Feature Scope & Availability Rule
+- **Scope:** Only support Immediate Extension (On-site). Triggered by housemaid during active service. No scheduled extension. No admin approval (MVP). No client app interaction.
+- **Availability Rule:** Extension is only available when `status_code = in_progress`.
+
+#### 3. UX: Housemaid App Flow
+- **Booking Action Footer:** When `status = in_progress`, add `[ Request Extension ]`.
+- **Component (`ExtendBookingDialog`):**
+  - Fields: Additional hours: `+1`, `+2` (future: custom), Notes (optional), Confirm client approval (required checkbox).
+- **Flow:** `in_progress` → housemaid opens `ExtendBookingDialog` → inputs `additionalHours` → system calculates `extensionAmount` → confirms → booking updated (no status change) → remains `in_progress`.
+
+#### 4. CRITICAL: Lifecycle Alignment
+- Use existing `status_code: in_progress`. DO NOT create new status codes, modify lifecycle transitions, or break `updateBookingStatus`.
+- **Substatus Strategy (Controlled / Optional):** DO NOT use substatus for logic. You MAY optionally introduce `substatus_code = has_extension`. Rules: UI indicator only. NOT used in backend validation. NOT required for functionality. Set when `extendedHours > 0`.
+
+#### 5. Audit Trace Design (CRITICAL)
+Extension must support multiple actions per booking (e.g., Extension #1 → +1h, Extension #2 → +2h. Final: `extendedHours = 3`, `extensionAmount = 300`).
+- **Activity Log (Required):** Use existing `bookingActivityLog`. Log each extension: "Extension added: +[X] hours (₱[Y])".
+- **Audit Requirements:** Each log entry must capture: `additionalHours`, calculated amount, timestamp, actor (housemaid).
+
+#### 6. Constraints & Non-Goals (STRICT)
+- **Constraints:** Only allowed when `status_code = in_progress`. Cannot extend after completed. Multiple extensions allowed (accumulative). Requires client confirmation checkbox.
+- **Non-Goals:** No new status codes. No lifecycle modification. No required substatus logic. No admin approval. No scheduled extension. No pricing recalculation. No surge logic.
+- **Consistency Requirements:** Must align with Booking lifecycle (`updateBookingStatus`), PaymentCollectionDialog (§7.4), Earnings system (§7.8), Pricing model (§8), Activity log system.
+
+---
+
 ### 7.4 Payment Collection
 
 **Component**: `PaymentCollectionDialog`
@@ -344,11 +379,12 @@ Context-sensitive action buttons based on booking status:
 Modal dialog for the housemaid to confirm they have collected payment from the client.
 
 #### Fields
-- Amount to collect (pre-filled from booking)
+- Amount to collect (pre-filled from booking) — Calculation: `totalAmount = baseServiceFee + transportFee + extensionAmount`
 - Payment method confirmation
 - Optional: receipt photo upload
 
 #### Validation
+- Amount validation: `amountCollected >= totalAmount`
 - Cannot mark as paid if booking is not in correct status
 - Transport fee collection is blocked if transport details haven't been submitted
 
@@ -431,6 +467,7 @@ The platform uses a **Flat Rate Model**, not a revenue split.
   - Service earnings (flat rate)
   - Surge bonus (if weekend/holiday booking)
   - Transport reimbursements
+  - Extension Earnings (₱)
   - Asenso points earned
 - Earnings list (chronological, most recent first)
 
@@ -440,6 +477,7 @@ Per-booking earning breakdown:
 - Booking type (Trial, One-time, Repeat, Flexi)
 - **Flat rate earned** (based on service tier, location, and duration)
 - **Surge bonus** (if applicable — weekend/holiday)
+- **Extension Earnings (₱)** (100% credited to housemaid, no platform deduction)
 - Transportation amount (if any)
 - Asenso points awarded
 - Payment status
@@ -732,6 +770,17 @@ The platform uses a **Flat Rate Model**. Housemaids earn a fixed flat rate per b
    - Waivers
 4. **Final price** — `basePrice + surgeAmount + adjustments`
 
+### Extension Pricing Logic (LOCKED)
+
+**Explicit Rule Block:**
+Extension Pricing Rules:
+- Rate: ₱100 per hour
+- Fixed and non-dynamic
+- No surge pricing
+- No dependency on base booking price
+
+**Application:** MUST MATCH SALES INPUT. Overtime fee = ₱100 per hour. Applies regardless of weekday/weekend, holiday, booking type, duration. 100% goes to housemaid.
+
 ### Flexi Membership Rules
 - Flexi booking type requires an **active membership** on record for the customer
 - Validated via `MembershipService` before pricing is returned
@@ -866,7 +915,7 @@ See Section 7.11 for full details on the certification system.
 | Table | Purpose |
 |-------|---------|
 | `housemaids` | Housemaid profile (name, mobile, service tier, points, status, performanceScore) |
-| `bookings` | Main booking record (customer, date, status, pricing, service checklist) |
+| `bookings` | Main booking record (customer, date, status, pricing, service checklist). **Extension fields:** `extendedHours` (integer, default 0), `extensionAmount` (numeric, default 0), `extensionRequestedAt` (timestamp) |
 | `bookingPayments` | Payment details per booking |
 | `bookingActivityLog` | Audit trail for all booking events |
 | `bookingRatings` | Housemaid ratings submitted to clients |
@@ -1058,7 +1107,7 @@ Statuses follow a semantic system so operations can identify urgency at a glance
 ### Availability
 - Deployed on Fly.io with Docker
 - Standalone Next.js build for predictable containerization
-- Database migrations via Drizzle (version-controlled) — **managed by Admin Dashboard repo**
+- Database migrations via Drizzle (version-controlled) — **managed by Admin Dashboard repo** (primary), but both Admin Dashboard and Housemaid app can run migrations
 - Separate deployment from Admin Dashboard (independent scaling and releases)
 
 ### Accessibility
@@ -1103,7 +1152,8 @@ Both apps connect to the **same Neon PostgreSQL database**. There is no API-to-A
 
 ### Schema Migrations
 - Drizzle migrations managed in the **Admin Dashboard repo** (primary)
-- Housemaid app repo references the same schema but does not run migrations
+- Admin Dashboard and Housemaid app can run migrations
+- Housemaid app repo references the same schema
 - Coordinated releases required when schema changes affect both apps
 
 ### Notification Triggers

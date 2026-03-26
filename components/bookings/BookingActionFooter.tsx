@@ -14,6 +14,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { PaymentCollectionDialog } from "./PaymentCollectionDialog";
 import { TransportRequiredDialog } from "./TransportRequiredDialog";
+import { ExtendBookingDialog } from "./ExtendBookingDialog";
 
 interface BookingActionFooterProps {
     booking: Booking;
@@ -45,6 +46,7 @@ export function BookingActionFooter({
     const [declineReason, setDeclineReason] = useState("");
     const [customDeclineNote, setCustomDeclineNote] = useState("");
     const [showPaymentCollectionDialog, setShowPaymentCollectionDialog] = useState(false);
+    const [showExtendModal, setShowExtendModal] = useState(false);
     const [transportDialogVariant, setTransportDialogVariant] = useState<"commute_to_client" | "return_fare" | null>(null);
 
     const DECLINE_REASONS = [
@@ -261,24 +263,34 @@ export function BookingActionFooter({
                 );
             case "in_progress":
                 return (
-                    <Button
-                        className="w-full bg-green-600 hover:bg-green-700 text-white"
-                        onClick={() => {
-                            // Check for return details
-                            const hasReturnDetails = booking.transportationLegs?.some(
-                                leg => leg.direction === "RETURN"
-                            );
+                    <div className="flex flex-col gap-3 w-full">
+                        <Button
+                            variant="outline"
+                            className="w-full border-blue-200 text-blue-700 hover:bg-blue-50"
+                            onClick={() => setShowExtendModal(true)}
+                            disabled={isLoading}
+                        >
+                            Request Extension
+                        </Button>
+                        <Button
+                            className="w-full bg-green-600 hover:bg-green-700 text-white"
+                            onClick={() => {
+                                // Check for return details
+                                const hasReturnDetails = booking.transportationLegs?.some(
+                                    leg => leg.direction === "RETURN"
+                                );
 
-                            if (!hasReturnDetails) {
-                                setTransportDialogVariant("return_fare");
-                                return;
-                            }
-                            handleAction("completed");
-                        }}
-                        disabled={isLoading}
-                    >
-                        Mark as Completed
-                    </Button>
+                                if (!hasReturnDetails) {
+                                    setTransportDialogVariant("return_fare");
+                                    return;
+                                }
+                                handleAction("completed");
+                            }}
+                            disabled={isLoading}
+                        >
+                            Mark as Completed
+                        </Button>
+                    </div>
                 );
             default:
                 return null;
@@ -409,6 +421,15 @@ export function BookingActionFooter({
                         setTransportDialogVariant(null);
                         onSwitchToTransportTab?.();
                     }}
+                />
+            )}
+
+            {/* Extension Dialog */}
+            {booking.bookingCode && (
+                <ExtendBookingDialog 
+                    isOpen={showExtendModal}
+                    onClose={() => setShowExtendModal(false)}
+                    bookingCode={booking.bookingCode}
                 />
             )}
         </>

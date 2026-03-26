@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, date, integer, timestamp, bigint, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, date, integer, timestamp, bigint, jsonb, numeric } from "drizzle-orm/pg-core";
 
 
 
@@ -48,6 +48,7 @@ export const bookings = pgTable("bookings", {
     location: text("location"), // NCR, CEBU, CAVITE
     tierCode: text("tier_code").references(() => serviceTiers.tierCode), // REGULAR, PLUS, ALL_IN
     bookingTypeCode: text("booking_type_code"), // TRIAL, ONE_TIME, FLEXI
+    serviceChecklist: jsonb("service_checklist"), // Tracks demanded tasks e.g., ["housekeeping", "laundry"]
     dayType: text("day_type"), // WEEKDAY, WEEKEND_HOLIDAY
 
     // Stored calculation for audit
@@ -85,6 +86,11 @@ export const bookings = pgTable("bookings", {
 
     rescheduleCount: integer("reschedule_count").default(0).notNull(),
     assignmentAttemptCount: integer("assignment_attempt_count").default(0).notNull(),
+
+    // Booking Extension Feature
+    extendedHours: integer("extended_hours").default(0),
+    extensionAmount: numeric("extension_amount").default("0"),
+    extensionRequestedAt: timestamp("extension_requested_at", { withTimezone: true }),
 
     dateModified: timestamp("date_modified", { withTimezone: true }),
 });

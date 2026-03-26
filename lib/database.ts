@@ -19,6 +19,7 @@ import {
   customerRatings,
   housemaidAvailability,
   trainingLevels,
+  housemaidCertifications,
 } from "../server/db/schema";
 
 import { parseISO } from "date-fns";
@@ -66,6 +67,12 @@ type BookingWithParsedFields = Booking & {
   assignmentAttemptCount?: number;
   gcashNumber?: string | null;
   gcashQrCodeUrl?: string | null;
+  expectedHmShare?: {
+    baseRate: number;
+    surgeBonus: number;
+    totalServiceShare: number;
+    isWeekend: boolean;
+  };
 };
 
 // Export for use in API routes and frontend
@@ -652,10 +659,20 @@ export class DatabaseService {
           .orderBy(asc(transportationLegs.legSequence));
       }
 
-      return this.enrichBooking({
+      const enriched = this.enrichBooking({
         ...row,
         transportationLegs: legs
       }, statusList);
+
+      enriched.expectedHmShare = await HousemaidEarningsService.calculateExpectedEarnings({
+          bookingTypeCode: enriched.bookingTypeCode,
+          duration: enriched.duration,
+          serviceDate: enriched.serviceDate || new Date(),
+          location: enriched.location,
+          tierCode: enriched.tierCode
+      });
+
+      return enriched;
     } catch (error) {
       console.error("Error fetching booking by code:", error);
       return null;
@@ -710,10 +727,20 @@ export class DatabaseService {
           .orderBy(asc(transportationLegs.legSequence));
       }
 
-      return this.enrichBooking({
+      const enriched = this.enrichBooking({
         ...row,
         transportationLegs: legs
       }, statusList);
+
+      enriched.expectedHmShare = await HousemaidEarningsService.calculateExpectedEarnings({
+          bookingTypeCode: enriched.bookingTypeCode,
+          duration: enriched.duration,
+          serviceDate: enriched.serviceDate || new Date(),
+          location: enriched.location,
+          tierCode: enriched.tierCode
+      });
+
+      return enriched;
     } catch (error) {
       console.error("Error fetching booking by ID:", error);
       return null;
@@ -1178,11 +1205,18 @@ export class DatabaseService {
 
       const rating = parseFloat(ratingResult[0]?.avg || "0");
 
+      // 4. Get Certifications
+      const certs = await db
+        .select()
+        .from(housemaidCertifications)
+        .where(eq(housemaidCertifications.housemaidId, housemaidId));
+
       return {
         ...maid,
         location,
         completedJobs,
-        rating: Number(rating.toFixed(1))
+        rating: Number(rating.toFixed(1)),
+        certifications: certs
       };
 
     } catch (error) {
