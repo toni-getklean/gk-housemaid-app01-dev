@@ -449,6 +449,9 @@ Full detail view for a single booking. The admin's primary workspace for managin
   - Surge amount
   - Adjustments (discounts, surcharges)
   - **Total price**
+- **Extension Details:**
+  - Total Extended Hours
+  - Extension Amount (₱)
 - Rescheduled count (if any)
 - Assignment attempt count
 - Internal admin notes (editable textarea)
@@ -477,7 +480,7 @@ Full detail view for a single booking. The admin's primary workspace for managin
 - Payment status badge
 - Service fee amount
 - Transport fee amount (if applicable)
-- **Total amount due**
+- **Total amount due** (includes any Extension Amount)
 - Payment method (GCash, Card, Maya, Cash)
 - Payment source (Customer or Company)
 - Settlement type (Paid to GK, Direct to Housemaid, Pending)
@@ -505,6 +508,7 @@ Full detail view for a single booking. The admin's primary workspace for managin
 - Expandable panel at bottom of booking detail
 - Chronological list of all status changes and actions
 - Each entry: timestamp, actor (admin name or housemaid name), action description, old value → new value
+- Captures specific events such as "Extension added: +[X] hours (₱[Y])" triggered by housemaids on-site
 - **API**: `GET /api/bookings/[code]/activity-log`
 
 #### Booking Status Transitions (Admin Actions)
@@ -519,6 +523,23 @@ Full detail view for a single booking. The admin's primary workspace for managin
 | Completed | N/A (terminal) | Can still manage payment |
 | Cancelled | Reactivate (Super Admin only) | Terminal state |
 | Rescheduled | Accept, Cancel | Treated as new pending |
+
+---
+
+### 7.X Booking Extension (Immediate / On-site)
+
+#### Purpose
+Housemaids can extend an ongoing booking directly from their app when clients request additional time during service. The Admin Dashboard provides read-only visibility into tracking these extensions.
+
+#### Visibility
+- Extension data (`extendedHours`, `extensionAmount`) is visible in the Booking Detail's Summary and Payment tabs.
+- Admins cannot initiate or approve extensions; it is a housemaid-driven action.
+- System processes multiple extension requests seamlessly, rolling the total accumulated `extendedHours` and calculated `extensionAmount` into the booking parameters.
+
+#### Extension Pricing Model
+- **Rate**: ₱100 per hour
+- **Fixed & Non-dynamic**: No surge pricing applies to extension limits.
+- **Housemaid Share**: 100% of the extension fee is credited directly to the housemaid.
 
 ---
 
@@ -1242,6 +1263,12 @@ The platform uses a **Flat Rate Model**, not a revenue split.
 - Platform revenue is the difference between the final customer price and the housemaid's flat rate.
 - **Surge Rate**: Applies on weekends, regular holidays, and special holidays. Formula: `+10% of base HM rate (per tier)`.
 
+### Extension Pricing Logic
+- **Rate:** ₱100 per hour (Fixed and non-dynamic).
+- **Surge:** No surge pricing applies to extensions.
+- **Platform Share:** None. 100% of the extension fee is credited to the housemaid.
+- Extension fees are added to the booking's `totalAmount` in the financial ledger, maintaining perfect alignment between expected collection and total revenue collected.
+
 ### HM Flat Rate Pricing Matrices
 
 #### NCR
@@ -1304,7 +1331,7 @@ All tables from the Housemaid App PRD are shared. The admin dashboard reads and 
 | Table | Purpose | Admin Access |
 |-------|---------|-------------|
 | `housemaids` | Housemaid profile | Read/Write |
-| `bookings` | Main booking record | Read/Write |
+| `bookings` | Main booking record (includes `tierCode`, `bookingTypeCode`, `serviceChecklist`, `dayType`). **Extension fields:** `extendedHours` (integer, default 0), `extensionAmount` (numeric, default 0), `extensionRequestedAt` (timestamp) | Read/Write |
 | `bookingPayments` | Payment details per booking | Read/Write |
 | `bookingActivityLog` | Audit trail for booking events | Read/Write |
 | `bookingRatings` | Ratings submitted | Read |
@@ -1317,7 +1344,7 @@ All tables from the Housemaid App PRD are shared. The admin dashboard reads and 
 | `housemaidViolations` | Violation records | Read/Write |
 | `housemaidRatings` | Ratings from customers | Read |
 | `asensoTransactions` | Points ledger | Read/Write |
-| `asensoPointsConfig` | Points config per booking type | Read/Write |
+| `asensoPointsConfig` | Points configuration per booking type, tier (`serviceType`), and `eventType` (e.g. availability rewards) | Read/Write |
 | `housemaidCertifications` | Training and certification records | Read/Write |
 | `serviceSkus` | Trial/One-time pricing | Read/Write |
 | `flexiRateCards` | Flexi rate pricing | Read/Write |

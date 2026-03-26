@@ -915,7 +915,7 @@ See Section 7.11 for full details on the certification system.
 | Table | Purpose |
 |-------|---------|
 | `housemaids` | Housemaid profile (name, mobile, service tier, points, status, performanceScore) |
-| `bookings` | Main booking record (customer, date, status, pricing, service checklist). **Extension fields:** `extendedHours` (integer, default 0), `extensionAmount` (numeric, default 0), `extensionRequestedAt` (timestamp) |
+| `bookings` | Main booking record (including Pricing V2 fields: `tierCode`, `bookingTypeCode`, `serviceChecklist`, `dayType`). **Extension fields:** `extendedHours` (integer, default 0), `extensionAmount` (numeric, default 0), `extensionRequestedAt` (timestamp) |
 | `bookingPayments` | Payment details per booking |
 | `bookingActivityLog` | Audit trail for all booking events |
 | `bookingRatings` | Housemaid ratings submitted to clients |
@@ -923,7 +923,7 @@ See Section 7.11 for full details on the certification system.
 | `customerAddresses` | Customer ↔ address junction — `label` (Home/Office), `isPrimary` flag |
 | `addresses` | Address master — `addressLine`, `landmark`, `addressLink` (Google Maps URL), `latitude`, `longitude`, `segmentCode` |
 | `housemaidAvailability` | Daily availability calendar exceptions |
-| `housemaidEarnings` | Per-booking earnings record (flat rate) |
+| `housemaidEarnings` | Per-booking earnings record (flat rate). *Note: "Extension Earnings" displayed in UI are derived directly from the joined `bookings.extensionAmount` field. Extension fees are rolled seamlessly into the earnings `totalAmount` ledger field to maintain financial alignment without schema inflation.* |
 | `housemaidPerformance` | Aggregated monthly performance stats, including `performanceScore` (0-100) |
 | `housemaidViolations` | Violation records |
 | `housemaidRatings` | Ratings received from customers |
