@@ -50,6 +50,10 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
     const isTransportFeePaid = (checkPaid(transportPaymentStatus) || hasTransportFeeBeenPaid) && booking.statusCode === 'completed';
     const isFullyPaid = isServiceFeePaid && isTransportFeePaid;
 
+    const extensionAmount = parseFloat(booking.extensionAmount?.toString() || "0");
+    const hasExtension = extensionAmount > 0;
+    const baseServiceFee = Math.max(0, parseFloat(totalAmount?.toString() || "0") - extensionAmount);
+
     const handleServiceFeePayment = async () => {
         setIsLoading(true);
         try {
@@ -167,6 +171,18 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
                                 <div className="text-center">
                                     <p className="text-sm text-gray-500 mb-1">Service Fee</p>
                                     <h3 className="text-3xl font-bold text-gray-900">₱{totalAmount || "0.00"}</h3>
+                                    {hasExtension && (
+                                        <div className="mt-2 text-sm text-gray-600 space-y-1">
+                                            <div className="flex justify-between max-w-[200px] mx-auto">
+                                                <span>Base:</span>
+                                                <span>₱{baseServiceFee.toFixed(2)}</span>
+                                            </div>
+                                            <div className="flex justify-between max-w-[200px] mx-auto">
+                                                <span>Extension ({booking.extendedHours} hr/s):</span>
+                                                <span>₱{extensionAmount.toFixed(2)}</span>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <Card className="p-6 flex flex-col items-center justify-center bg-white border-dashed">
@@ -347,9 +363,21 @@ export function BookingPaymentTab({ booking }: BookingPaymentTabProps) {
                             </div>
 
                             <div className="border-t pt-3 mt-3">
+                                {hasExtension && (
+                                    <div className="space-y-2 mb-3">
+                                        <div className="flex justify-between items-center text-sm text-gray-600">
+                                            <span>Base Service Fee</span>
+                                            <span>₱{baseServiceFee.toFixed(2)}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center text-sm text-gray-600">
+                                            <span>Extension ({booking.extendedHours} hr/s)</span>
+                                            <span>₱{extensionAmount.toFixed(2)}</span>
+                                        </div>
+                                    </div>
+                                )}
                                 <div className="flex justify-between items-center">
                                     <span className="text-base font-semibold text-gray-900">
-                                        Service Fee
+                                        {hasExtension ? "Total Service Fee" : "Service Fee"}
                                     </span>
                                     <span className="text-lg font-bold text-teal">
                                         ₱{totalAmount || "0.00"}

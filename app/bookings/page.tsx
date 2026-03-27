@@ -52,7 +52,9 @@ export default function Bookings() {
 
     // Add date filter
     if (selectedDate) {
-      params.append("date", selectedDate.toISOString());
+      // Use YYYY-MM-DD to avoid timezone shifts in toISOString()
+      const dateStr = format(selectedDate, "yyyy-MM-dd");
+      params.append("date", dateStr);
     } else {
       params.append("date", "all");
     }
@@ -375,7 +377,7 @@ export default function Bookings() {
                         {booking.customerName}
                       </h3>
                       <Badge variant="secondary" className="mb-2">
-                        For Review
+                        {booking.statusDisplayName || "For Review"}
                       </Badge>
                       <p className="text-sm text-gray-600 mb-1">
                         {booking.parsedServiceDate
@@ -416,7 +418,7 @@ export default function Bookings() {
                         {booking.customerName}
                       </h3>
                       <Badge variant="default" className="mb-2">
-                        Completed
+                        {booking.statusDisplayName || "Completed"}
                       </Badge>
                       <p className="text-sm text-gray-600 mb-1">
                         {booking.parsedServiceDate
